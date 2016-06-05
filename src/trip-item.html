@@ -1,9 +1,9 @@
-<link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/paper-card/paper-card.html">
-<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
-<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
-<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-<link rel="import" href="../../bower_components/iron-icons/social-icons.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/iron-icons/social-icons.html">
 
 <dom-module id="trip-item">
     <template>
@@ -26,7 +26,7 @@
                 @apply(--layout-flex);
             }
         </style>
-        <paper-card class="trip" heading="[[item.name]]" hidden$="{{_deleted}}">
+        <paper-card class="trip" heading="[[item.name]]" hidden$="{{deleted}}">
             <div class="card-actions">
                 <paper-icon-button icon="social:share"></paper-icon-button>
                 <paper-icon-button icon="delete" on-tap="_delete"></paper-icon-button>
@@ -49,7 +49,7 @@
                         item: {
                             type: Object
                         },
-                        _deleted: {
+                        deleted: {
                             type: Boolean,
                             value: false
                         }
@@ -62,12 +62,12 @@
                         timeout: 5000,
                     };
                     this.fire('delete-trip', this.deleteData);
-                    this._deleted = true;
+                    this.deleted = true;
                 }
                 _undoDelete() {
                     clearTimeout(this.deleteData.timeoutId);
                     this.$.deleteToast.close();
-                    this._deleted = false;
+                    this.deleted = false;
                 }
             }
             Polymer(TripItem);
