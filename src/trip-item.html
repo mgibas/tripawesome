@@ -26,7 +26,7 @@
                 @apply(--layout-flex);
             }
         </style>
-        <paper-card class="trip" heading="[[item.name]]" hidden$="{{deleted}}">
+        <paper-card class="trip" heading="[[item.name]]" hidden$="[[deleted]]">
             <div class="card-actions">
                 <paper-icon-button icon="social:share"></paper-icon-button>
                 <paper-icon-button icon="delete" on-tap="_delete"></paper-icon-button>
@@ -51,23 +51,24 @@
                         },
                         deleted: {
                             type: Boolean,
-                            value: false
+                            value: false,
+                            reflectToAttribute: true
                         }
                     };
                 }
                 _delete() {
+                    this.deleted = true;
                     this.$.deleteToast.open();
-                    this.deleteData = {
+                    this.deleteInfo = {
                         trip: this.item,
                         timeout: 5000,
                     };
-                    this.fire('delete-trip', this.deleteData);
-                    this.deleted = true;
+                    this.fire('delete-trip', this.deleteInfo);
                 }
                 _undoDelete() {
-                    clearTimeout(this.deleteData.timeoutId);
-                    this.$.deleteToast.close();
+                    clearTimeout(this.deleteInfo.timeoutId);
                     this.deleted = false;
+                    this.$.deleteToast.close();
                 }
             }
             Polymer(TripItem);

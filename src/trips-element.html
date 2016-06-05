@@ -17,6 +17,10 @@
                 margin-top: 0.3rem;
             }
 
+            trip-item[deleted] {
+                margin-top: 0rem;
+            }
+            
             paper-fab {
                 position: fixed;
                 bottom: 10px;
@@ -51,10 +55,10 @@
                         name: `New trips`
                     });
                 }
-                _deleteTrip(e, data) {
-                    data.timeoutId = setTimeout(() => {
-                        this.$.tripsFb.remove(data.trip)
-                    }, data.timeout);
+                _deleteTrip(e, deleteInfo) {
+                    deleteInfo.timeoutId = setTimeout(() => {
+                        this.$.tripsFb.remove(deleteInfo.trip)
+                    }, deleteInfo.timeout);
                 }
             }
             Polymer(TripsElement);
