@@ -1,0 +1,28 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+<dom-module id="trip-element">
+    <template>
+        <style>
+            :host {
+                display: block;
+                @apply(--layout-vertical);
+            }
+        </style>
+    </template>
+    <script>
+        (() => {
+            'use strict';
+            class TripElement {
+                get is() {
+                    return 'trip-element'
+                }
+                get properties() {
+                    return {};
+                }
+            }
+            Polymer(TripElement);
+        })();
+    </script>
+</dom-module>

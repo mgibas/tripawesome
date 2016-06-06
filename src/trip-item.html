@@ -1,4 +1,5 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
@@ -26,6 +27,8 @@
                 @apply(--layout-flex);
             }
         </style>
+        <firebase-document id="fb" app-name="triptrip" data="[[item]]" path="/trips/[[item.$key]]">
+        </firebase-document>
         <paper-card class="trip" heading="[[item.name]]" hidden$="[[deleted]]">
             <div class="card-actions">
                 <paper-icon-button icon="social:share"></paper-icon-button>
@@ -59,14 +62,12 @@
                 _delete() {
                     this.deleted = true;
                     this.$.deleteToast.open();
-                    this.deleteInfo = {
-                        trip: this.item,
-                        timeout: 5000,
-                    };
-                    this.fire('delete-trip', this.deleteInfo);
+                    this.deleteTimeoutId = setTimeout(() => {
+                        this.$.fb.destroy()
+                    }, 5000);
                 }
                 _undoDelete() {
-                    clearTimeout(this.deleteInfo.timeoutId);
+                    clearTimeout(this.deleteTimeoutId);
                     this.deleted = false;
                     this.$.deleteToast.close();
                 }

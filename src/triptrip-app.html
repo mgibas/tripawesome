@@ -12,6 +12,7 @@
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/lazy-template/lazy-template.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-app.html">
 <link rel="import" href="trips-element.html">
 
 <dom-module id="triptrip-app">
@@ -54,8 +55,8 @@
                 padding-left: 32px;
             }
         </style>
-        <!-- <firebase-app name="triptrip" auth-domain="project-910504469268581197.firebaseapp.com" database-url="https://project-910504469268581197.firebaseio.com/" api-key="AIzaSyCoal9Xdd8Jwn_OS9dFDmPB327VvdROTW0">
-        </firebase-app> -->
+        <firebase-app name="triptrip" auth-domain="project-910504469268581197.firebaseapp.com" database-url="https://project-910504469268581197.firebaseio.com/" api-key="AIzaSyCoal9Xdd8Jwn_OS9dFDmPB327VvdROTW0">
+        </firebase-app>
         <app-location route="{{route}}"></app-location>
         <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
 
