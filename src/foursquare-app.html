@@ -1,0 +1,50 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="foursquare-app">
+    <script>
+        (() => {
+            'use strict';
+
+            var config = {};
+
+            class FoursquareApp {
+                get is() {
+                    return 'foursquare-app'
+                }
+                get properties() {
+                    return {
+                        baseUrl: {
+                            type: String,
+                            value: 'https://api.foursquare.com/v2/'
+                        },
+                        clientId: {
+                            type: String
+                        },
+                        clientSecret: {
+                            type: String
+                        },
+                        version: {
+                            type: String,
+                            value: () => `${(new Date()).toISOString().slice(0,10).replace(/-/g,"")}`
+                        },
+                        config: {
+                            type: Object,
+                            notify: true,
+                            computed: '__computeApp(baseUrl, clientId, clientSecret, version)'
+                        }
+                    };
+                }
+                __computeApp(baseUrl, clientId, clientSecret, version) {
+                    config = {
+                        clientId: clientId,
+                        clientSecret: clientSecret,
+                        baseUrl: baseUrl,
+                        version: version
+                    };
+                    return config;
+                }
+            }
+            Polymer(FoursquareApp);
+        })();
+    </script>
+</dom-module>

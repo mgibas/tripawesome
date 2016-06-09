@@ -1,0 +1,68 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/geo-location/geo-location.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="foursquare-venue-photo">
+    <template>
+        <iron-ajax id="fsAjax" auto url="[[_url]]" handle-as="json" method="GET" params="[[_queryParams]]" last-response="{{_lastResponse}}" loading="{{loading}}" debounce-duration="[[debounceDuration]]"></iron-ajax>
+        <iron-image src="[[_photoUrl]]"></iron-image>
+    </template>
+    <script>
+        (() => {
+            'use strict';
+            class FoursquareVenuePhoto {
+                get is() {
+                    return 'foursquare-venue-photo'
+                }
+                get properties() {
+                    return {
+                        config: {
+                            type: Object
+                        },
+                        venueId: {
+                            type: String
+                        },
+                        loading: {
+                            type: Boolean,
+                            notify: true
+                        },
+                        _lastResponse: {
+                            type: Object,
+                            notify: true,
+                            observer: '_lastResponseChanged'
+                        },
+                        _url: {
+                            type: String,
+                            computed: '_computeUrl(config,venueId,_queryParams)'
+                        },
+                        _queryParams: {
+                            type: Object,
+                            computed: '_computeQueryParams(config,venueId)'
+                        }
+                    };
+                }
+                _termChanged(term) {
+                    if (!term) return;
+
+                    this.$.fsAjax.generateRequest();
+                }
+                _computeUrl(config, venueId) {
+                    return `${config.baseUrl}venues/${venueId}/photos`;
+                }
+                _computeQueryParams(config, venueId) {
+                    return {
+                        client_id: this.config.clientId,
+                        client_secret: this.config.clientSecret,
+                        v: 20160601
+                    };
+                }
+                _lastResponseChanged(response) {
+                    if (response.response.photos.count === 0) return;
+                    var photo = response.response.photos.items[0];
+                    this._photoUrl = `${photo.prefix}110x110${photo.suffix}`;
+                }
+            }
+            Polymer(FoursquareVenuePhoto);
+        })();
+    </script>
+</dom-module>

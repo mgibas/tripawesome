@@ -1,4 +1,5 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
@@ -27,10 +28,11 @@
                 @apply(--layout-flex);
             }
         </style>
+        <app-location route="{{route}}"></app-location>
         <firebase-document id="fb" app-name="triptrip" data="[[item]]" path="/trips/[[item.$key]]">
         </firebase-document>
-        <paper-card class="trip" heading="[[item.name]]" hidden$="[[deleted]]">
-            <div class="card-actions">
+        <paper-card class="trip" heading="[[item.name]]" hidden$="[[deleted]]" on-tap="_handleTap">
+            <div id="actions" class="card-actions">
                 <paper-icon-button icon="social:share"></paper-icon-button>
                 <paper-icon-button icon="delete" on-tap="_delete"></paper-icon-button>
             </div>
@@ -70,6 +72,11 @@
                     clearTimeout(this.deleteTimeoutId);
                     this.deleted = false;
                     this.$.deleteToast.close();
+                }
+                _handleTap(e) {
+                    if (e.target === this.$.actions || e.target.parentElement === this.$.actions) return
+                    console.log('tap')
+                    this.set('route.path',`/trip/${this.item.$key}`)
                 }
             }
             Polymer(TripItem);

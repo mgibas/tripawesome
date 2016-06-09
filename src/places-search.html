@@ -1,0 +1,58 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../bower_components/paper-material/paper-material-shared-styles.html">
+<link rel="import" href="foursquare-app.html">
+<link rel="import" href="foursquare-venues-explore.html">
+<link rel="import" href="foursquare-venue-photo.html">
+
+<dom-module id="places-search">
+    <template>
+        <style include="iron-positioning paper-material-shared-styles">
+            :host {
+                display: block;
+            }
+
+            .item {
+                height: 110px;
+            }
+
+            paper-material {
+                background-color: #FFF;
+                margin: 1rem 0rem;
+                min-height: 400px;
+            }
+        </style>
+        <foursquare-app client-id="EZONCR1CU1M3XGI4YBCIFCABFXCQP3OWNOLJSB34NBJ4AF0V" client-secret="22T5AMJU45TKN2JT2ZTUPCHP5IITWKRRXRHY25QWISDUMRZQ" config="{{fsConfig}}"></foursquare-app>
+        <foursquare-venues-explore config="[[fsConfig]]" term="{{fsTerm}}" last-response="{{venues}}"></foursquare-venues-explore>
+
+        <paper-material elevation="1">
+            <paper-input value="{{fsTerm}}" label="Search For Something To Do"></paper-input>
+            <paper-listbox>
+                <template is="dom-repeat" items="[[venues]]">
+                    <paper-item>
+                        <foursquare-venue-photo config="[[fsConfig]]" venue-id="[[item.id]]"></foursquare-venue-photo>
+                        [[item.name]] [[item.location.distance]] [[item.rating]]/10
+                    </paper-item>
+                </template>
+            </paper-listbox>
+        </paper-material>
+    </template>
+    <script>
+        (() => {
+            'use strict';
+            class PlacesSearch {
+                get is() {
+                    return 'places-search'
+                }
+                get properties() {
+                    return {};
+                }
+            }
+            Polymer(PlacesSearch);
+        })();
+    </script>
+</dom-module>
