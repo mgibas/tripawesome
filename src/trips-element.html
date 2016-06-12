@@ -1,66 +1,88 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-query.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
-<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
-<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
-<link rel="import" href="trip-item.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animated-pages.html">
+<link rel="import" href="../bower_components/neon-animation/animations/slide-from-right-animation.html">
+<link rel="import" href="../bower_components/neon-animation/animations/slide-from-left-animation.html">
+<link rel="import" href="../bower_components/neon-animation/animations/slide-right-animation.html">
+<link rel="import" href="../bower_components/neon-animation/animations/slide-left-animation.html">
+<link rel="import" href="trip-card.html">
 <link rel="import" href="trip-element.html">
-
 <dom-module id="trips-element">
     <template>
-        <style include="iron-flex iron-flex-alignment">
-            :host {
-                display: block;
-                @apply(--layout-vertical);
-                padding-top: 1rem;
-            }
-
-            trip-item + trip-item {
-                margin-top: 0.3rem;
-            }
-
-            trip-item[deleted] {
-                margin-top: 0rem;
-            }
-
-            paper-fab {
-                position: fixed;
-                bottom: 1rem;
-                right: 1rem;
-            }
+        <style include="shared-styles">
+        :host {
+            display: block;
+        }
+        
+        #cards {
+            padding-top: 1rem;
+        }
+        
+        trip-card + trip-card {
+            margin-top: 1rem;
+        }
+        
+        trip-card {
+            margin-left: 1rem;
+            margin-right: 1rem;
+        }
+        
+        trip-card[deleted] {
+            margin-top: 0rem;
+        }
         </style>
-        <firebase-query app-name="triptrip" path="/trips" data="{{trips}}"></firebase-query>
-        <firebase-document id="fbNewTrip" app-name="triptrip" data="{{newTrip}}"></firebase-document>
-        <template is="dom-repeat" items="{{trips}}" as="item">
-            <trip-item item="[[item]]" on-delete-trip="_deleteTrip" on-item-changed="itemChanged(item)"></trip-item>
-        </template>
-        <paper-fab icon="add" on-tap="_addTrip"></paper-fab>
+        <app-route route="{{route}}" pattern="/:key/:page" data="{{data}}" tail="{{tail}}" on-active-changed="_activeRouteChanged"></app-route>
+        <iron-pages class="flex" attr-for-selected="name" selected="[[data.page]]" entry-animation="slide-from-right-animation" exit-animation="slide-left-animation" fallback-selection="default">
+            <div name="default">
+                <firebase-query app-name="triptrip" path="/trips" data="{{trips}}"></firebase-query>
+                <firebase-document id="fbNewTrip" app-name="triptrip" data="{{newTrip}}"></firebase-document>
+                <div id="cards">
+                    <template is="dom-repeat" items="{{trips}}" as="item">
+                        <trip-card route="{{route}}" item="[[item]]" on-delete-trip="_deleteTrip" on-item-changed="itemChanged(item)"></trip-card>
+                    </template>
+                </div>
+                <paper-fab class="action-right" icon="add" on-tap="_addTrip"></paper-fab>
+            </div>
+            <div name="details">
+                <trip-element key="[[data.key]]" back-path="[[route.prefix]]" route="{{tail}}"></trip-element>
+            </div>
+        </iron-pages>
     </template>
     <script>
-        (() => {
-            'use strict';
+    (() => {
+        'use strict';
 
-            class TripsElement {
-                get is() {
-                    return 'trips-element'
-                }
-                get properties() {
-                    return {
-                        trips: {
-                            type: Array,
-                            notify: true
-                        }
-                    };
-                }
-                _addTrip() {
-                    this.newTrip = {
-                        name: `New trip`
-                    };
-                    this.$.fbNewTrip.save('/trips');
-                }
+        class TripsElement {
+            get is() {
+                return 'trips-element';
             }
-            Polymer(TripsElement);
-        })();
+            get properties() {
+                return {
+                    trips: {
+                        type: Array,
+                        notify: true
+                    }
+                };
+            }
+            _addTrip() {
+                this.newTrip = {
+                    name: 'New Trip'
+                };
+                this.$.fbNewTrip.save('/trips');
+                this.$.fbNewTrip.reset();
+            }
+            _activeRouteChanged(e, active) {
+                if (!active.value)
+                    this.set('data.page', 'default');
+            }
+        }
+        Polymer(TripsElement);
+    })();
     </script>
 </dom-module>

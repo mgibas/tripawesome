@@ -1,4 +1,5 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
@@ -10,72 +11,82 @@
 <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
 <link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/iron-a11y-keys/iron-a11y-keys.html">
 <link rel="import" href="places-search.html">
-
 <dom-module id="trip-element">
     <template>
-        <style include="iron-positioning paper-material-shared-styles">
-            :host {
-                display: block;
-            }
-
-            paper-material {
-                background-color: #FFF;
-                margin: 1rem 0rem;
-                min-height: 400px;
-            }
-
-            paper-fab {
-                position: fixed;
-                right: 1rem;
-                bottom: 1rem;
-            }
+        <style include="shared-styles paper-material-shared-styles">
+        :host {
+            display: block;
+        }
+        
+        [title] {
+            pointer-events: all !important;
+        }
         </style>
-        <app-route route="{{route}}" pattern="/:key" data="{{routeData}}"></app-route>
-        <firebase-document app-name="triptrip" path="/trips/[[routeData.key]]" data="{{trip}}"></firebase-document>
-
-        <iron-pages selected="[[_currentPage]]">
-            <div>
-                <paper-material elevation="1">
-                    <app-toolbar>
-                        <paper-icon-button icon="arrow-back"></paper-icon-button>
-                        <div title>[[trip.name]]</div>
-                        <paper-icon-button icon="create"></paper-icon-button>
-                        <paper-icon-button icon="more-vert"></paper-icon-button>
-                    </app-toolbar>
-
-                    <trips-goals-graph goals="[[trips.goals]]"></trips-goals-graph>
-                </paper-material>
-                <paper-fab icon="add" on-tap="_addGoal"></paper-fab>
-            </div>
-            <div>
-                <places-search id="searchDialog" on-place-selected="_handlePlaceSelected"></places-search>
-            </div>
-        </iron-pages>
+        <firebase-document id="fb" app-name="triptrip" path="/trips/[[key]]" data="{{trip}}"></firebase-document>
+        <app-header reveals>
+            <app-toolbar>
+                <a href="#[[backPath]]" tabindex="-1">
+                    <paper-icon-button icon="arrow-back"></paper-icon-button>
+                </a>
+                <div title>
+                    <div hidden$="{{!_editingName}}">
+                        <paper-input id="nameInput" label="Trip Name" value="{{trip.name}}"></paper-input>
+                        <iron-a11y-keys target="[[_nameInputTarget]]" keys="enter" on-keys-pressed="_editNameDone"></iron-a11y-keys>
+                    </div>
+                    <div hidden$="{{_editingName}}">[[trip.name]]</div>
+                </div>
+                <paper-icon-button hidden$="{{_editingName}}" icon="create" on-tap="_editName"></paper-icon-button>
+                <paper-icon-button hidden$="{{!_editingName}}" icon="done" on-tap="_editNameDone"></paper-icon-button>
+                <paper-icon-button icon="more-vert"></paper-icon-button>
+            </app-toolbar>
+        </app-header>
+        <paper-material elevation="1">
+            <trips-goals-graph goals="[[trips.goals]]"></trips-goals-graph>
+        </paper-material>
+        <paper-fab class="action-right" icon="add" on-tap="_addGoal"></paper-fab>
+        <!-- <places-search id="searchDialog" on-place-selected="_handlePlaceSelected"></places-search> -->
     </template>
     <script>
-        (() => {
-            'use strict';
-            class TripElement {
-                get is() {
-                    return 'trip-element'
-                }
-                get properties() {
-                    return {
-                        _currentPage: {
-                            type: Number,
-                            value: 0
-                        }
-                    };
-                }
-                _addGoal() {
-                    this._currentPage = 1;
-                }
-                _handlePlaceSelected(e, data) {
-                    this._currentPage = 0;
-                }
+    (() => {
+        'use strict';
+        class TripElement {
+            get is() {
+                return 'trip-element';
             }
-            Polymer(TripElement);
-        })();
+            get properties() {
+                return {
+                    _currentPage: {
+                        type: Number,
+                        value: 0
+                    },
+                    _editingName: {
+                        type: Boolean,
+                        value: false
+                    },
+                    _nameInputTarget: {
+                        type: Object,
+                        value: () => this.$.nameInput
+                    }
+                };
+            }
+            _addGoal() {
+                this._currentPage = 1;
+            }
+            _handlePlaceSelected(e, data) {
+                this._currentPage = 0;
+            }
+            _editName() {
+                this._editingName = true;
+                this.$.nameInput.focus();
+            }
+            _editNameDone() {
+                this._editingName = false;
+                this.$.fb.save(`/trips`, this.key);
+            }
+        }
+        Polymer(TripElement);
+    })();
     </script>
 </dom-module>
