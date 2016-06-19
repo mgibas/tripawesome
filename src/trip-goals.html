@@ -1,0 +1,36 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="trip-goal-template.html">
+<dom-module id="trip-goals">
+    <template>
+        <style include="iron-flex shared-styles">
+        :host {
+            display: block;
+        }
+
+        trip-goal-template {
+            width: 100%;
+        }
+        </style>
+        <paper-listbox>
+            <template is="dom-repeat" items="[[goals]]" as="item">
+                <paper-item>
+                    <trip-goal-template item="[[item]]"></trip-goal-template>
+                </paper-item>
+            </template>
+        </paper-listbox>
+    </template>
+    <script>
+    (() => {
+        'use strict';
+
+        class TripGoals {
+            get is() {
+                return 'trip-goals';
+            }
+        }
+        Polymer(TripGoals);
+    })();
+    </script>
+</dom-module>

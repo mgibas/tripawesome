@@ -1,58 +1,107 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
-<link rel="import" href="../bower_components/paper-material/paper-material.html">
-<link rel="import" href="../bower_components/paper-material/paper-material-shared-styles.html">
-<link rel="import" href="foursquare-app.html">
-<link rel="import" href="foursquare-venues-explore.html">
-<link rel="import" href="foursquare-venue-photo.html">
-
+<link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../bower_components/google-map/google-map.html">
+<link rel="import" href="../bower_components/google-map/google-map-search.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="places-search-item-template.html">
 <dom-module id="places-search">
     <template>
-        <style include="iron-positioning paper-material-shared-styles">
-            :host {
-                display: block;
-            }
-
-            .item {
-                height: 110px;
-            }
-
-            paper-material {
-                background-color: #FFF;
-                margin: 1rem 0rem;
-                min-height: 400px;
-            }
+        <style include="shared-styles">
+        :host {
+            display: block;
+        }
+        
+        iron-list {
+            padding-top: 1rem;
+        }
+        
+        places-search-item-template {
+            width: 100%;
+        }
+        
+        app-toolbar[role="search"] {
+            background-color: var(--primary-background-color);
+        }
+        
+        [title] {
+            pointer-events: all !important;
+        }
         </style>
-        <foursquare-app client-id="EZONCR1CU1M3XGI4YBCIFCABFXCQP3OWNOLJSB34NBJ4AF0V" client-secret="22T5AMJU45TKN2JT2ZTUPCHP5IITWKRRXRHY25QWISDUMRZQ" config="{{fsConfig}}"></foursquare-app>
-        <foursquare-venues-explore config="[[fsConfig]]" term="{{fsTerm}}" last-response="{{venues}}"></foursquare-venues-explore>
-
-        <paper-material elevation="1">
-            <paper-input value="{{fsTerm}}" label="Search For Something To Do"></paper-input>
-            <paper-listbox>
-                <template is="dom-repeat" items="[[venues]]">
-                    <paper-item>
-                        <foursquare-venue-photo config="[[fsConfig]]" venue-id="[[item.id]]"></foursquare-venue-photo>
-                        [[item.name]] [[item.location.distance]] [[item.rating]]/10
-                    </paper-item>
-                </template>
-            </paper-listbox>
-        </paper-material>
+        <google-map-search id="search" map="[[map]]" query="[[_debouncedSearchQuery]]" results="{{places}}" radius="100000" types="point_of_interest amusement_park aquarium art_gallery library bakery bar cafe movie_theater campground museum night_club park casino cemetery church city_hall restaurant shopping_mall spa stadium synagogue zoo neighborhood">
+        </google-map-search>
+        <google-map map="{{map}}" latitude="[[latitude]]" longitude="[[longitude]]"></google-map>
+        <app-header reveals>
+            <app-toolbar>
+                <paper-icon-button icon="arrow-back" on-tap="_cancel"></paper-icon-button>
+                <div title>
+                    Find Things To Do
+                </div>
+                <paper-button disabled="[[!_canSelect]]" on-tap="_selectPlace">Add</paper-button>
+            </app-toolbar>
+        </app-header>
+        <app-toolbar role="search">
+            <div title>
+                <paper-input value="{{_searchQuery}}" label="Search For Something To Do"></paper-input>
+            </div>
+        </app-toolbar>
+        <paper-listbox on-selected-changed="_handleSelectionChanged" selected-item="{{_selectedPlace}}">
+            <template is="dom-repeat" items="[[places]]" as="item">
+                <paper-item item="[[item]]">
+                    <places-search-item-template item="[[item]]"></places-search-item-template>
+                </paper-item>
+            </template>
+        </paper-listbox>
     </template>
     <script>
-        (() => {
-            'use strict';
-            class PlacesSearch {
-                get is() {
-                    return 'places-search'
-                }
-                get properties() {
-                    return {};
-                }
+    (() => {
+        'use strict';
+        class PlacesSearch {
+            get is() {
+                return 'places-search';
             }
-            Polymer(PlacesSearch);
-        })();
+            get properties() {
+                return {
+                    _searchQuery: {
+                        type: String,
+                        observer: '_searchQueryChanged'
+                    },
+                    _canSelect: {
+                        type: Boolean,
+                        value: false
+                    }
+                };
+            }
+            _cancel() {
+                this.fire('cancel');
+            }
+            _handleSelectionChanged(e, index) {
+                this._canSelect = true;
+            }
+            _selectPlace() {
+                var result = {
+                    name: this._selectedPlace.item.name,
+                    placeId: this._selectedPlace.item.place_id,
+                    latitude: this._selectedPlace.item.latitude,
+                    longitude: this._selectedPlace.item.longitude
+                };
+                if (this._selectedPlace.item.photos.length > 0)
+                    result.photoUrl = this._selectedPlace.item.photos[0].getUrl({
+                        maxHeight: 100,
+                        maxWidth: 100
+                    });
+                this.fire('place-selected', result);
+            }
+            _searchQueryChanged(value) {
+                this.debounce('update-search-query', () => {
+                    this._debouncedSearchQuery = this._searchQuery;
+                }, 200);
+            }
+        }
+        Polymer(PlacesSearch);
+    })();
     </script>
 </dom-module>

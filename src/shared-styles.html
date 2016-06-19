@@ -1,11 +1,19 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/paper-styles/typography.html">
 <dom-module id="shared-styles">
     <template>
         <style>
         [hidden],
         .hidden {
             display: none;
+        }
+        
+        paper-material {
+            border-radius: 2px;
+            padding: 16px 0 16px 0;
+            width: calc(98.66% - 16px);
+            margin: 16px auto;
+            background: white;
+            padding: 1rem 1rem;
         }
         
         paper-fab.action-right {
@@ -25,8 +33,18 @@
             color: var(--text-primary-color);
         }
         
+        app-header paper-input {
+            --paper-input-container-color: rgba(255, 255, 255, 0.64);
+            --paper-input-container-focus-color: var(--text-primary-color);
+            --paper-input-container-input-color: var(--text-primary-color);
+        }
+        
         paper-toast a {
             color: var(--accent-color);
+        }
+        
+        paper-scroll-header-panel {
+            height: 100%;
         }
         
         a {

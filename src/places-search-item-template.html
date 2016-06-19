@@ -1,0 +1,86 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/google-map/google-map-elements.html">
+<dom-module id="places-search-item-template">
+    <template>
+        <style include="iron-flex shared-styles">
+        :host {
+            display: block;
+        }
+        
+        .content {
+            height: 110px;
+            @apply(--layout-horizontal);
+        }
+        
+        google-map {
+            height: 200px;
+        }
+        
+        iron-image {
+            width: 100px;
+            height: 100px;
+            background-color: var(--light-primary-color);
+        }
+        </style>
+        <div class="content">
+            <iron-image src="[[_photoUrl]]" sizing="cover" preload fade></iron-image>
+            <div class="flex">
+                <p>[[item.name]]</p>
+                <p>[[item.rating]]/5</p>
+            </div>
+            <paper-icon-button icon="[[_expandIcon]]" on-tap="_togleDetails"></paper-icon-button>
+        </div>
+        <iron-collapse id="details" opened="{{_detailsExpanded}}">
+            <div>
+                <google-map fit-to-markers zoom="15">
+                    <google-map-marker latitude="[[item.latitude]]" longitude="[[item.longitude]]" title="[[item.name]]"></google-map-marker>
+                </google-map>
+            </div>
+        </iron-collapse>
+    </template>
+    <script>
+    (() => {
+        'use strict';
+        class PlacesSearchItemTemplate {
+            get is() {
+                return 'places-search-item-template';
+            }
+            get properties() {
+                return {
+                    _photoUrl: {
+                        type: String,
+                        computed: '_computePhotoUrl(item)'
+                    },
+                    _detailsExpanded: {
+                        type: Boolean,
+                        value: false
+                    },
+                    _expandIcon: {
+                        type: String,
+                        computed: '_computeExpandIcon(_detailsExpanded)'
+                    }
+                };
+            }
+            _computeExpandIcon(_detailsExpanded) {
+                if (_detailsExpanded)
+                    return 'expand-more';
+                return 'expand-less';
+            }
+            _togleDetails() {
+                this._detailsExpanded = !this._detailsExpanded;
+            }
+            _computePhotoUrl(item) {
+                if (!item.photos || item.photos.length === 0) return;
+                return item.photos[0].getUrl({
+                    maxHeight: 100,
+                    maxWidth: 100
+                });
+            }
+        }
+        Polymer(PlacesSearchItemTemplate);
+    })();
+    </script>
+</dom-module>

@@ -4,7 +4,11 @@
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-fab-transitions/paper-fab-morph.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/neon-animation/neon-animated-pages.html">
 <link rel="import" href="../bower_components/neon-animation/animations/slide-from-right-animation.html">
@@ -12,6 +16,7 @@
 <link rel="import" href="../bower_components/neon-animation/animations/slide-right-animation.html">
 <link rel="import" href="../bower_components/neon-animation/animations/slide-left-animation.html">
 <link rel="import" href="trip-card.html">
+<link rel="import" href="trip-create.html">
 <link rel="import" href="trip-element.html">
 <dom-module id="trips-element">
     <template>
@@ -37,20 +42,23 @@
             margin-top: 0rem;
         }
         </style>
-        <app-route route="{{route}}" pattern="/:key/:page" data="{{data}}" tail="{{tail}}" on-active-changed="_activeRouteChanged"></app-route>
+        <app-route route="{{route}}" pattern="/:key/:page" data="{{data}}" tail="{{tail}}"></app-route>
         <iron-pages class="flex" attr-for-selected="name" selected="[[data.page]]" entry-animation="slide-from-right-animation" exit-animation="slide-left-animation" fallback-selection="default">
             <div name="default">
-                <firebase-query app-name="triptrip" path="/trips" data="{{trips}}"></firebase-query>
-                <firebase-document id="fbNewTrip" app-name="triptrip" data="{{newTrip}}"></firebase-document>
+                <firebase-query app-name="tripawesome" path="/trips" data="{{trips}}"></firebase-query>
+                <firebase-document id="fbNewTrip" app-name="tripawesome" data="{{newTrip}}"></firebase-document>
                 <div id="cards">
                     <template is="dom-repeat" items="{{trips}}" as="item">
                         <trip-card route="{{route}}" item="[[item]]" on-delete-trip="_deleteTrip" on-item-changed="itemChanged(item)"></trip-card>
                     </template>
                 </div>
-                <paper-fab class="action-right" icon="add" on-tap="_addTrip"></paper-fab>
+                <paper-fab icon="add" class="action-right" on-tap="_openCreatePage"></paper-fab>
             </div>
             <div name="details">
-                <trip-element key="[[data.key]]" back-path="[[route.prefix]]" route="{{tail}}"></trip-element>
+                <trip-element key="[[data.key]]" on-close="_closeTrip" route="{{tail}}"></trip-element>
+            </div>
+            <div name="create">
+                <trip-create on-canceled="_closeCreatePage" on-created="_closeCreatePage"></trip-create>
             </div>
         </iron-pages>
     </template>
@@ -70,16 +78,15 @@
                     }
                 };
             }
-            _addTrip() {
-                this.newTrip = {
-                    name: 'New Trip'
-                };
-                this.$.fbNewTrip.save('/trips');
-                this.$.fbNewTrip.reset();
+            _openCreatePage() {
+                this.set('data.page', 'create');
             }
-            _activeRouteChanged(e, active) {
-                if (!active.value)
-                    this.set('data.page', 'default');
+            _closeCreatePage() {
+                this.set('data.page', 'default');
+            }
+            _closeTrip() {
+                this.set('route.path', '');
+                this.set('data.page', 'default');
             }
         }
         Polymer(TripsElement);

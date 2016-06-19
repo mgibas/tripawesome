@@ -15,9 +15,9 @@
             @apply(--layout-vertical);
         }
         </style>
-        <firebase-document id="fb" app-name="triptrip" data="[[item]]" path="/trips/[[item.$key]]">
+        <firebase-document id="fb" app-name="tripawesome" data="[[item]]" path="/trips/[[item.$key]]">
         </firebase-document>
-        <paper-card heading="[[item.name]]" hidden$="[[deleted]]">
+        <paper-card heading="[[item.name]]" hidden$="[[deleted]]" image="[[item.location.photoUrl]]">
             <div id="actions" class="card-actions">
                 <paper-icon-button icon="social:share"></paper-icon-button>
                 <paper-icon-button icon="delete" on-tap="_delete"></paper-icon-button>

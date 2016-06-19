@@ -2,9 +2,7 @@
   "entrypoint": "index.html",
   "shell": "src/triptrip-app.html",
   "fragments": [
-    "src/app-theme.html",
-    "src/shared-styles.html",
-    "src/trips-element.html",
-    "src/trip-element.html"
+   
+ 
   ]
 }
