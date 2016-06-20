@@ -15,6 +15,7 @@
         dom: 'shadow'
     };
 
+    // load webcomponents polyfills
     (function() {
         if ('registerElement' in document && 'import' in document.createElement('link') && 'content' in document.createElement('template')) {
             // browser has web components
@@ -26,12 +27,14 @@
         }
     })();
 
+    // load pre-caching service worker
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
             navigator.serviceWorker.register('/service-worker.js');
         });
     }
     </script>
+    <link rel="import" href="/src/triptrip-app.html">
     <style>
     body {
         margin: 0;
@@ -41,10 +44,6 @@
         background-color: #eee;
     }
     </style>
-    <link rel="import" href="src/app-theme.html">
-    <link rel="import" href="src/shared-styles.html">
-    <link rel="import" href="src/triptrip-app.html">
-    <style is="custom-style" include="shared-styles"></style>
 </head>
 
 <body>
