@@ -1,0 +1,55 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<dom-module id="triptrip-app">
+    <template>
+        <style include="shared-styles">
+        :host {
+            display: block;
+        }
+        </style>
+        <firebase-app name="tripawesome" auth-domain="project-3846386819515834955.firebaseapp.com" database-url="https://project-3846386819515834955.firebaseio.com" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg">
+        </firebase-app>
+        <trips-element></trips-element>
+        <app-drawer-layout fullbleed class="vertical layout">
+            <app-drawer>
+                <app-toolbar>User Menu</app-toolbar>
+            </app-drawer>
+            <app-header-layout has-scrolling-region>
+                <app-header condenses reveals>
+                    <app-toolbar>
+                        <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
+                        <div title>TripAwesome</div>
+                    </app-toolbar>
+                </app-header>
+                <iron-pages class="flex" selected="[[selectedPage]]" fallback-selection="0">
+                    <trips-element on-create-trip-tap="_handleCreateTripTap" on-trip-selected="_handleTripSelected" selected-trip="{{selectedTrip}}"></trips-element>
+                    <trip-element key="[[selectedTrip]]" on-back="_closeTrip"></trip-element>
+                    <trip-create on-canceled="_closeCreatePage" on-created="_closeCreatePage"></trip-create>
+                </iron-pages>
+            </app-header-layout>
+        </app-drawer-layout>
+    </template>
+    <script>
+    (() => {
+        'use strict';
+
+        class TripTripApp {
+            get is() {
+                return 'triptrip-app';
+            }
+            _handleTripSelected() {
+                this.selectedPage = 1;
+            }
+            _handleCreateTripTap() {
+                this.selectedPage = 2;
+            }
+            _closeCreatePage() {
+                this.selectedPage = 0;
+            }
+            _closeTrip() {
+                this.selectedPage = 0;
+            }
+        }
+        Polymer(TripTripApp);
+    })();
+    </script>
+</dom-module>

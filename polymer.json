@@ -1,8 +1,0 @@
-{
-  "entrypoint": "index.html",
-  "shell": "src/triptrip-app.html",
-  "fragments": [
-   
- 
-  ]
-}

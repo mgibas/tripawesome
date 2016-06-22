@@ -1,32 +1,23 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
-<link rel="import" href="../bower_components/paper-item/paper-item.html">
-<link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
-<link rel="import" href="../bower_components/google-map/google-map.html">
-<link rel="import" href="../bower_components/google-map/google-map-search.html">
-<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
-<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
-<link rel="import" href="places-search-item-template.html">
 <dom-module id="places-search">
     <template>
         <style include="shared-styles">
         :host {
             display: block;
         }
-        
+
         iron-list {
             padding-top: 1rem;
         }
-        
+
         places-search-item-template {
             width: 100%;
         }
-        
+
         app-toolbar[role="search"] {
             background-color: var(--primary-background-color);
         }
-        
+
         [title] {
             pointer-events: all !important;
         }

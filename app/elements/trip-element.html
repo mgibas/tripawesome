@@ -1,33 +1,18 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
-<link rel="import" href="../bower_components/app-route/app-location.html">
-<link rel="import" href="../bower_components/app-route/app-route.html">
-<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
-<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
-<link rel="import" href="../bower_components/paper-material/paper-material.html">
-<link rel="import" href="../bower_components/paper-material/paper-material-shared-styles.html">
-<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
-<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
-<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
-<link rel="import" href="../bower_components/iron-a11y-keys/iron-a11y-keys.html">
-<link rel="import" href="places-search.html">
-<link rel="import" href="trip-goals.html">
+
 <dom-module id="trip-element">
     <template>
         <style include="shared-styles paper-material-shared-styles">
         :host {
             display: block;
         }
-        
+
         app-header {
             --app-header-background-front-layer: {
                 background-position: left center;
-            }
-            ;
+            };
         }
-        
+
         [title] {
             pointer-events: all !important;
         }
@@ -37,7 +22,7 @@
                 <firebase-document id="fb" app-name="tripawesome" path="/trips/[[key]]" data="{{trip}}"></firebase-document>
                 <app-header id="header" effects="parallax-background" condenses reveals>
                     <app-toolbar>
-                        <paper-icon-button icon="arrow-back" on-tap="_close"></paper-icon-button>
+                        <paper-icon-button icon="arrow-back" on-tap="_back"></paper-icon-button>
                         <div title>
                             <div hidden$="{{!_editingName}}">
                                 <paper-input id="nameInput" label="Trip Name" value="{{trip.name}}"></paper-input>
@@ -47,7 +32,6 @@
                         </div>
                         <paper-icon-button hidden$="{{_editingName}}" icon="create" on-tap="_editName"></paper-icon-button>
                         <paper-icon-button hidden$="{{!_editingName}}" icon="done" on-tap="_editNameDone"></paper-icon-button>
-                        <paper-icon-button icon="more-vert"></paper-icon-button>
                     </app-toolbar>
                     <app-toolbar class="middle"></app-toolbar>
                     <app-toolbar class="bottom">
@@ -96,8 +80,8 @@
                 var background = Polymer.dom(this.$.header.root).querySelector('#backgroundFrontLayer');
                 background.style['background-image'] = `url(${this.trip.location.photoUrl})`;
             }
-            _close() {
-                this.fire('close');
+            _back() {
+                this.fire('back');
             }
             _addGoal() {
                 this._addingGoal = 1;

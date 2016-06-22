@@ -1,12 +1,4 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/app-route/app-location.html">
-<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
-<link rel="import" href="../bower_components/paper-card/paper-card.html">
-<link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
-<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
-<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-<link rel="import" href="../bower_components/iron-icons/social-icons.html">
 <dom-module id="trip-card">
     <template>
         <style include="shared-styles">
@@ -19,11 +11,9 @@
         </firebase-document>
         <paper-card heading="[[item.name]]" hidden$="[[deleted]]" image="[[item.location.photoUrl]]">
             <div id="actions" class="card-actions">
-                <paper-icon-button icon="social:share"></paper-icon-button>
+                <paper-icon-button icon="social:share" on-tap="_share"></paper-icon-button>
                 <paper-icon-button icon="delete" on-tap="_delete"></paper-icon-button>
-                <a href="#[[route.prefix]]/[[item.$key]]/details" tabindex="-1">
-                    <paper-button raised>Details</paper-button>
-                </a>
+                <paper-button raised on-tap="_handleDetailsTap">Details</paper-button>
             </div>
         </paper-card>
         <paper-toast id="deleteToast" text="Trip '[[item.name]] was deleted." duration="5000">
@@ -49,6 +39,11 @@
                         reflectToAttribute: true
                     }
                 };
+            }
+            _handleDetailsTap() {
+                this.fire('details-tap', {
+                    key: this.item.$key
+                });
             }
             _delete() {
                 this.deleted = true;
