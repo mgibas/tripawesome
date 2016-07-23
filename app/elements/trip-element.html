@@ -17,6 +17,8 @@
             pointer-events: all !important;
         }
         </style>
+        key: [[key]]
+        sdasd: [[trip.name]]
         <iron-pages class="flex" selected="[[_addingGoal]]" fallback-selection="0">
             <div>
                 <firebase-document id="fb" app-name="tripawesome" path="/trips/[[key]]" data="{{trip}}"></firebase-document>
@@ -40,7 +42,7 @@
                         </div>
                     </app-toolbar>
                 </app-header>
-                <trip-goals goals="[[trip.goals]]"></trip-goals>
+                <trip-goals goals="{{trip.goals}}" on-goals-updated="_handleGoalsUpdated"></trip-goals>
                 <paper-fab class="action-right" icon="add" on-tap="_addGoal"></paper-fab>
             </div>
             <div>
@@ -59,7 +61,8 @@
                 return {
                     trip: {
                         type: Object,
-                        observer: '_onTripChanged'
+                        observer: '_onTripChanged',
+                        notify: true
                     },
                     _currentPage: {
                         type: Number,
@@ -106,6 +109,9 @@
             _editNameDone() {
                 this._editingName = false;
                 this.$.fb.save(`/trips`, this.key);
+            }
+            _handleGoalsUpdated(){
+              this.$.fb.save(`/trips`, this.key);
             }
         }
         Polymer(TripElement);

@@ -6,15 +6,20 @@
             display: block;
         }
 
+        trip-goals-distance,
         trip-goal-template {
             width: 100%;
         }
         </style>
+        <google-maps-api id="api" name="distancematrix"></google-maps-api>
         <paper-listbox>
-            <template is="dom-repeat" items="[[goals]]" as="item">
+            <template is="dom-repeat" items="[[_goalsWithDistances]]" as="goal">
                 <paper-item>
-                    <trip-goal-template item="[[item]]"></trip-goal-template>
+                    <trip-goal-template item="[[goal]]"></trip-goal-template>
                 </paper-item>
+                <template is="dom-if" if="{{goal.nextLocationInfo}}">
+                    <trip-goals-distance info="[[goal.nextLocationInfo]]"></trip-goals-distance>
+                </template>
             </template>
         </paper-listbox>
     </template>
@@ -25,6 +30,69 @@
         class TripGoals {
             get is() {
                 return 'trip-goals';
+            }
+            get properties() {
+                return {
+                    _goalsWithDistances: {
+                        type: Array,
+                        computed: '_computeGoalsWithDistances(goals)'
+                    },
+                    distances: {
+                        type: Object,
+                        value: {}
+                    }
+                };
+            }
+
+            _computeGoalsWithDistances(goals) {
+                var pairs = goals.map((goal, index) => {
+                        return {
+                            from: goal,
+                            to: goals[index + 1]
+                        };
+                    })
+                    .filter(pair => pair.to)
+                    .filter(pair => !pair.from.nextLocationInfo ||
+                        pair.from.nextLocationInfo.placeId !== pair.to.location.placeId ||
+                        !pair.from.nextLocationInfo.drivingDistance ||
+                        !pair.from.nextLocationInfo.walkingDistance);
+
+                pairs.forEach(pair => {
+                    pair.from.nextLocationInfo = {
+                        placeId: pair.to.location.placeId,
+                        latitude: pair.to.location.latitude,
+                        longitude: pair.to.location.longitude
+                    };
+                    this._getDistance(pair.from);
+                });
+
+                console.log(goals);
+                return goals;
+            }
+            _getDistance(goal) {
+                var from = new google.maps.LatLng(goal.location.latitude, goal.location.longitude);
+                var to = new google.maps.LatLng(goal.nextLocationInfo.latitude, goal.nextLocationInfo.longitude);
+                var distanceService = new this.$.api.api.DistanceMatrixService();
+                distanceService.getDistanceMatrix({
+                    origins: [from],
+                    destinations: [to],
+                    travelMode: google.maps.TravelMode.DRIVING,
+                    unitSystem: google.maps.UnitSystem.IMPERIAL
+                }, (resp) => {
+                    goal.nextLocationInfo.drivingDistance = resp.rows[0].elements[0].distance;
+                    goal.nextLocationInfo.drivingDuration = resp.rows[0].elements[0].duration;
+                    distanceService.getDistanceMatrix({
+                        origins: [from],
+                        destinations: [to],
+                        travelMode: google.maps.TravelMode.WALKING,
+                        unitSystem: google.maps.UnitSystem.IMPERIAL
+                    }, (resp) => {
+                        goal.nextLocationInfo.walkingDistance = resp.rows[0].elements[0].distance;
+                        goal.nextLocationInfo.walkingDuration = resp.rows[0].elements[0].duration;
+                        this.fire('goals-updated');
+                    });
+                });
+
             }
         }
         Polymer(TripGoals);

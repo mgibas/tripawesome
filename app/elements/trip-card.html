@@ -13,7 +13,7 @@
             <div id="actions" class="card-actions">
                 <paper-icon-button icon="social:share" on-tap="_share"></paper-icon-button>
                 <paper-icon-button icon="delete" on-tap="_delete"></paper-icon-button>
-                <paper-button raised on-tap="_handleDetailsTap">Details</paper-button>
+                <a href="/trip/[[item.$key]]"><paper-button raised>Details</paper-button></a>
             </div>
         </paper-card>
         <paper-toast id="deleteToast" text="Trip '[[item.name]] was deleted." duration="5000">

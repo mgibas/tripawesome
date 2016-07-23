@@ -1,0 +1,25 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<dom-module id="trips-shell">
+    <template>
+        <style include="shared-styles">
+        :host {
+            display: block;
+        }
+        </style>
+        <triptrip-shell-layout burger-button>
+        <trips-element></trips-element>
+        </triptrip-shell-layout>
+    </template>
+    <script>
+    (() => {
+        'use strict';
+
+        class TripsShell {
+            get is() {
+                return 'trips-shell';
+            }
+        }
+        Polymer(TripsShell);
+    })();
+    </script>
+</dom-module>

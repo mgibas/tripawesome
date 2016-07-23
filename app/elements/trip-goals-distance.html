@@ -1,0 +1,40 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<dom-module id="trip-goals-distance">
+    <template>
+        <style include="iron-flex shared-styles">
+        :host {
+            display: block;
+            @apply(--layout-horizontal);
+        }
+
+        #distance {
+            @apply(--layout-flex);
+            @apply(--layout-horizontal);
+            @apply(--layout-center-justified);
+        }
+        </style>
+        <div>
+            <iron-icon icon="maps:directions-car"></iron-icon>
+            [[info.drivingDuration.text]]
+        </div>
+        <div id="distance">
+            [[info.drivingDistance.text]]
+        </div>
+        <div>
+            [[info.walkingDuration.text]]
+            <iron-icon icon="maps:directions-walk"></iron-icon>
+        </div>
+    </template>
+    <script>
+    (() => {
+        'use strict';
+
+        class TripGoalsDistance {
+            get is() {
+                return 'trip-goals-distance';
+            }
+        }
+        Polymer(TripGoalsDistance);
+    })();
+    </script>
+</dom-module>

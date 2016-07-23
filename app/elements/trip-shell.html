@@ -1,0 +1,38 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<dom-module id="trip-shell">
+    <template>
+        <style include="shared-styles">
+        :host {
+            display: block;
+        }
+        </style>
+        <app-route route="[[route]]" pattern="/:key" data="{{routeData}}"></app-route>
+        <triptrip-shell-layout back-button title="[[trip.name]]">
+            <!-- <div top-toolbar>
+                <paper-icon-button icon="arrow-back" on-tap="_back"></paper-icon-button>
+                <div title>
+                    <div hidden$="{{!_editingName}}">
+                        <paper-input id="nameInput" label="Trip Name" value="{{trip.name}}"></paper-input>
+                        <iron-a11y-keys target="[[_nameInputTarget]]" keys="enter" on-keys-pressed="_editNameDone"></iron-a11y-keys>
+                    </div>
+                    <div hidden$="{{_editingName}}">[[trip.name]]</div>
+                </div>
+                <paper-icon-button hidden$="{{_editingName}}" icon="create" on-tap="_editName"></paper-icon-button>
+                <paper-icon-button hidden$="{{!_editingName}}" icon="done" on-tap="_editNameDone"></paper-icon-button>
+            </div> -->
+            <trip-element key="[[routeData.key]]" trip="{{trip}}"></trip-element>
+        </triptrip-shell-layout>
+    </template>
+    <script>
+    (() => {
+        'use strict';
+
+        class TripShell {
+            get is() {
+                return 'trip-shell';
+            }
+        }
+        Polymer(TripShell);
+    })();
+    </script>
+</dom-module>
