@@ -6,42 +6,10 @@
         :host {
             display: block;
         }
-
-        app-header {
-            --app-header-background-front-layer: {
-                background-position: left center;
-            };
-        }
-
-        [title] {
-            pointer-events: all !important;
-        }
         </style>
-        key: [[key]]
-        sdasd: [[trip.name]]
         <iron-pages class="flex" selected="[[_addingGoal]]" fallback-selection="0">
             <div>
                 <firebase-document id="fb" app-name="tripawesome" path="/trips/[[key]]" data="{{trip}}"></firebase-document>
-                <app-header id="header" effects="parallax-background" condenses reveals>
-                    <app-toolbar>
-                        <paper-icon-button icon="arrow-back" on-tap="_back"></paper-icon-button>
-                        <div title>
-                            <div hidden$="{{!_editingName}}">
-                                <paper-input id="nameInput" label="Trip Name" value="{{trip.name}}"></paper-input>
-                                <iron-a11y-keys target="[[_nameInputTarget]]" keys="enter" on-keys-pressed="_editNameDone"></iron-a11y-keys>
-                            </div>
-                            <div hidden$="{{_editingName}}">[[trip.name]]</div>
-                        </div>
-                        <paper-icon-button hidden$="{{_editingName}}" icon="create" on-tap="_editName"></paper-icon-button>
-                        <paper-icon-button hidden$="{{!_editingName}}" icon="done" on-tap="_editNameDone"></paper-icon-button>
-                    </app-toolbar>
-                    <app-toolbar class="middle"></app-toolbar>
-                    <app-toolbar class="bottom">
-                        <div title>
-                            <div>[[trip.location.name]]</div>
-                        </div>
-                    </app-toolbar>
-                </app-header>
                 <trip-goals goals="{{trip.goals}}" on-goals-updated="_handleGoalsUpdated"></trip-goals>
                 <paper-fab class="action-right" icon="add" on-tap="_addGoal"></paper-fab>
             </div>
@@ -61,7 +29,6 @@
                 return {
                     trip: {
                         type: Object,
-                        observer: '_onTripChanged',
                         notify: true
                     },
                     _currentPage: {
@@ -77,11 +44,6 @@
                         value: () => this.$.nameInput
                     }
                 };
-            }
-            _onTripChanged() {
-                if (!this.trip || !this.trip.location) return;
-                var background = Polymer.dom(this.$.header.root).querySelector('#backgroundFrontLayer');
-                background.style['background-image'] = `url(${this.trip.location.photoUrl})`;
             }
             _back() {
                 this.fire('back');

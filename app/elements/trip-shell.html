@@ -7,19 +7,13 @@
         }
         </style>
         <app-route route="[[route]]" pattern="/:key" data="{{routeData}}"></app-route>
-        <triptrip-shell-layout back-button title="[[trip.name]]">
-            <!-- <div top-toolbar>
-                <paper-icon-button icon="arrow-back" on-tap="_back"></paper-icon-button>
+        <triptrip-shell-layout back-button title="[[trip.name]]" header-background-url="[[trip.location.photoUrl]]">
+            <app-toolbar class="middle"></app-toolbar>
+            <app-toolbar class="bottom">
                 <div title>
-                    <div hidden$="{{!_editingName}}">
-                        <paper-input id="nameInput" label="Trip Name" value="{{trip.name}}"></paper-input>
-                        <iron-a11y-keys target="[[_nameInputTarget]]" keys="enter" on-keys-pressed="_editNameDone"></iron-a11y-keys>
-                    </div>
-                    <div hidden$="{{_editingName}}">[[trip.name]]</div>
+                    <div>[[trip.location.name]]</div>
                 </div>
-                <paper-icon-button hidden$="{{_editingName}}" icon="create" on-tap="_editName"></paper-icon-button>
-                <paper-icon-button hidden$="{{!_editingName}}" icon="done" on-tap="_editNameDone"></paper-icon-button>
-            </div> -->
+            </app-toolbar>
             <trip-element key="[[routeData.key]]" trip="{{trip}}"></trip-element>
         </triptrip-shell-layout>
     </template>

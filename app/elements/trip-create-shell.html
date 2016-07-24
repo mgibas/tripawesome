@@ -1,0 +1,26 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<dom-module id="trip-create-shell">
+    <template>
+        <style include="shared-styles">
+        :host {
+            display: block;
+        }
+        </style>
+
+        <triptrip-shell-layout back-button title="Create Trip">
+            <trip-create></trip-create>
+        </triptrip-shell-layout>
+    </template>
+    <script>
+    (() => {
+        'use strict';
+
+        class TripCreateShell {
+            get is() {
+                return 'trip-create-shell';
+            }
+        }
+        Polymer(TripCreateShell);
+    })();
+    </script>
+</dom-module>
