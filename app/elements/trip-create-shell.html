@@ -6,9 +6,8 @@
             display: block;
         }
         </style>
-
-        <triptrip-shell-layout back-button title="Create Trip">
-            <trip-create></trip-create>
+        <triptrip-shell-layout title="Create Trip" back-button confirm-button on-confirm-tap="_handelConfirmTap">
+            <trip-create id="create" on-created="_handleCreated"></trip-create>
         </triptrip-shell-layout>
     </template>
     <script>
@@ -18,6 +17,12 @@
         class TripCreateShell {
             get is() {
                 return 'trip-create-shell';
+            }
+            _handelConfirmTap() {
+                this.$.create.save();
+            }
+            _handleCreated() {
+                window.history.back();
             }
         }
         Polymer(TripCreateShell);

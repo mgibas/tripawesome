@@ -23,6 +23,7 @@
                         <paper-icon-button hidden$="[[!burgerButton]]" icon="menu" drawer-toggle></paper-icon-button>
                         <paper-icon-button hidden$="[[!backButton]]" icon="arrow-back" on-tap="_handleBackTap"></paper-icon-button>
                         <div title>[[title]]</div>
+                        <paper-icon-button hidden$="[[!confirmButton]]" icon="check" on-tap="_handleConfirmTap"></paper-icon-button>
                     </app-toolbar>
                     <content select="app-toolbar"></content>
                 </app-header>
@@ -52,6 +53,10 @@
                         type: Boolean,
                         value: false
                     },
+                    confirmButton: {
+                        type: Boolean,
+                        value: false
+                    },
                     headerEffects: {
                         type: String
                     },
@@ -63,6 +68,9 @@
             }
             _handleBackTap() {
                 window.history.back();
+            }
+            _handleConfirmTap() {
+                this.fire('confirm-tap');
             }
             _onHeaderBackgroundUrlChanged(url) {
                 if (!url) return;

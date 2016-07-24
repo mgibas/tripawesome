@@ -12,15 +12,6 @@
         <google-map-search global-search="true" map="[[map]]" query="[[_debouncedSearchQuery]]" results="{{locations}}" types="locality">
         </google-map-search>
         <google-map map="{{map}}"></google-map>
-        <app-header condenses reveals>
-            <app-toolbar>
-                <paper-icon-button icon="arrow-back" on-tap="_cancel"></paper-icon-button>
-                <div title>
-                    Create Trip
-                </div>
-                <paper-button on-tap="_create">Save</paper-button>
-            </app-toolbar>
-        </app-header>
         <paper-material class="flex">
             <paper-input label="Name" value="{{newTrip.name}}"></paper-input>
             <paper-input value="{{_searchQuery}}" label="Search For Something To Do"></paper-input>
@@ -51,7 +42,7 @@
                 this.newTrip = {};
                 this.fire('canceled');
             }
-            _create() {
+            save() {
                 this.newTrip.location = {
                     name: this._selectedLocation.item.name,
                     placeId: this._selectedLocation.item.place_id,
