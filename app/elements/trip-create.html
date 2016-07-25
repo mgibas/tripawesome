@@ -1,5 +1,4 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-
 <dom-module id="trip-create">
     <template>
         <style include="shared-styles iron-flex iron-flex-alignment">
@@ -11,10 +10,10 @@
         <firebase-document id="fb" app-name="tripawesome" data="{{newTrip}}"></firebase-document>
         <google-map-search global-search="true" map="[[map]]" query="[[_debouncedSearchQuery]]" results="{{locations}}" types="locality">
         </google-map-search>
-        <google-map map="{{map}}"></google-map>
+        <google-map map="{{map}}" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg"></google-map>
         <paper-material class="flex">
             <paper-input label="Name" value="{{newTrip.name}}"></paper-input>
-            <paper-input value="{{_searchQuery}}" label="Search For Something To Do"></paper-input>
+            <paper-input value="{{_searchQuery}}" label="Enter Location"></paper-input>
             <paper-listbox selected-item="{{_selectedLocation}}">
                 <template is="dom-repeat" items="[[locations]]" as="item">
                     <paper-item item="[[item]]">[[item.name]]</paper-item>

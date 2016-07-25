@@ -1,39 +1,23 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<dom-module id="places-search">
+<dom-module id="trip-goal-create">
     <template>
         <style include="shared-styles">
         :host {
             display: block;
         }
 
-        iron-list {
-            padding-top: 1rem;
-        }
-
         places-search-item-template {
             width: 100%;
-        }
-
-        app-toolbar[role="search"] {
-            background-color: var(--primary-background-color);
         }
 
         [title] {
             pointer-events: all !important;
         }
         </style>
-        <google-map-search id="search" map="[[map]]" query="[[_debouncedSearchQuery]]" results="{{places}}" radius="100000" types="point_of_interest amusement_park aquarium art_gallery library bakery bar cafe movie_theater campground museum night_club park casino cemetery church city_hall restaurant shopping_mall spa stadium synagogue zoo neighborhood">
+        <firebase-document id="fb" app-name="tripawesome" data="{{_newGoal}}"></firebase-document>
+        <google-map-search id="search" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg" map="[[map]]" query="[[_debouncedSearchQuery]]" results="{{places}}" radius="100000" types="point_of_interest amusement_park aquarium art_gallery library bakery bar cafe movie_theater campground museum night_club park casino cemetery church city_hall restaurant shopping_mall spa stadium synagogue zoo neighborhood">
         </google-map-search>
-        <google-map map="{{map}}" latitude="[[latitude]]" longitude="[[longitude]]"></google-map>
-        <app-header reveals>
-            <app-toolbar>
-                <paper-icon-button icon="arrow-back" on-tap="_cancel"></paper-icon-button>
-                <div title>
-                    Find Things To Do
-                </div>
-                <paper-button disabled="[[!_canSelect]]" on-tap="_selectPlace">Add</paper-button>
-            </app-toolbar>
-        </app-header>
+        <google-map api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg" map="{{map}}" latitude="[[latitude]]" longitude="[[longitude]]"></google-map>
         <app-toolbar role="search">
             <div title>
                 <paper-input value="{{_searchQuery}}" label="Search For Something To Do"></paper-input>
@@ -50,9 +34,9 @@
     <script>
     (() => {
         'use strict';
-        class PlacesSearch {
+        class TripGoalCreate {
             get is() {
-                return 'places-search';
+                return 'trip-goal-create';
             }
             get properties() {
                 return {
@@ -66,25 +50,26 @@
                     }
                 };
             }
-            _cancel() {
-                this.fire('cancel');
-            }
-            _handleSelectionChanged(e, index) {
-                this._canSelect = true;
-            }
-            _selectPlace() {
-                var result = {
-                    name: this._selectedPlace.item.name,
-                    placeId: this._selectedPlace.item.place_id,
-                    latitude: this._selectedPlace.item.latitude,
-                    longitude: this._selectedPlace.item.longitude
+            save() {
+                this._newGoal = {
+                    location: {
+                        name: this._selectedPlace.item.name,
+                        placeId: this._selectedPlace.item.place_id,
+                        latitude: this._selectedPlace.item.latitude,
+                        longitude: this._selectedPlace.item.longitude
+                    }
                 };
                 if (this._selectedPlace.item.photos.length > 0)
-                    result.photoUrl = this._selectedPlace.item.photos[0].getUrl({
+                    this._newGoal.location.photoUrl = this._selectedPlace.item.photos[0].getUrl({
                         maxHeight: 100,
                         maxWidth: 100
                     });
-                this.fire('place-selected', result);
+                this.$.fb.save(`/trips/${this.key}/goals`)
+                    .then(() => {
+                        this.$.fb.reset();
+                        this._newGoal = {};
+                        this.fire('created');
+                    });
             }
             _searchQueryChanged(value) {
                 this.debounce('update-search-query', () => {
@@ -92,7 +77,7 @@
                 }, 200);
             }
         }
-        Polymer(PlacesSearch);
+        Polymer(TripGoalCreate);
     })();
     </script>
 </dom-module>

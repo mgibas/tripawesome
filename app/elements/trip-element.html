@@ -1,5 +1,4 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-
 <dom-module id="trip-element">
     <template>
         <style include="shared-styles paper-material-shared-styles">
@@ -7,16 +6,11 @@
             display: block;
         }
         </style>
-        <iron-pages class="flex" selected="[[_addingGoal]]" fallback-selection="0">
-            <div>
-                <firebase-document id="fb" app-name="tripawesome" path="/trips/[[key]]" data="{{trip}}"></firebase-document>
-                <trip-goals goals="{{trip.goals}}" on-goals-updated="_handleGoalsUpdated"></trip-goals>
-                <paper-fab class="action-right" icon="add" on-tap="_addGoal"></paper-fab>
-            </div>
-            <div>
-                <places-search id="searchDialog" latitude="[[trip.location.latitude]]" longitude="[[trip.location.longitude]]" on-place-selected="_handlePlaceSelected" on-cancel="_handlePlaceSearchCanceled"></places-search>
-            </div>
-        </iron-pages>
+        <firebase-document id="fb" app-name="tripawesome" path="/trips/[[key]]" data="{{trip}}"></firebase-document>
+        <trip-goals goals="{{trip.goals}}" on-goals-updated="_handleGoalsUpdated"></trip-goals>
+        <a href$="/trip/[[key]]/add-goal">
+            <paper-fab class="action-right" icon="add"></paper-fab>
+        </a>
     </template>
     <script>
     (() => {
@@ -31,10 +25,6 @@
                         type: Object,
                         notify: true
                     },
-                    _currentPage: {
-                        type: Number,
-                        value: 0
-                    },
                     _editingName: {
                         type: Boolean,
                         value: false
@@ -44,9 +34,6 @@
                         value: () => this.$.nameInput
                     }
                 };
-            }
-            _back() {
-                this.fire('back');
             }
             _addGoal() {
                 this._addingGoal = 1;
@@ -63,17 +50,8 @@
             _handlePlaceSearchCanceled() {
                 this._addingGoal = 0;
             }
-
-            _editName() {
-                this._editingName = true;
-                this.$.nameInput.focus();
-            }
-            _editNameDone() {
-                this._editingName = false;
+            _handleGoalsUpdated() {
                 this.$.fb.save(`/trips`, this.key);
-            }
-            _handleGoalsUpdated(){
-              this.$.fb.save(`/trips`, this.key);
             }
         }
         Polymer(TripElement);

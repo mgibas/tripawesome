@@ -45,10 +45,12 @@
             }
 
             _computeGoalsWithDistances(goals) {
-                var pairs = goals.map((goal, index) => {
+                if(!goals) return [];
+                var goalsArray = Object.keys(goals).map((k) => goals[k]);
+                var pairs = goalsArray.map((goal, index) => {
                         return {
                             from: goal,
-                            to: goals[index + 1]
+                            to: goalsArray[index + 1]
                         };
                     })
                     .filter(pair => pair.to)
@@ -66,8 +68,7 @@
                     this._getDistance(pair.from);
                 });
 
-                console.log(goals);
-                return goals;
+                return goalsArray;
             }
             _getDistance(goal) {
                 var from = new google.maps.LatLng(goal.location.latitude, goal.location.longitude);
