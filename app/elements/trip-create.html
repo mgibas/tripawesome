@@ -8,7 +8,7 @@
         }
         </style>
         <firebase-document id="fb" app-name="tripawesome" data="{{newTrip}}"></firebase-document>
-        <google-map-search global-search="true" map="[[map]]" query="[[_debouncedSearchQuery]]" results="{{locations}}" types="locality">
+        <google-map-search global-search="true" map="[[map]]" query="[[_debouncedSearchQuery]]" results="{{locations}}" types="locality" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg">
         </google-map-search>
         <google-map map="{{map}}" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg"></google-map>
         <paper-material class="flex">
