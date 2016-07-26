@@ -1,0 +1,39 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<dom-module id="trip-details-shell">
+    <template>
+        <style include="shared-styles">
+        :host {
+            display: block;
+        }
+        </style>
+        <triptrip-shell-layout back-button title="[[trip.name]]" header-background-url="[[trip.location.photoUrl]]">
+            <app-toolbar class="middle"></app-toolbar>
+            <app-toolbar class="bottom">
+                <div title>
+                    <div>[[trip.location.name]]</div>
+                </div>
+            </app-toolbar>
+            <trip-details key="[[key]]" trip="{{trip}}"></trip-details>
+        </triptrip-shell-layout>
+    </template>
+    <script>
+    (() => {
+        'use strict';
+
+        class TripDetailsShell {
+            get is() {
+                return 'trip-details-shell';
+            }
+            get properties() {
+                return {
+                    trip: {
+                        type: Object,
+                        notify: true
+                    }
+                };
+            }
+        }
+        Polymer(TripDetailsShell);
+    })();
+    </script>
+</dom-module>

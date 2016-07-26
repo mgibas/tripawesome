@@ -1,5 +1,5 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<dom-module id="trip-element">
+<dom-module id="trip-details">
     <template>
         <style include="shared-styles paper-material-shared-styles">
         :host {
@@ -15,9 +15,9 @@
     <script>
     (() => {
         'use strict';
-        class TripElement {
+        class TripDetails {
             get is() {
-                return 'trip-element';
+                return 'trip-details';
             }
             get properties() {
                 return {
@@ -54,7 +54,7 @@
                 this.$.fb.save(`/trips`, this.key);
             }
         }
-        Polymer(TripElement);
+        Polymer(TripDetails);
     })();
     </script>
 </dom-module>

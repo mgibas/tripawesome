@@ -1,9 +1,14 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<dom-module id="trip-goal-template">
+<dom-module id="trip-goal-search-item">
     <template>
         <style include="iron-flex shared-styles">
         :host {
             display: block;
+        }
+
+        .content {
+            height: 110px;
+            @apply(--layout-horizontal);
         }
 
         google-map {
@@ -11,21 +16,23 @@
         }
 
         iron-image {
-            width: 50px;
-            height: 50px;
+            width: 100px;
+            height: 100px;
+            background-color: var(--light-primary-color);
         }
         </style>
-        <div class="layout horizontal">
-            <iron-image src="[[item.location.photoUrl]]" sizing="cover" preload fade></iron-image>
+        <div class="content">
+            <iron-image src="[[_photoUrl]]" sizing="cover" preload fade></iron-image>
             <div class="flex">
-                <strong>[[item.location.name]]</strong>
+                <p>[[item.name]]</p>
+                <p>[[item.rating]]/5</p>
             </div>
             <paper-icon-button icon="[[_expandIcon]]" on-tap="_togleDetails"></paper-icon-button>
         </div>
         <iron-collapse id="details" opened="{{_detailsExpanded}}">
             <div>
                 <google-map fit-to-markers zoom="15" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg">
-                    <google-map-marker latitude="[[item.location.latitude]]" longitude="[[item.location.longitude]]" title="[[item.location.name]]"></google-map-marker>
+                    <google-map-marker latitude="[[item.latitude]]" longitude="[[item.longitude]]" title="[[item.name]]"></google-map-marker>
                 </google-map>
             </div>
         </iron-collapse>
@@ -33,13 +40,16 @@
     <script>
     (() => {
         'use strict';
-
-        class TripGoalTemplate {
+        class TripGoalSearchItem {
             get is() {
-                return 'trip-goal-template';
+                return 'trip-goal-search-item';
             }
             get properties() {
                 return {
+                    _photoUrl: {
+                        type: String,
+                        computed: '_computePhotoUrl(item)'
+                    },
                     _detailsExpanded: {
                         type: Boolean,
                         value: false
@@ -58,8 +68,15 @@
             _togleDetails() {
                 this._detailsExpanded = !this._detailsExpanded;
             }
+            _computePhotoUrl(item) {
+                if (!item.photos || item.photos.length === 0) return;
+                return item.photos[0].getUrl({
+                    maxHeight: 100,
+                    maxWidth: 100
+                });
+            }
         }
-        Polymer(TripGoalTemplate);
+        Polymer(TripGoalSearchItem);
     })();
     </script>
 </dom-module>

@@ -1,34 +1,34 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<dom-module id="trip-create-shell">
+<dom-module id="trip-goal-create-shell">
     <template>
         <style include="shared-styles">
         :host {
             display: block;
         }
         </style>
-        <triptrip-shell-layout title="Create Trip" cancel-button confirm-button on-confirm-tap="_handleConfirmTap" on-cancel-tap="_handleCancelTap">
-            <trip-create id="create" on-created="_handleCreated"></trip-create>
+        <triptrip-shell-layout cancel-button confirm-button title="Add Goal" on-confirm-tap="_handleConfirmTap" on-cancel-tap="_handleCancelTap">
+            <trip-goal-create id="createGoal" key="[[key]]" latitude="[[latitude]]" longitude="[[longitude]]" on-created="_handleCreated"></trip-goal-create>
         </triptrip-shell-layout>
     </template>
     <script>
     (() => {
         'use strict';
 
-        class TripCreateShell {
+        class TripGoalCreateShell {
             get is() {
-                return 'trip-create-shell';
+                return 'trip-goal-create-shell';
             }
             _handleConfirmTap() {
-                this.$.create.save();
+                this.$.createGoal.save();
             }
             _handleCancelTap() {
-                this.$.create.reset();
+                this.$.createGoal.reset();
             }
             _handleCreated() {
                 window.history.back();
             }
         }
-        Polymer(TripCreateShell);
+        Polymer(TripGoalCreateShell);
     })();
     </script>
 </dom-module>

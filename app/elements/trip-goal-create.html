@@ -6,7 +6,7 @@
             display: block;
         }
 
-        places-search-item-template {
+        trip-goal-search-item {
             width: 100%;
         }
 
@@ -26,7 +26,7 @@
         <paper-listbox on-selected-changed="_handleSelectionChanged" selected-item="{{_selectedPlace}}">
             <template is="dom-repeat" items="[[places]]" as="item">
                 <paper-item item="[[item]]">
-                    <places-search-item-template item="[[item]]"></places-search-item-template>
+                    <trip-goal-search-item item="[[item]]"></trip-goal-search-item>
                 </paper-item>
             </template>
         </paper-listbox>
@@ -70,6 +70,10 @@
                         this._newGoal = {};
                         this.fire('created');
                     });
+            }
+            reset() {
+                this._searchQuery = null;
+                this.places = null;
             }
             _searchQueryChanged(value) {
                 this.debounce('update-search-query', () => {

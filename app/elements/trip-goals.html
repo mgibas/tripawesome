@@ -7,7 +7,7 @@
         }
 
         trip-goals-distance,
-        trip-goal-template {
+        trip-goal-item {
             width: 100%;
         }
         </style>
@@ -15,7 +15,7 @@
         <paper-listbox>
             <template is="dom-repeat" items="[[_goalsWithDistances]]" as="goal">
                 <paper-item>
-                    <trip-goal-template item="[[goal]]"></trip-goal-template>
+                    <trip-goal-item item="[[goal]]"></trip-goal-item>
                 </paper-item>
                 <template is="dom-if" if="{{goal.nextLocationInfo}}">
                     <trip-goals-distance info="[[goal.nextLocationInfo]]"></trip-goals-distance>

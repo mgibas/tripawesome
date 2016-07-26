@@ -37,10 +37,6 @@
                     }
                 };
             }
-            _cancel() {
-                this.newTrip = {};
-                this.fire('canceled');
-            }
             save() {
                 this.newTrip.location = {
                     name: this._selectedLocation.item.name,
@@ -64,6 +60,11 @@
                         this.newTrip = {};
                         this.fire('created');
                     });
+            }
+            reset() {
+                this.newTrip = null;
+                this._searchQuery = null;
+                this.locations = null;
             }
             _searchQueryChanged(value) {
                 this.debounce('update-search-query', () => {

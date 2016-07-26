@@ -8,18 +8,8 @@
         </style>
         <app-route route="[[route]]" pattern="/:key/:page" data="{{routeData}}"></app-route>
         <iron-pages class="flex" selected="[[routeData.page]]" attr-for-selected="name" fallback-selection="details">
-            <triptrip-shell-layout name="details" back-button title="[[trip.name]]" header-background-url="[[trip.location.photoUrl]]">
-                <app-toolbar class="middle"></app-toolbar>
-                <app-toolbar class="bottom">
-                    <div title>
-                        <div>[[trip.location.name]]</div>
-                    </div>
-                </app-toolbar>
-                <trip-element key="[[routeData.key]]" trip="{{trip}}"></trip-element>
-            </triptrip-shell-layout>
-            <triptrip-shell-layout name="add-goal" cancel-button confirm-button title="Add Goal" on-confirm-tap="_handleConfirmTap">
-                <trip-goal-create id="createGoal" key="[[routeData.key]]" latitude="[[trip.location.latitude]]" longitude="[[trip.location.longitude]]" on-created="_handleCreated"></trip-goal-create>
-            </triptrip-shell-layout>
+            <trip-details-shell name="details" key="[[routeData.key]]" trip="{{trip}}"></trip-details-shell>
+            <trip-goal-create-shell name="add-goal" key="[[routeData.key]]" latitude="[[trip.location.latitude]]" longitude="[[trip.location.longitude]]"></trip-goal-create-shell>
         </iron-pages>
     </template>
     <script>
