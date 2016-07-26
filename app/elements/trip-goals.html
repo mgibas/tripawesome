@@ -18,7 +18,9 @@
                     <trip-goal-item item="[[goal]]"></trip-goal-item>
                 </paper-item>
                 <template is="dom-if" if="{{goal.nextLocationInfo}}">
-                    <trip-goals-distance info="[[goal.nextLocationInfo]]"></trip-goals-distance>
+                    <paper-item disabled="true">
+                        <trip-goals-distance info="[[goal.nextLocationInfo]]"></trip-goals-distance>
+                    </paper-item>
                 </template>
             </template>
         </paper-listbox>
@@ -45,7 +47,7 @@
             }
 
             _computeGoalsWithDistances(goals) {
-                if(!goals) return [];
+                if (!goals) return [];
                 var goalsArray = Object.keys(goals).map((k) => goals[k]);
                 var pairs = goalsArray.map((goal, index) => {
                         return {
