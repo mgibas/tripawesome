@@ -25,7 +25,7 @@
                 this.$.createGoal.reset();
             }
             _handleCreated() {
-                window.history.back();
+                window.history.go(-1);
             }
         }
         Polymer(TripGoalCreateShell);

@@ -73,11 +73,11 @@
             }
             _handleBackTap() {
                 this.fire('back-tap');
-                window.history.back();
+                window.history.go(-1);
             }
             _handleCancelTap() {
                 this.fire('cancel-tap');
-                window.history.back();
+                window.history.go(-1);
             }
             _handleConfirmTap() {
                 this.fire('confirm-tap');
