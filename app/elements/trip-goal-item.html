@@ -24,18 +24,19 @@
             <div class="title flex">
                 <strong>[[item.location.name]]</strong>
             </div>
-            <paper-icon-button icon="[[_expandIcon]]" on-tap="_togleDetails"></paper-icon-button>
+            <!-- <paper-icon-button icon="[[_expandIcon]]" on-tap="_togleDetails"></paper-icon-button> -->
         </div>
-        <iron-collapse id="details" opened="{{_detailsExpanded}}">
-            <div>
-                <google-map fit-to-markers zoom="15" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg">
-                    <google-map-marker latitude="[[item.location.latitude]]" longitude="[[item.location.longitude]]" title="[[item.location.name]]"></google-map-marker>
-                </google-map>
-                <a href="http://maps.apple.com/?q=[[item.location.latitude]],[[item.location.longitude]]" tabindex="-1">
-                    <paper-button raised><iron-icon icon="maps:navigation"></iron-icon>Navigate</paper-button>
-                </a>
-            </div>
-        </iron-collapse>
+        <!-- <iron-collapse id="details" opened="{{_detailsExpanded}}">
+                    <div>
+                        <google-map fit-to-markers zoom="15" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg">
+                            <google-map-marker latitude="[[item.location.latitude]]" longitude="[[item.location.longitude]]" title="[[item.location.name]]"></google-map-marker>
+                        </google-map>
+                        <a href="http://maps.apple.com/?q=[[item.location.latitude]],[[item.location.longitude]]" tabindex="-1">
+                            <paper-button raised>
+                                <iron-icon icon="maps:navigation"></iron-icon>Navigate</paper-button>
+                        </a>
+                    </div>
+                </iron-collapse> -->
     </template>
     <script>
     (() => {
