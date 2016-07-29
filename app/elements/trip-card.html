@@ -6,16 +6,39 @@
             display: block;
             @apply(--layout-vertical);
         }
+
+        .trip-header {
+            @apply(--paper-font-headline);
+            padding: 16px;
+        }
+
+        .trip-light {
+            color: var(--paper-grey-600);
+        }
+
+        .trip-status {
+            float: right;
+            font-size: 15px;
+            vertical-align: middle;
+        }
         </style>
         <firebase-document id="fb" app-name="tripawesome" data="[[item]]" path="/trips/[[item.$key]]">
         </firebase-document>
-        <paper-card heading="[[item.name]]" hidden$="[[deleted]]" image="[[item.location.photoUrl]]">
-            <div id="actions" class="card-actions">
+        <a href="/trip/[[item.$key]]/details">
+            <paper-card heading="[[item.name]]" hidden$="[[deleted]]" image="[[item.location.photoUrl]]">
+                <div class="trip-header">
+                    [[item.location.name]]
+                    <div class="trip-status cafe-light">
+                        5/7 visited
+                    </div>
+                </div>
+                <!--             <div id="actions" class="card-actions">
                 <paper-icon-button icon="social:share" on-tap="_share"></paper-icon-button>
                 <paper-icon-button icon="delete" on-tap="_delete"></paper-icon-button>
-                <a href="/trip/[[item.$key]]/details"><paper-button raised>Details</paper-button></a>
-            </div>
-        </paper-card>
+                <a href="/trip/[[item.$key]]/details"><paper-icon-button icon="more-vert"></paper-icon-button></a>
+            </div> -->
+            </paper-card>
+        </a>
         <paper-toast id="deleteToast" text="Trip '[[item.name]] was deleted." duration="5000">
             <a on-tap="_undoDelete">Undo</a>
         </paper-toast>
