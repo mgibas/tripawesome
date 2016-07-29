@@ -7,7 +7,7 @@
         }
         </style>
         <firebase-document id="fb" app-name="tripawesome" path="/trips/[[key]]" data="{{trip}}"></firebase-document>
-        <trip-goals goals="{{trip.goals}}" on-goals-updated="_handleGoalsUpdated"></trip-goals>
+        <trip-goals trip-key="[[key]]" goals="{{trip.goals}}" on-goals-updated="_handleGoalsUpdated"></trip-goals>
         <a href$="/trip/[[key]]/add-goal">
             <paper-fab class="action-right" icon="add"></paper-fab>
         </a>

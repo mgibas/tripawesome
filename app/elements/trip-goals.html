@@ -6,36 +6,6 @@
             display: block;
         }
 
-        trip-goal-item {
-            background-color: var(--primary-background-color);
-        }
-
-        paper-swipe {
-            min-height: 50px;
-            @apply(--layout-flex);
-            --paper-swipe-underlay: {
-                @apply(--layout-horizontal);
-                background-color: @apply(--light-accent-color);
-            }
-            ;
-        }
-
-        .delete {
-            background-color: var(--danger-color);
-            @apply(--layout-horizontal);
-            @apply(--layout-center);
-            color: #fff;
-        }
-
-        .mark {
-            @apply(--layout-horizontal);
-            @apply(--layout-center);
-        }
-
-        .delete paper-icon-button {
-            --iron-icon-fill-color: #fff;
-        }
-
         trip-goals-distance,
         trip-goal-item {
             width: 100%;
@@ -45,18 +15,7 @@
         <paper-listbox>
             <template is="dom-repeat" items="[[_goalsWithDistances]]" as="goal">
                 <paper-item>
-                    <paper-swipe swipe-right peek-offset="200">
-                        <trip-goal-item content item="[[goal]]"></trip-goal-item>
-                        <div underlay>
-                            <div class="mark">
-                                <paper-icon-button icon="check"></paper-icon-button>
-                            </div>
-                            <div class="flex delete">
-                                <paper-icon-button icon="delete"></paper-icon-button>
-                                Delete
-                            </div>
-                        </div>
-                    </paper-swipe>
+                    <trip-goal-item content trip-key="[[tripKey]]" item="[[goal]]"></trip-goal-item>
                 </paper-item>
                 <template is="dom-if" if="{{goal.nextLocationInfo}}">
                     <paper-item disabled="true">
@@ -76,6 +35,9 @@
             }
             get properties() {
                 return {
+                    tripKey: {
+                        type: String
+                    },
                     _goalsWithDistances: {
                         type: Array,
                         computed: '_computeGoalsWithDistances(goals)'
@@ -89,7 +51,13 @@
 
             _computeGoalsWithDistances(goals) {
                 if (!goals) return [];
-                var goalsArray = Object.keys(goals).map((k) => goals[k]);
+                var goalsArray = Object.keys(goals)
+
+                .map((k) => {
+                    goals[k].key = k;
+                    return goals[k];
+                });
+
                 var pairs = goalsArray.map((goal, index) => {
                         return {
                             from: goal,

@@ -18,25 +18,55 @@
         .title {
             margin-left: 1rem;
         }
+
+        div[content] {
+            background-color: var(--primary-background-color);
+        }
+
+        paper-swipe {
+            min-height: 50px;
+            @apply(--layout-flex);
+            --paper-swipe-underlay: {
+                @apply(--layout-horizontal);
+                background-color: @apply(--light-accent-color);
+            }
+            ;
+        }
+
+        .delete {
+            background-color: var(--danger-color);
+            @apply(--layout-horizontal);
+            @apply(--layout-center);
+            color: #fff;
+        }
+
+        .mark {
+            @apply(--layout-horizontal);
+            @apply(--layout-center);
+        }
+
+        .delete paper-icon-button {
+            --iron-icon-fill-color: #fff;
+        }
         </style>
-        <div class="layout horizontal">
-            <iron-image src="[[item.location.photoUrl]]" sizing="cover" preload fade></iron-image>
-            <div class="title flex">
-                <strong>[[item.location.name]]</strong>
+        <firebase-document id="fb" app-name="tripawesome" path="/trips/[[tripKey]]/goals/[[item.key]]"></firebase-document>
+        <paper-swipe swipe-right peek-offset="200">
+            <div class="layout horizontal" content>
+                <iron-image src="[[item.location.photoUrl]]" sizing="cover" preload fade></iron-image>
+                <div class="title flex">
+                    <strong>[[item.location.name]]</strong>
+                </div>
             </div>
-            <!-- <paper-icon-button icon="[[_expandIcon]]" on-tap="_togleDetails"></paper-icon-button> -->
-        </div>
-        <!-- <iron-collapse id="details" opened="{{_detailsExpanded}}">
-                    <div>
-                        <google-map fit-to-markers zoom="15" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg">
-                            <google-map-marker latitude="[[item.location.latitude]]" longitude="[[item.location.longitude]]" title="[[item.location.name]]"></google-map-marker>
-                        </google-map>
-                        <a href="http://maps.apple.com/?q=[[item.location.latitude]],[[item.location.longitude]]" tabindex="-1">
-                            <paper-button raised>
-                                <iron-icon icon="maps:navigation"></iron-icon>Navigate</paper-button>
-                        </a>
-                    </div>
-                </iron-collapse> -->
+            <div underlay>
+                <div class="mark">
+                    <paper-icon-button icon="check" on-tap="_handleCheckTap"></paper-icon-button>
+                </div>
+                <div class="flex delete">
+                    <paper-icon-button icon="delete" on-tap="_handleDeleteTap"></paper-icon-button>
+                    Delete
+                </div>
+            </div>
+        </paper-swipe>
     </template>
     <script>
     (() => {
@@ -48,23 +78,17 @@
             }
             get properties() {
                 return {
-                    _detailsExpanded: {
-                        type: Boolean,
-                        value: false
-                    },
-                    _expandIcon: {
-                        type: String,
-                        computed: '_computeExpandIcon(_detailsExpanded)'
+                    tripKey: {
+                        type: String
                     }
                 };
             }
-            _computeExpandIcon(_detailsExpanded) {
-                if (_detailsExpanded)
-                    return 'expand-more';
-                return 'expand-less';
+            _handleDeleteTap() {
+              debugger;
+                this.$.fb.destroy();
             }
-            _togleDetails() {
-                this._detailsExpanded = !this._detailsExpanded;
+            _handleCheckTap() {
+
             }
         }
         Polymer(TripGoalItem);
