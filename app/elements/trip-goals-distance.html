@@ -13,25 +13,64 @@
             @apply(--layout-center-justified);
         }
         </style>
-        <div>
-            <iron-icon icon="maps:directions-car"></iron-icon>
-            [[info.drivingDuration.text]]
-        </div>
-        <div id="distance">
-            [[info.drivingDistance.text]]
-        </div>
-        <div>
-            [[info.walkingDuration.text]]
-            <iron-icon icon="maps:directions-walk"></iron-icon>
-        </div>
+        <google-maps-api id="api" name="distancematrix" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg"></google-maps-api>
+        <template is="dom-if" if="[[to]]">
+            <div>
+                <iron-icon icon="maps:directions-car"></iron-icon>
+                [[_drivingDuration.text]]
+            </div>
+            <div id="distance">
+                [[_drivingDistance.text]]
+            </div>
+            <div>
+                [[_walkingDuration.text]]
+                <iron-icon icon="maps:directions-walk"></iron-icon>
+            </div>
+        </template>
     </template>
     <script>
     (() => {
-        'use strict';
-
         class TripGoalsDistance {
             get is() {
                 return 'trip-goals-distance';
+            }
+
+            get properties() {
+                return {
+                    _distance: {
+                        type: Object,
+                        value: {}
+                    }
+                };
+            }
+
+            get observers() {
+                return ['_fromOrToChanged(from,to)'];
+            }
+
+            _fromOrToChanged(from, to) {
+                if (!to) return;
+                var fromLatLng = new google.maps.LatLng(from.location.latitude, from.location.longitude);
+                var toLatLng = new google.maps.LatLng(to.location.latitude, to.location.longitude);
+                var distanceService = new this.$.api.api.DistanceMatrixService();
+                distanceService.getDistanceMatrix({
+                    origins: [fromLatLng],
+                    destinations: [toLatLng],
+                    travelMode: google.maps.TravelMode.DRIVING,
+                    unitSystem: google.maps.UnitSystem.IMPERIAL
+                }, (resp) => {
+                    this._drivingDistance = resp.rows[0].elements[0].distance;
+                    this._drivingDuration = resp.rows[0].elements[0].duration;
+                    distanceService.getDistanceMatrix({
+                        origins: [fromLatLng],
+                        destinations: [toLatLng],
+                        travelMode: google.maps.TravelMode.WALKING,
+                        unitSystem: google.maps.UnitSystem.IMPERIAL
+                    }, (resp) => {
+                        this._walkingDistance = resp.rows[0].elements[0].distance;
+                        this._walkingDuration = resp.rows[0].elements[0].duration;
+                    });
+                });
             }
         }
         Polymer(TripGoalsDistance);

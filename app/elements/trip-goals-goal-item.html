@@ -1,5 +1,5 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<dom-module id="trip-goal-item">
+<dom-module id="trip-goals-goal-item">
     <template>
         <style include="iron-flex shared-styles">
         :host {
@@ -68,9 +68,9 @@
     (() => {
         'use strict';
 
-        class TripGoalItem {
+        class TripGoalsGoalItem {
             get is() {
-                return 'trip-goal-item';
+                return 'trip-goals-goal-item';
             }
             get properties() {
                 return {
@@ -100,7 +100,7 @@
 
             }
         }
-        Polymer(TripGoalItem);
+        Polymer(TripGoalsGoalItem);
     })();
     </script>
 </dom-module>

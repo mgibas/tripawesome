@@ -11,15 +11,12 @@
             width: 100%;
         }
         </style>
-        <google-maps-api id="api" name="distancematrix" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg"></google-maps-api>
         <paper-listbox>
-            <template is="dom-repeat" items="[[_goalsWithDistances]]" as="goal">
-                <trip-goal-item content trip-key="[[tripKey]]" item="[[goal]]"></trip-goal-item>
-                <template is="dom-if" if="{{goal.nextLocationInfo}}">
-                    <paper-item disabled="true">
-                        <trip-goals-distance info="[[goal.nextLocationInfo]]"></trip-goals-distance>
-                    </paper-item>
-                </template>
+            <template is="dom-repeat" items="[[_goals]]" as="goal">
+                <trip-goals-goal-item content trip-key="[[tripKey]]" item="[[goal]]"></trip-goals-goal-item>
+                <paper-item disabled="true">
+                    <trip-goals-distance from="[[goal]]" to="[[_getNextGoal(index,_goals)]]"></trip-goals-distance>
+                </paper-item>
             </template>
         </paper-listbox>
     </template>
@@ -36,72 +33,25 @@
                     tripKey: {
                         type: String
                     },
-                    _goalsWithDistances: {
+                    _goals: {
                         type: Array,
-                        computed: '_computeGoalsWithDistances(goals)'
-                    },
-                    distances: {
-                        type: Object,
-                        value: {}
+                        computed: '_computeGoals(goals)'
                     }
                 };
             }
 
-            _computeGoalsWithDistances(goals) {
+            _computeGoals(goals) {
                 if (!goals) return [];
-                var goalsArray = Object.keys(goals)
 
-                .map((k) => {
-                    goals[k].key = k;
-                    return goals[k];
-                });
-
-                var pairs = goalsArray.map((goal, index) => {
-                        return {
-                            from: goal,
-                            to: goalsArray[index + 1]
-                        };
-                    })
-                    .filter(pair => pair.to)
-                    .filter(pair => !pair.from.nextLocationInfo ||
-                        pair.from.nextLocationInfo.placeId !== pair.to.location.placeId ||
-                        !pair.from.nextLocationInfo.drivingDistance ||
-                        !pair.from.nextLocationInfo.walkingDistance);
-
-                pairs.forEach(pair => {
-                    pair.from.nextLocationInfo = {
-                        placeId: pair.to.location.placeId,
-                        latitude: pair.to.location.latitude,
-                        longitude: pair.to.location.longitude
-                    };
-                    this._getDistance(pair.from);
-                });
-
-                return goalsArray;
-            }
-            _getDistance(goal) {
-                var from = new google.maps.LatLng(goal.location.latitude, goal.location.longitude);
-                var to = new google.maps.LatLng(goal.nextLocationInfo.latitude, goal.nextLocationInfo.longitude);
-                var distanceService = new this.$.api.api.DistanceMatrixService();
-                distanceService.getDistanceMatrix({
-                    origins: [from],
-                    destinations: [to],
-                    travelMode: google.maps.TravelMode.DRIVING,
-                    unitSystem: google.maps.UnitSystem.IMPERIAL
-                }, (resp) => {
-                    goal.nextLocationInfo.drivingDistance = resp.rows[0].elements[0].distance;
-                    goal.nextLocationInfo.drivingDuration = resp.rows[0].elements[0].duration;
-                    distanceService.getDistanceMatrix({
-                        origins: [from],
-                        destinations: [to],
-                        travelMode: google.maps.TravelMode.WALKING,
-                        unitSystem: google.maps.UnitSystem.IMPERIAL
-                    }, (resp) => {
-                        goal.nextLocationInfo.walkingDistance = resp.rows[0].elements[0].distance;
-                        goal.nextLocationInfo.walkingDuration = resp.rows[0].elements[0].duration;
-                        this.fire('goals-updated');
+                return Object.keys(goals)
+                    .map((k) => {
+                        goals[k].key = k;
+                        return goals[k];
                     });
-                });
+            }
+
+            _getNextGoal(index) {
+                return this._goals[index + 1];
             }
         }
         Polymer(TripGoals);
