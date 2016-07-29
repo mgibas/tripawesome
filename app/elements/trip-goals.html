@@ -14,9 +14,7 @@
         <google-maps-api id="api" name="distancematrix" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg"></google-maps-api>
         <paper-listbox>
             <template is="dom-repeat" items="[[_goalsWithDistances]]" as="goal">
-                <paper-item>
-                    <trip-goal-item content trip-key="[[tripKey]]" item="[[goal]]"></trip-goal-item>
-                </paper-item>
+                <trip-goal-item content trip-key="[[tripKey]]" item="[[goal]]"></trip-goal-item>
                 <template is="dom-if" if="{{goal.nextLocationInfo}}">
                     <paper-item disabled="true">
                         <trip-goals-distance info="[[goal.nextLocationInfo]]"></trip-goals-distance>
@@ -104,7 +102,6 @@
                         this.fire('goals-updated');
                     });
                 });
-
             }
         }
         Polymer(TripGoals);

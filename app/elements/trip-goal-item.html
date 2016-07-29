@@ -26,47 +26,43 @@
         paper-swipe {
             min-height: 50px;
             @apply(--layout-flex);
-            --paper-swipe-underlay: {
-                @apply(--layout-horizontal);
-                background-color: @apply(--light-accent-color);
-            }
-            ;
         }
 
         .delete {
-            background-color: var(--danger-color);
+            @apply(--layout-flex);
             @apply(--layout-horizontal);
             @apply(--layout-center);
-            color: #fff;
+            @apply(--layout-end-justified);
         }
 
         .mark {
+            @apply(--layout-flex);
             @apply(--layout-horizontal);
             @apply(--layout-center);
         }
-
-        .delete paper-icon-button {
-            --iron-icon-fill-color: #fff;
-        }
         </style>
         <firebase-document id="fb" app-name="tripawesome" path="/trips/[[tripKey]]/goals/[[item.key]]"></firebase-document>
-        <paper-swipe swipe-right peek-offset="200">
-            <div class="layout horizontal" content>
-                <iron-image src="[[item.location.photoUrl]]" sizing="cover" preload fade></iron-image>
-                <div class="title flex">
-                    <strong>[[item.location.name]]</strong>
+        <paper-item  hidden$="[[deleted]]">
+            <paper-swipe id="swipe" peek-offset="200">
+                <div class="layout horizontal" content>
+                    <iron-image src="[[item.location.photoUrl]]" sizing="cover" preload fade></iron-image>
+                    <div class="title flex">
+                        <strong>[[item.location.name]]</strong>
+                    </div>
                 </div>
-            </div>
-            <div underlay>
-                <div class="mark">
-                    <paper-icon-button icon="check" on-tap="_handleCheckTap"></paper-icon-button>
+                <div underlay class="layout horizontal">
+                    <div class="mark">
+                        <paper-icon-button icon="check" on-tap="_handleCheckTap"></paper-icon-button>
+                    </div>
+                    <div class="delete">
+                        <paper-icon-button icon="delete" on-tap="_handleDeleteTap"></paper-icon-button>
+                    </div>
                 </div>
-                <div class="flex delete">
-                    <paper-icon-button icon="delete" on-tap="_handleDeleteTap"></paper-icon-button>
-                    Delete
-                </div>
-            </div>
         </paper-swipe>
+        </paper-item>
+        <paper-toast id="deleteToast" text="Goal '[[item.location.name]] was deleted." duration="5000">
+            <a on-tap="_undoDelete">Undo</a>
+        </paper-toast>
     </template>
     <script>
     (() => {
@@ -80,12 +76,25 @@
                 return {
                     tripKey: {
                         type: String
+                    },
+                    deleted: {
+                        type: Boolean,
+                        value: false,
+                        reflectToAttribute: true
                     }
                 };
             }
             _handleDeleteTap() {
-              debugger;
-                this.$.fb.destroy();
+                this.deleted = true;
+                this.$.deleteToast.open();
+                this.deleteTimeoutId = setTimeout(() => {
+                    this.$.fb.destroy();
+                }, 5000);
+            }
+            _undoDelete() {
+                clearTimeout(this.deleteTimeoutId);
+                this.deleted = false;
+                this.$.deleteToast.close();
             }
             _handleCheckTap() {
 
