@@ -12,20 +12,25 @@
             @apply(--layout-horizontal);
             @apply(--layout-center-justified);
         }
+        paper-item{
+          @apply(--layout-flex);
+        }
         </style>
         <google-maps-api id="api" name="distancematrix" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg"></google-maps-api>
         <template is="dom-if" if="[[to]]">
-            <div>
-                <iron-icon icon="maps:directions-car"></iron-icon>
-                [[_drivingDuration.text]]
-            </div>
-            <div id="distance">
-                [[_drivingDistance.text]]
-            </div>
-            <div>
-                [[_walkingDuration.text]]
-                <iron-icon icon="maps:directions-walk"></iron-icon>
-            </div>
+            <paper-item disabled="true">
+                <div>
+                    <iron-icon icon="maps:directions-car"></iron-icon>
+                    [[_drivingDuration.text]]
+                </div>
+                <div id="distance">
+                    [[_drivingDistance.text]]
+                </div>
+                <div>
+                    [[_walkingDuration.text]]
+                    <iron-icon icon="maps:directions-walk"></iron-icon>
+                </div>
+            </paper-item>
         </template>
     </template>
     <script>

@@ -14,9 +14,7 @@
         <paper-listbox>
             <template is="dom-repeat" items="[[_goals]]" as="goal">
                 <trip-goals-goal-item content trip-key="[[tripKey]]" item="[[goal]]"></trip-goals-goal-item>
-                <paper-item disabled="true">
-                    <trip-goals-distance from="[[goal]]" to="[[_getNextGoal(index,_goals)]]"></trip-goals-distance>
-                </paper-item>
+                <trip-goals-distance from="[[goal]]" to="[[_getNextGoal(index,_goals)]]"></trip-goals-distance>
             </template>
         </paper-listbox>
     </template>
