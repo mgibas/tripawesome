@@ -32,16 +32,8 @@
                         5/7 visited
                     </div>
                 </div>
-                <!--             <div id="actions" class="card-actions">
-                <paper-icon-button icon="social:share" on-tap="_share"></paper-icon-button>
-                <paper-icon-button icon="delete" on-tap="_delete"></paper-icon-button>
-                <a href="/trip/[[item.$key]]/details"><paper-icon-button icon="more-vert"></paper-icon-button></a>
-            </div> -->
             </paper-card>
         </a>
-        <paper-toast id="deleteToast" text="Trip '[[item.name]] was deleted." duration="5000">
-            <a on-tap="_undoDelete">Undo</a>
-        </paper-toast>
     </template>
     <script>
     (() => {
@@ -55,30 +47,8 @@
                 return {
                     item: {
                         type: Object
-                    },
-                    deleted: {
-                        type: Boolean,
-                        value: false,
-                        reflectToAttribute: true
                     }
                 };
-            }
-            _handleDetailsTap() {
-                this.fire('details-tap', {
-                    key: this.item.$key
-                });
-            }
-            _delete() {
-                this.deleted = true;
-                this.$.deleteToast.open();
-                this.deleteTimeoutId = setTimeout(() => {
-                    this.$.fb.destroy();
-                }, 5000);
-            }
-            _undoDelete() {
-                clearTimeout(this.deleteTimeoutId);
-                this.deleted = false;
-                this.$.deleteToast.close();
             }
         }
         Polymer(TripCard);

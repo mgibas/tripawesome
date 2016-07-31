@@ -25,6 +25,7 @@
                         <paper-icon-button hidden$="[[!cancelButton]]" icon="cancel" on-tap="_handleCancelTap"></paper-icon-button>
                         <div title>[[title]]</div>
                         <paper-icon-button hidden$="[[!confirmButton]]" icon="check" on-tap="_handleConfirmTap"></paper-icon-button>
+                        <content select="[extra-button]"></content>
                     </app-toolbar>
                     <content select="app-toolbar"></content>
                 </app-header>

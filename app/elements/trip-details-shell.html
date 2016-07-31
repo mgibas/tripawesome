@@ -7,13 +7,19 @@
         }
         </style>
         <triptrip-shell-layout back-button title="[[trip.name]]" header-background-url="[[trip.location.photoUrl]]">
+            <paper-menu-button extra-button horizontal-align="right">
+                <paper-icon-button icon="more-vert" class="dropdown-trigger"></paper-icon-button>
+                <paper-menu class="dropdown-content">
+                    <paper-item on-tap="_handleDeleteTap">Delete</paper-item>
+                </paper-menu>
+            </paper-menu-button>
             <app-toolbar class="middle"></app-toolbar>
             <app-toolbar class="bottom">
                 <div title>
                     <div>[[trip.location.name]]</div>
                 </div>
             </app-toolbar>
-            <trip-details key="[[key]]" trip="{{trip}}"></trip-details>
+            <trip-details id="details" key="[[key]]" trip="{{trip}}"></trip-details>
         </triptrip-shell-layout>
     </template>
     <script>
@@ -31,6 +37,12 @@
                         notify: true
                     }
                 };
+            }
+
+            _handleDeleteTap() {
+                console.log('deleting');
+                this.$.details.delete();
+                window.history.go(-1);
             }
         }
         Polymer(TripDetailsShell);

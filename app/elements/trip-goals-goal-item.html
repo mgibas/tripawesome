@@ -41,8 +41,8 @@
             @apply(--layout-center);
         }
         </style>
-        <firebase-document id="fb" app-name="tripawesome" path="/trips/[[tripKey]]/goals/[[item.key]]"></firebase-document>
-        <paper-item  hidden$="[[deleted]]">
+        <firebase-document id="fb" app-name="tripawesome" path="/trips/[[tripKey]]/goals/[[item.$key]]"></firebase-document>
+        <paper-item>
             <paper-swipe id="swipe" peek-offset="200">
                 <div class="layout horizontal" content>
                     <iron-image src="[[item.location.photoUrl]]" sizing="cover" preload fade></iron-image>
@@ -58,7 +58,7 @@
                         <paper-icon-button icon="delete" on-tap="_handleDeleteTap"></paper-icon-button>
                     </div>
                 </div>
-        </paper-swipe>
+            </paper-swipe>
         </paper-item>
         <paper-toast id="deleteToast" text="Goal '[[item.location.name]] was deleted." duration="5000">
             <a on-tap="_undoDelete">Undo</a>
@@ -76,28 +76,11 @@
                 return {
                     tripKey: {
                         type: String
-                    },
-                    deleted: {
-                        type: Boolean,
-                        value: false,
-                        reflectToAttribute: true
                     }
                 };
             }
             _handleDeleteTap() {
-                this.deleted = true;
-                this.$.deleteToast.open();
-                this.deleteTimeoutId = setTimeout(() => {
-                    this.$.fb.destroy();
-                }, 5000);
-            }
-            _undoDelete() {
-                clearTimeout(this.deleteTimeoutId);
-                this.deleted = false;
-                this.$.deleteToast.close();
-            }
-            _handleCheckTap() {
-
+                this.$.fb.destroy();
             }
         }
         Polymer(TripGoalsGoalItem);

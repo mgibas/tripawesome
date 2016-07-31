@@ -11,10 +11,11 @@
             width: 100%;
         }
         </style>
+        <firebase-query app-name="tripawesome" path="[[_goalsPath]]" data="{{goals}}"></firebase-query>
         <paper-listbox>
-            <template is="dom-repeat" items="[[_goals]]" as="goal">
-                <trip-goals-goal-item content trip-key="[[tripKey]]" item="[[goal]]"></trip-goals-goal-item>
-                <trip-goals-distance from="[[goal]]" to="[[_getNextGoal(index,_goals)]]"></trip-goals-distance>
+            <template is="dom-repeat" items="{{goals}}" as="goal">
+                <trip-goals-goal-item content trip-key="[[tripKey]]" item="{{goal}}"></trip-goals-goal-item>
+                <trip-goals-distance from="{{goal}}" to="{{_getNextGoal(index, goals)}}" all-goals="{{goals}}"></trip-goals-distance>
             </template>
         </paper-listbox>
     </template>
@@ -31,25 +32,22 @@
                     tripKey: {
                         type: String
                     },
-                    _goals: {
+                    goals: {
                         type: Array,
-                        computed: '_computeGoals(goals)'
+                    },
+                    _goalsPath: {
+                        type: String,
+                        computed: '_computeGoalsPath(tripKey)'
                     }
                 };
             }
 
-            _computeGoals(goals) {
-                if (!goals) return [];
-
-                return Object.keys(goals)
-                    .map((k) => {
-                        goals[k].key = k;
-                        return goals[k];
-                    });
+            _computeGoalsPath(tripKey) {
+                return `/trips/${tripKey}/goals`;
             }
 
-            _getNextGoal(index) {
-                return this._goals[index + 1];
+            _getNextGoal(index, goals) {
+                return this.goals[index + 1];
             }
         }
         Polymer(TripGoals);

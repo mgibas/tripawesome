@@ -7,7 +7,7 @@
         }
         </style>
         <firebase-document id="fb" app-name="tripawesome" path="/trips/[[key]]" data="{{trip}}"></firebase-document>
-        <trip-goals trip-key="[[key]]" goals="{{trip.goals}}" on-goals-updated="_handleGoalsUpdated"></trip-goals>
+        <trip-goals trip-key="[[key]]"></trip-goals>
         <a href$="/trip/[[key]]/add-goal">
             <paper-fab class="action-right" icon="add"></paper-fab>
         </a>
@@ -24,34 +24,11 @@
                     trip: {
                         type: Object,
                         notify: true
-                    },
-                    _editingName: {
-                        type: Boolean,
-                        value: false
-                    },
-                    _nameInputTarget: {
-                        type: Object,
-                        value: () => this.$.nameInput
                     }
                 };
             }
-            _addGoal() {
-                this._addingGoal = 1;
-            }
-            _handlePlaceSelected(e, data) {
-                this._addingGoal = 0;
-                var newGoal = {
-                    location: data
-                };
-                this.trip.goals = this.trip.goals || [];
-                this.trip.goals.push(newGoal);
-                this.$.fb.save(`/trips`, this.key);
-            }
-            _handlePlaceSearchCanceled() {
-                this._addingGoal = 0;
-            }
-            _handleGoalsUpdated() {
-                this.$.fb.save(`/trips`, this.key);
+            delete() {
+                this.$.fb.destroy();
             }
         }
         Polymer(TripDetails);
