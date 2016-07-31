@@ -23,7 +23,7 @@
                 <paper-input value="{{_searchQuery}}" label="Search For Something To Do"></paper-input>
             </div>
         </app-toolbar>
-        <paper-listbox on-selected-changed="_handleSelectionChanged" selected-item="{{_selectedPlace}}">
+        <paper-listbox selected-item="{{_selectedPlace}}">
             <template is="dom-repeat" items="[[places]]" as="item">
                 <paper-item item="[[item]]">
                     <trip-goal-search-item item="[[item]]"></trip-goal-search-item>

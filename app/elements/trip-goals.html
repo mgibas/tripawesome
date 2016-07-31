@@ -14,7 +14,7 @@
         <firebase-query app-name="tripawesome" path="[[_goalsPath]]" data="{{goals}}"></firebase-query>
         <paper-listbox>
             <template is="dom-repeat" items="{{goals}}" as="goal">
-                <trip-goals-goal-item content trip-key="[[tripKey]]" item="{{goal}}"></trip-goals-goal-item>
+                <trip-goals-goal-item content trip-key="[[tripKey]]" key="[[goal.$key]]" item="[[goal]]"></trip-goals-goal-item>
                 <trip-goals-distance from="{{goal}}" to="{{_getNextGoal(index, goals)}}" all-goals="{{goals}}"></trip-goals-distance>
             </template>
         </paper-listbox>
