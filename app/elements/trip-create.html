@@ -46,12 +46,12 @@
                 };
                 if (this._selectedLocation.item.photos.length > 0) {
                     this.newTrip.location.photoUrl = this._selectedLocation.item.photos[0].getUrl({
-                        maxWidth: 1000,
-                        maxHeight: 1000
+                        maxWidth: 2000,
+                        maxHeight: 2000
                     });
                     this.newTrip.location.thumbnailUrl = this._selectedLocation.item.photos[0].getUrl({
-                        maxWidth: 100,
-                        maxHeight: 100
+                        maxWidth: 400,
+                        maxHeight: 400
                     });
                 }
                 this.$.fb.save('/trips')
