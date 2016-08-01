@@ -11,6 +11,7 @@
         <google-map-search global-search="true" map="[[map]]" query="[[_debouncedSearchQuery]]" results="{{locations}}" types="locality" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg">
         </google-map-search>
         <google-map map="{{map}}" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg"></google-map>
+        <canvas id="canvas" hidden width="10"></canvas>
         <paper-material class="flex">
             <paper-input label="Name" value="{{newTrip.name}}"></paper-input>
             <paper-input value="{{_searchQuery}}" label="Enter Location"></paper-input>
@@ -44,22 +45,16 @@
                     latitude: this._selectedLocation.item.latitude,
                     longitude: this._selectedLocation.item.longitude,
                 };
-                if (this._selectedLocation.item.photos.length > 0) {
-                    this.newTrip.location.photoUrl = this._selectedLocation.item.photos[0].getUrl({
-                        maxWidth: 2000,
-                        maxHeight: 2000
-                    });
-                    this.newTrip.location.thumbnailUrl = this._selectedLocation.item.photos[0].getUrl({
-                        maxWidth: 400,
-                        maxHeight: 400
-                    });
-                }
-                this.$.fb.save('/trips')
+                this._prepareImages()
+                    .then(() => {
+                        return this.$.fb.save('/trips');
+                    })
                     .then(() => {
                         this.$.fb.reset();
                         this.newTrip = {};
                         this.fire('created');
                     });
+
             }
             reset() {
                 this.newTrip = null;
@@ -71,7 +66,44 @@
                     this._debouncedSearchQuery = this._searchQuery;
                 }, 200);
             }
+            _prepareImages() {
+                return new Promise((resolve, reject) => {
+                    if (this._selectedLocation.item.photos.length === 0) resolve();
 
+                    this.newTrip.location.photoUrl = this._selectedLocation.item.photos[0].getUrl({
+                        maxWidth: 2000,
+                        maxHeight: 2000
+                    });
+                    this.newTrip.location.thumbnailUrl = this._selectedLocation.item.photos[0].getUrl({
+                        maxWidth: 400,
+                        maxHeight: 400
+                    });
+                    var ratio = this._selectedLocation.item.photos[0].width / this._selectedLocation.item.photos[0].height;
+                    var placeholderUrl = this._selectedLocation.item.photos[0].getUrl({
+                        maxWidth: 10,
+                        maxHeight: Math.floor(10 / ratio)
+                    });
+                    this._imageToBase64(placeholderUrl)
+                        .then((placeholder) => {
+                            this.newTrip.location.placeholder = placeholder;
+                            resolve();
+                        });
+                });
+            }
+            _imageToBase64(url) {
+                return new Promise((resolve, reject) => {
+                    var img = new Image();
+                    img.onload = () => {
+                        this.$.canvas.height = img.height;
+                        this.$.canvas.width = img.width;
+                        var context = this.$.canvas.getContext('2d');
+                        context.drawImage(img, 0, 0, this.$.canvas.width, this.$.canvas.height);
+                        resolve(this.$.canvas.toDataURL('image/jpeg'));
+                    };
+                    img.crossOrigin = 'Anonymous';
+                    img.src = url;
+                });
+            }
         }
         Polymer(TripCreate);
     })();

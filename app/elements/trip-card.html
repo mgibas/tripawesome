@@ -4,10 +4,14 @@
         <style include="shared-styles">
         :host {
             display: inline-block;
-            /*@apply(--layout-vertical);*/
             --paper-card-header-image: {
-                max-width: 400px;
-                max-height: 400px;
+                width: 350px;
+                height: 200px;
+                object-fit: cover;
+            }
+            ;
+            --iron-image-placeholder: {
+                background-size: 100%
             }
             ;
         }
@@ -30,7 +34,7 @@
         <firebase-document id="fb" app-name="tripawesome" data="[[item]]" path="/trips/[[item.$key]]">
         </firebase-document>
         <a href="/trip/[[item.$key]]/details">
-            <paper-card heading="[[item.name]]" hidden$="[[deleted]]" image="[[item.location.thumbnailUrl]]">
+            <paper-card heading="[[item.name]]" hidden$="[[deleted]]" image="[[item.location.thumbnailUrl]]" preload-image="true" fade-image="true" placeholder-image="[[item.location.placeholder]]">
                 <div class="trip-header">
                     [[item.location.name]]
                     <div class="trip-status cafe-light">
