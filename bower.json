@@ -40,7 +40,8 @@
     "paper-menu-button": "PolymerElements/paper-menu-button#^1.5.0",
     "paper-spinner": "PolymerElements/paper-spinner#^1.2.0",
     "loading-overlay": "L-u-k-e/loading-overlay#^1.0.0",
-    "paper-card": "PolymerElements/paper-card#^1.1.1"
+    "paper-card": "PolymerElements/paper-card#^1.1.1",
+    "paper-toggle-button": "PolymerElements/paper-toggle-button#^1.1.2"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"

@@ -1,0 +1,46 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<dom-module id="trip-goal-details-review">
+    <template>
+        <style include="iron-flex shared-styles">
+        :host {
+            display: block;
+            @apply(--layout-horizontal);
+        }
+
+        .avatar iron-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 25px;
+            background-color: var(--paper-grey-600);
+        }
+
+        .content {
+            @apply(--layout-flex);
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        .light {
+            color: var(--paper-grey-600);
+        }
+        </style>
+        <div class="avatar">
+            <iron-image sizing="cover" preload fade src="[[authorImageUrl]]"></iron-image>
+        </div>
+        <div class="content">
+            <p>[[author]]</p>
+            <p class="light">[[rating]]/5</p>
+            <p>[[text]]</p>
+        </div>
+    </template>
+    <script>
+    (() => {
+        class TripGoalDetailsReview {
+            get is() {
+                return 'trip-goal-details-review';
+            }
+        }
+        Polymer(TripGoalDetailsReview);
+    })();
+    </script>
+</dom-module>
