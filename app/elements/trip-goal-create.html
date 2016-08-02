@@ -18,6 +18,7 @@
         <google-map-search id="search" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg" map="[[map]]" query="[[_debouncedSearchQuery]]" results="{{places}}" radius="100000" types="point_of_interest amusement_park aquarium art_gallery library bakery bar cafe movie_theater campground museum night_club park casino cemetery church city_hall restaurant shopping_mall spa stadium synagogue zoo neighborhood">
         </google-map-search>
         <google-map api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg" map="{{map}}" latitude="[[latitude]]" longitude="[[longitude]]"></google-map>
+        <canvas id="canvas" hidden width="10"></canvas>
         <app-toolbar role="search">
             <div title>
                 <paper-input value="{{_searchQuery}}" label="Search For Something To Do"></paper-input>
@@ -59,12 +60,11 @@
                         longitude: this._selectedPlace.item.longitude
                     }
                 };
-                if (this._selectedPlace.item.photos.length > 0)
-                    this._newGoal.location.photoUrl = this._selectedPlace.item.photos[0].getUrl({
-                        maxHeight: 100,
-                        maxWidth: 100
-                    });
-                this.$.fb.save(`/trips/${this.key}/goals`)
+
+                this._prepareImages()
+                    .then(() => {
+                        return this.$.fb.save(`/trips/${this.key}/goals`);
+                    })
                     .then(() => {
                         this.$.fb.reset();
                         this._newGoal = {};
@@ -79,6 +79,44 @@
                 this.debounce('update-search-query', () => {
                     this._debouncedSearchQuery = this._searchQuery;
                 }, 200);
+            }
+            _prepareImages() {
+                return new Promise((resolve, reject) => {
+                    if (this._selectedPlace.item.photos.length === 0) resolve();
+
+                    this._newGoal.location.photoUrl = this._selectedPlace.item.photos[0].getUrl({
+                        maxWidth: 2000,
+                        maxHeight: 2000
+                    });
+                    this._newGoal.location.thumbnailUrl = this._selectedPlace.item.photos[0].getUrl({
+                        maxWidth: 100,
+                        maxHeight: 100
+                    });
+                    var ratio = this._selectedPlace.item.photos[0].width / this._selectedPlace.item.photos[0].height;
+                    var placeholderUrl = this._selectedPlace.item.photos[0].getUrl({
+                        maxWidth: 10,
+                        maxHeight: Math.floor(10 / ratio)
+                    });
+                    this._imageToBase64(placeholderUrl)
+                        .then((placeholder) => {
+                            this._newGoal.location.placeholder = placeholder;
+                            resolve();
+                        });
+                });
+            }
+            _imageToBase64(url) {
+                return new Promise((resolve, reject) => {
+                    var img = new Image();
+                    img.onload = () => {
+                        this.$.canvas.height = img.height;
+                        this.$.canvas.width = img.width;
+                        var context = this.$.canvas.getContext('2d');
+                        context.drawImage(img, 0, 0, this.$.canvas.width, this.$.canvas.height);
+                        resolve(this.$.canvas.toDataURL('image/jpeg'));
+                    };
+                    img.crossOrigin = 'Anonymous';
+                    img.src = url;
+                });
             }
         }
         Polymer(TripGoalCreate);

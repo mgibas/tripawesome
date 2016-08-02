@@ -7,7 +7,9 @@
         }
         </style>
         <app-route route="[[route]]" pattern="/:key" data="{{routeData}}"></app-route>
-        <triptrip-shell-layout back-button more-button title="[[goal.location.name]]">
+        <triptrip-shell-layout back-button more-button title="[[goal.location.name]]" header-background-url="[[goal.location.photoUrl]]">
+            <app-toolbar class="middle"></app-toolbar>
+            <app-toolbar class="bottom"></app-toolbar>
             <paper-item more-button-menu-item on-tap="_handleDeleteTap">Delete</paper-item>
             <trip-goal-details id="details" trip-key="[[tripKey]]" goal-key="[[routeData.key]]" goal="{{goal}}"></trip-goal-details>
         </triptrip-shell-layout>
