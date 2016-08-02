@@ -47,7 +47,12 @@
             </iron-collapse>
         </paper-material>
         <paper-material elevation="1">
-            <label>Address</label>
+            <div class="layout horizontal">
+                <label class="flex">Address</label>
+                <a href="http://maps.apple.com/?q=[[goal.location.latitude]],[[goal.location.longitude]]" tabindex="-1">
+                    <paper-icon-button icon="maps:navigation"></paper-icon-button>
+                </a>
+            </div>
             <p>[[_details.formatted_address]]</p>
             <google-map map="{{map}}" latitude="[[_lat]]" longitude="[[_lng]]" zoom="15" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg">
                 <google-map-marker latitude="[[_lat]]" longitude="[[_lng]]" title="[[item.name]]"></google-map-marker>
