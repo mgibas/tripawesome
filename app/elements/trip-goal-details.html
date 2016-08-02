@@ -1,0 +1,33 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<dom-module id="trip-goal-details">
+    <template>
+        <style include="shared-styles">
+        :host {
+            display: block;
+        }
+        </style>
+        <firebase-document id="fb" app-name="tripawesome" path="/trips/[[tripKey]]/goals/[[goalKey]]" data="{{goal}}"></firebase-document>
+    </template>
+    <script>
+    (() => {
+        'use strict';
+        class TripGoalDetails {
+            get is() {
+                return 'trip-goal-details';
+            }
+            get properties() {
+                return {
+                    goal: {
+                        type: Object,
+                        notify: true
+                    }
+                };
+            }
+            delete() {
+                this.$.fb.destroy();
+            }
+        }
+        Polymer(TripGoalDetails);
+    })();
+    </script>
+</dom-module>

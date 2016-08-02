@@ -40,28 +40,15 @@
         }
         </style>
         <firebase-document id="fb" app-name="tripawesome" path="[[_goalPath]]" data="{{item}}"></firebase-document>
-        <paper-item>
-            <paper-swipe id="swipe" peek-offset="200">
-                <div class="layout horizontal" content>
-                    <iron-image src="[[item.location.photoUrl]]" sizing="cover" preload fade></iron-image>
-                    <div class="title flex">
-                        <strong>[[item.location.name]]</strong>
-                    </div>
+        <a href="/trip/[[tripKey]]/goal/[[key]]">
+            <paper-item>
+                <iron-image src="[[item.location.photoUrl]]" sizing="cover" preload fade></iron-image>
+                <div class="title flex">
+                    <strong>[[item.location.name]]</strong>
                 </div>
-                <div underlay class="layout horizontal">
-                    <div class="mark">
-                        <paper-icon-button hidden$="[[item.visited]]" icon="done" on-tap="_handleVisitedTogleTap"></paper-icon-button>
-                        <paper-icon-button hidden$="[[!item.visited]]" icon="undo" on-tap="_handleVisitedTogleTap"></paper-icon-button>
-                    </div>
-                    <div class="delete">
-                        <paper-icon-button icon="delete" on-tap="_handleDeleteTap"></paper-icon-button>
-                    </div>
-                </div>
-            </paper-swipe>
-        </paper-item>
-        <paper-toast id="deleteToast" text="Goal '[[item.location.name]] was deleted." duration="5000">
-            <a on-tap="_undoDelete">Undo</a>
-        </paper-toast>
+                <!-- <paper-icon-button icon="more-vert"></paper-icon-button> -->
+            </paper-item>
+        </a>
     </template>
     <script>
     (() => {
@@ -87,14 +74,6 @@
             }
             _computeGoalPath(tripKey) {
                 return `/trips/${this.tripKey}/goals/${this.key}`;
-            }
-            _handleDeleteTap() {
-                this.$.fb.destroy();
-            }
-            _handleVisitedTogleTap() {
-                this.item.visited = !this.item.visited;
-                this.$.fb.save(`/trips/${this.tripKey}/goals`, this.key);
-                this.$.swipe.resetPosition();
             }
         }
         Polymer(TripGoalsGoalItem);

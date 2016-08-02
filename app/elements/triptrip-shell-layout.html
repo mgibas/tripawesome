@@ -25,7 +25,12 @@
                         <paper-icon-button hidden$="[[!cancelButton]]" icon="cancel" on-tap="_handleCancelTap"></paper-icon-button>
                         <div title>[[title]]</div>
                         <paper-icon-button hidden$="[[!confirmButton]]" icon="check" on-tap="_handleConfirmTap"></paper-icon-button>
-                        <content select="[extra-button]"></content>
+                        <paper-menu-button hidden$="[[!moreButton]]" horizontal-align="right">
+                            <paper-icon-button icon="more-vert" class="dropdown-trigger"></paper-icon-button>
+                            <paper-menu class="dropdown-content">
+                                <content select="paper-item[more-button-menu-item]"></content>
+                            </paper-menu>
+                        </paper-menu-button>
                     </app-toolbar>
                     <content select="app-toolbar"></content>
                 </app-header>
@@ -60,6 +65,10 @@
                         value: false
                     },
                     confirmButton: {
+                        type: Boolean,
+                        value: false
+                    },
+                    moreButton: {
                         type: Boolean,
                         value: false
                     },
