@@ -19,7 +19,7 @@
             font-weight: bold;
         }
         </style>
-        <firebase-document id="fb" app-name="tripawesome" path="/trips/[[tripKey]]/goals/[[goalKey]]" data="{{goal}}"></firebase-document>
+        <firebase-document id="fb" app-name="tripawesome" path="[[_goalPath]]" data="{{goal}}"></firebase-document>
         <google-map-search id="search" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg" map="[[map]]">
         </google-map-search>
         <paper-material elevation="1">
@@ -75,9 +75,16 @@
             }
             get properties() {
                 return {
+                    key: {
+                        type: String
+                    },
                     goal: {
                         type: Object,
                         notify: true
+                    },
+                    _goalPath: {
+                        type: String,
+                        computed: '_computeGoalPath(key)'
                     },
                     _lat: {
                         type: Number,
@@ -99,16 +106,17 @@
             delete() {
                 this.$.fb.destroy();
             }
+            _computeGoalPath(key) {
+                return `/goals/${key}`;
+            }
             _handleVisitedChange() {
-                this.$.fb.save(`/trips/${this.tripKey}/goals`, this.goalKey);
+                this.$.fb.save(`/goals`, this.key);
             }
             _goalLocationChanged(location) {
                 if (!location) return;
-                console.log('getting goal details');
                 this.$.search.getDetails(location.placeId)
                     .then((details) => {
                         this._details = details;
-                        console.log(this._details);
                     });
             }
             _toggleHours() {

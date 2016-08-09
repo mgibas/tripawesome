@@ -6,7 +6,7 @@
             display: block;
         }
         </style>
-        <firebase-document id="fb" app-name="tripawesome" path="/trips/[[key]]" data="{{trip}}"></firebase-document>
+        <firebase-document id="fb" app-name="tripawesome" path="[[tripPath]]" data="{{trip}}"></firebase-document>
         <trip-goals trip-key="[[key]]"></trip-goals>
         <a href$="/trip/[[key]]/add-goal">
             <paper-fab class="action-right" icon="add"></paper-fab>
@@ -23,12 +23,27 @@
                 return {
                     trip: {
                         type: Object,
-                        notify: true
+                        notify: true,
+                        observer: 'test'
+                    },
+                    key: {
+                        type: String
+                    },
+                    tripPath: {
+                        type: String,
+                        computed: '_computeTripPath(key)'
                     }
                 };
             }
             delete() {
                 this.$.fb.destroy();
+            }
+            test(newt, oldt) {
+                console.log(oldt);
+                console.log(newt);
+            }
+            _computeTripPath(key) {
+                return `/trips/${key}`;
             }
         }
         Polymer(TripDetails);

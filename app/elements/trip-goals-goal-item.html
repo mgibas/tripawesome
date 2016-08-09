@@ -6,10 +6,6 @@
             display: block;
         }
 
-        google-map {
-            height: 200px;
-        }
-
         iron-image {
             width: 50px;
             height: 50px;
@@ -18,33 +14,12 @@
         .title {
             margin-left: 1rem;
         }
-
-        div[content] {
-            background-color: var(--primary-background-color);
-        }
-
-        paper-swipe {
-            min-height: 50px;
-            @apply(--layout-flex);
-        }
-
-        .delete {
-            @apply(--layout-end-justified);
-        }
-
-        .mark,
-        .delete {
-            @apply(--layout-flex);
-            @apply(--layout-horizontal);
-            @apply(--layout-center);
-        }
         </style>
-        <firebase-document id="fb" app-name="tripawesome" path="[[_goalPath]]" data="{{item}}"></firebase-document>
-        <a href="/trip/[[tripKey]]/goal/[[key]]">
+        <a href="/trip/[[goal.tripKey]]/goal/[[goal.$key]]">
             <paper-item>
-                <iron-image src="[[item.location.photoUrl]]" sizing="cover" preload fade placeholder="[[item.location.placeholder]]"></iron-image>
+                <iron-image src="[[goal.location.photoUrl]]" sizing="cover" preload fade placeholder="[[goal.location.placeholder]]"></iron-image>
                 <div class="title flex">
-                    <strong>[[item.location.name]]</strong>
+                    <strong>[[goal.location.name]]</strong>
                 </div>
             </paper-item>
         </a>
@@ -56,23 +31,6 @@
         class TripGoalsGoalItem {
             get is() {
                 return 'trip-goals-goal-item';
-            }
-            get properties() {
-                return {
-                    tripKey: {
-                        type: String
-                    },
-                    key: {
-                        type: String
-                    },
-                    _goalPath: {
-                        type: String,
-                        computed: '_computeGoalPath(tripKey, key)'
-                    }
-                };
-            }
-            _computeGoalPath(tripKey) {
-                return `/trips/${this.tripKey}/goals/${this.key}`;
             }
         }
         Polymer(TripGoalsGoalItem);
