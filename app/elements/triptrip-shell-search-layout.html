@@ -1,0 +1,56 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<dom-module id="triptrip-shell-search-layout">
+    <template>
+        <style include="shared-styles iron-flex">
+        :host {
+            display: block;
+        }
+
+        app-header {
+            background-color: initial;
+        }
+
+        [title] {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        </style>
+        <app-drawer-layout force-narrow="true" fullbleed class="vertical layout">
+            <app-drawer></app-drawer>
+            <app-header-layout has-scrolling-region>
+                <app-header id="header" condenses reveals>
+                    <app-toolbar class="layout horizontal">
+                        <div class="flex">
+                            <paper-search-input back-button on-back-tap="_handleBackTap" value="{{searchValue}}" placeholder="[[searchPlaceholder]]"></paper-search-input>
+                        </div>
+                    </app-toolbar>
+                </app-header>
+                <content></content>
+            </app-header-layout>
+        </app-drawer-layout>
+    </template>
+    <script>
+    (() => {
+        'use strict';
+
+        class TripTripShellSearchLayout {
+            get is() {
+                return 'triptrip-shell-search-layout';
+            }
+            get properties() {
+                return {
+                    searchValue: {
+                        type: String,
+                        notify: true
+                    }
+                };
+            }
+            _handleBackTap() {
+                this.fire('back-tap');
+                window.history.go(-1);
+            }
+        }
+        Polymer(TripTripShellSearchLayout);
+    })();
+    </script>
+</dom-module>

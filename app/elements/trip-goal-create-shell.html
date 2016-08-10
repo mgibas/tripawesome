@@ -6,9 +6,9 @@
             display: block;
         }
         </style>
-        <triptrip-shell-layout cancel-button confirm-button title="Add Goal" on-confirm-tap="_handleConfirmTap" on-cancel-tap="_handleCancelTap">
-            <trip-goal-create id="createGoal" key="[[key]]" latitude="[[latitude]]" longitude="[[longitude]]" on-created="_handleCreated"></trip-goal-create>
-        </triptrip-shell-layout>
+        <triptrip-shell-search-layout on-back-tap="_handleCancelTap" search-value="{{_searchValue}}">
+            <trip-goal-create id="createGoal" search-value="[[_searchValue]]" key="[[key]]" latitude="[[latitude]]" longitude="[[longitude]]" on-created="_handleCreated"></trip-goal-create>
+        </triptrip-shell-search-layout>
     </template>
     <script>
     (() => {
@@ -17,9 +17,6 @@
         class TripGoalCreateShell {
             get is() {
                 return 'trip-goal-create-shell';
-            }
-            _handleConfirmTap() {
-                this.$.createGoal.save();
             }
             _handleCancelTap() {
                 this.$.createGoal.reset();

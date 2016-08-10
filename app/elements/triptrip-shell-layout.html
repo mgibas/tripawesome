@@ -1,7 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <dom-module id="triptrip-shell-layout">
     <template>
-        <style include="shared-styles">
+        <style include="shared-styles iron-flex">
         :host {
             display: block;
         }
@@ -28,7 +28,11 @@
                         <paper-icon-button hidden$="[[!burgerButton]]" icon="menu" drawer-toggle></paper-icon-button>
                         <paper-icon-button hidden$="[[!backButton]]" icon="arrow-back" on-tap="_handleBackTap"></paper-icon-button>
                         <paper-icon-button hidden$="[[!cancelButton]]" icon="cancel" on-tap="_handleCancelTap"></paper-icon-button>
-                        <div class="flex" title>[[title]]</div>
+                        <div class="flex" title hidden>[[title]]</div>
+                        <div class="flex">
+                            <content select="[toolbar-search]">
+                            </content>
+                        </div>
                         <paper-icon-button hidden$="[[!confirmButton]]" icon="check" on-tap="_handleConfirmTap"></paper-icon-button>
                         <paper-menu-button hidden$="[[!moreButton]]" horizontal-align="right">
                             <paper-icon-button icon="more-vert" class="dropdown-trigger"></paper-icon-button>
@@ -54,8 +58,7 @@
             get properties() {
                 return {
                     title: {
-                        type: String,
-                        value: "TripAwesome"
+                        type: String
                     },
                     burgerButton: {
                         type: Boolean,

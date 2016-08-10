@@ -23,8 +23,7 @@
                 return {
                     trip: {
                         type: Object,
-                        notify: true,
-                        observer: 'test'
+                        notify: true
                     },
                     key: {
                         type: String
@@ -37,10 +36,6 @@
             }
             delete() {
                 this.$.fb.destroy();
-            }
-            test(newt, oldt) {
-                console.log(oldt);
-                console.log(newt);
             }
             _computeTripPath(key) {
                 return `/trips/${key}`;

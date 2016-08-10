@@ -1,7 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <dom-module id="trip-goal-create">
     <template>
-        <style include="shared-styles">
+        <style include="shared-styles iron-flex">
         :host {
             display: block;
         }
@@ -13,17 +13,16 @@
         [title] {
             pointer-events: all !important;
         }
+
+        app-toolbar {
+            background-color: #FFF
+        }
         </style>
         <firebase-document id="fb" app-name="tripawesome" data="{{_newGoal}}"></firebase-document>
         <google-map-search id="search" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg" map="[[map]]" query="[[_debouncedSearchQuery]]" results="{{places}}" radius="100000" types="point_of_interest amusement_park aquarium art_gallery library bakery bar cafe movie_theater campground museum night_club park casino cemetery church city_hall restaurant shopping_mall spa stadium synagogue zoo neighborhood">
         </google-map-search>
         <google-map api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg" map="{{map}}" latitude="[[latitude]]" longitude="[[longitude]]"></google-map>
         <canvas id="canvas" hidden width="10"></canvas>
-        <app-toolbar role="search">
-            <div title>
-                <paper-input value="{{_searchQuery}}" label="Search For Something To Do"></paper-input>
-            </div>
-        </app-toolbar>
         <paper-listbox selected-item="{{_selectedPlace}}">
             <template is="dom-repeat" items="[[places]]" as="item">
                 <paper-item item="[[item]]">
@@ -31,6 +30,7 @@
                 </paper-item>
             </template>
         </paper-listbox>
+        <paper-fab icon="check" class="action-right" hidden$="[[!_selected]]"></paper-fab>
     </template>
     <script>
     (() => {
@@ -41,13 +41,21 @@
             }
             get properties() {
                 return {
-                    _searchQuery: {
+                    searchValue: {
                         type: String,
-                        observer: '_searchQueryChanged'
+                        observer: '_searchValueChanged'
                     },
                     _canSelect: {
                         type: Boolean,
                         value: false
+                    },
+                    _selectedPlace: {
+                        type: Object
+                    },
+                    _selected: {
+                        type: Boolean,
+                        value: false,
+                        computed: '_computeSelected(_selectedPlace)'
                     }
                 };
             }
@@ -73,12 +81,15 @@
                     });
             }
             reset() {
-                this._searchQuery = null;
+                this.searchValue = null;
                 this.places = null;
             }
-            _searchQueryChanged(value) {
+            _computeSelected(selectedPlace) {
+                return !!selectedPlace;
+            }
+            _searchValueChanged(value) {
                 this.debounce('update-search-query', () => {
-                    this._debouncedSearchQuery = this._searchQuery;
+                    this._debouncedSearchQuery = this.searchValue;
                 }, 200);
             }
             _prepareImages() {
