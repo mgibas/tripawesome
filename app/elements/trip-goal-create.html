@@ -7,8 +7,12 @@
         }
 
         trip-goal-search-item {
-            width: 100%;
+            margin-bottom: 1rem;
+            padding-left: 1rem;
+            padding-right: 1rem;
         }
+
+        trip-goal-search-item {}
 
         [title] {
             pointer-events: all !important;
@@ -23,14 +27,9 @@
         </google-map-search>
         <google-map api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg" map="{{map}}" latitude="[[latitude]]" longitude="[[longitude]]"></google-map>
         <canvas id="canvas" hidden width="10"></canvas>
-        <paper-listbox selected-item="{{_selectedPlace}}">
-            <template is="dom-repeat" items="[[places]]" as="item">
-                <paper-item item="[[item]]">
-                    <trip-goal-search-item item="[[item]]"></trip-goal-search-item>
-                </paper-item>
-            </template>
-        </paper-listbox>
-        <paper-fab icon="check" class="action-right" hidden$="[[!_selected]]"></paper-fab>
+        <template is="dom-repeat" items="[[places]]" as="item">
+            <trip-goal-search-item item="[[item]]" on-select="save"></trip-goal-search-item>
+        </template>
     </template>
     <script>
     (() => {
@@ -59,18 +58,18 @@
                     }
                 };
             }
-            save() {
+            save(e, selectedPlace) {
                 this._newGoal = {
                     tripKey: this.key,
                     location: {
-                        name: this._selectedPlace.item.name,
-                        placeId: this._selectedPlace.item.place_id,
-                        latitude: this._selectedPlace.item.latitude,
-                        longitude: this._selectedPlace.item.longitude
+                        name: selectedPlace.name,
+                        placeId: selectedPlace.place_id,
+                        latitude: selectedPlace.latitude,
+                        longitude: selectedPlace.longitude
                     }
                 };
 
-                this._prepareImages()
+                this._prepareImages(selectedPlace)
                     .then(() => {
                         return this.$.fb.save(`/goals`);
                     })
@@ -92,20 +91,20 @@
                     this._debouncedSearchQuery = this.searchValue;
                 }, 200);
             }
-            _prepareImages() {
+            _prepareImages(selectedPlace) {
                 return new Promise((resolve, reject) => {
-                    if (this._selectedPlace.item.photos.length === 0) resolve();
+                    if (selectedPlace.photos.length === 0) resolve();
 
-                    this._newGoal.location.photoUrl = this._selectedPlace.item.photos[0].getUrl({
+                    this._newGoal.location.photoUrl = selectedPlace.photos[0].getUrl({
                         maxWidth: 2000,
                         maxHeight: 2000
                     });
-                    this._newGoal.location.thumbnailUrl = this._selectedPlace.item.photos[0].getUrl({
+                    this._newGoal.location.thumbnailUrl = selectedPlace.photos[0].getUrl({
                         maxWidth: 100,
                         maxHeight: 100
                     });
-                    var ratio = this._selectedPlace.item.photos[0].width / this._selectedPlace.item.photos[0].height;
-                    var placeholderUrl = this._selectedPlace.item.photos[0].getUrl({
+                    var ratio = selectedPlace.photos[0].width / selectedPlace.photos[0].height;
+                    var placeholderUrl = selectedPlace.photos[0].getUrl({
                         maxWidth: 10,
                         maxHeight: Math.floor(10 / ratio)
                     });
