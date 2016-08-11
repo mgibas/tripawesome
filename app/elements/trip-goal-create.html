@@ -93,10 +93,10 @@
             }
             _searchValueChanged(value) {
                 this.debounce('update-search-query', () => {
-                    if (value === '') {
+                    if (!value || value === '') {
                         this.places = null;
                     }
-                    this._searching = value !== '';
+                    this._searching = value && value !== '';
                     this._debouncedSearchQuery = value;
                 }, 200);
             }
