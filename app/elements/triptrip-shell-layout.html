@@ -13,14 +13,38 @@
             ;
         }
 
+        app-drawer iron-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50px;
+        }
+
+        .avatar,
+        .name {
+            @apply(--layout-horizontal);
+            @apply(--layout-center-justified);
+        }
+
         [title] {
             overflow: hidden;
             text-overflow: ellipsis;
         }
         </style>
+        <firebase-auth id="auth" app-name="tripawesome" user="{{user}}" on-user-changed="test" provider="facebook" signed-in="{{_authenticated}}">
+        </firebase-auth>
         <app-drawer-layout force-narrow="true" fullbleed class="vertical layout">
-            <app-drawer>
-                <app-toolbar>User Menu</app-toolbar>
+            <app-drawer id="drawer">
+                <app-toolbar>
+                    <div class="flex">Menu</div>
+                    <paper-icon-button icon="exit-to-app" on-tap="_handleExitTap"></paper-icon-button>
+                </app-toolbar>
+                <app-toolbar class="avatar">
+                    <iron-image src="[[user.photoURL]]"></iron-image>
+                </app-toolbar>
+                <app-toolbar class="name">
+                    <span>[[user.displayName]]</span>
+                </app-toolbar>
+                <hr class="divider" />
             </app-drawer>
             <app-header-layout has-scrolling-region>
                 <app-header id="header" condenses reveals effects="waterfall fade-background [[headerEffect]]">
@@ -88,6 +112,14 @@
                         observer: '_onHeaderBackgroundUrlChanged'
                     }
                 };
+            }
+            test(a, b) {
+                console.log(a);
+                console.log(b);
+            }
+            _handleExitTap() {
+                this.$.auth.signOut();
+                this.$.drawer.close();
             }
             _handleBackTap() {
                 this.fire('back-tap');

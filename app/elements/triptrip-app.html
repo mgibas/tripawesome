@@ -10,6 +10,7 @@
         <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
         <firebase-app name="tripawesome" auth-domain="project-3846386819515834955.firebaseapp.com" database-url="https://project-3846386819515834955.firebaseio.com" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg">
         </firebase-app>
+        <triptrip-auth></triptrip-auth>
         <iron-pages class="flex" selected="[[routeData.page]]" attr-for-selected="name" selected-attribute="visible" fallback-selection="trips">
             <trips-shell name="trips"></trips-shell>
             <trip-shell name="trip" route="[[subroute]]"></trip-shell>
