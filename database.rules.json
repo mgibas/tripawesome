@@ -1,7 +1,9 @@
 {
-    ".read": true,
-    ".write": true,
-    "goals": {
-        ".indexOn": ["tripKey"]
+    "rules": {
+        ".read": true,
+        ".write": true,
+        "goals": {
+            ".indexOn": ["tripKey"]
+        }
     }
 }
