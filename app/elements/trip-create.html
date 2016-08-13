@@ -6,21 +6,22 @@
             display: block;
             @apply(--layout-vertical);
         }
+
+        trip-city-search-item {
+            margin-bottom: 1rem;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
         </style>
         <firebase-document id="fb" app-name="tripawesome" data="{{newTrip}}"></firebase-document>
-        <google-map-search global-search="true" map="[[map]]" query="[[_debouncedSearchQuery]]" results="{{locations}}" types="locality" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg">
+        <google-map-search global-search="true" map="[[map]]" query="[[_debouncedSearchQuery]]" results="{{cities}}" types="locality" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg" on-google-map-search-results="_handleGoogleResults">
         </google-map-search>
         <google-map map="{{map}}" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg"></google-map>
         <canvas id="canvas" hidden width="10"></canvas>
-        <paper-material class="flex">
-            <paper-input label="Name" value="{{newTrip.name}}"></paper-input>
-            <paper-input value="{{_searchQuery}}" label="Enter Location"></paper-input>
-            <paper-listbox selected-item="{{_selectedLocation}}">
-                <template is="dom-repeat" items="[[locations]]" as="item">
-                    <paper-item item="[[item]]">[[item.name]]</paper-item>
-                </template>
-            </paper-listbox>
-        </paper-material>
+        <template is="dom-repeat" items="[[cities]]" as="city">
+            <trip-city-search-item item="[[city]]" on-select="save"></trip-city-search-item>
+        </template>
+        <loading-overlay active="[[_searching]]"></loading-overlay>
     </template>
     <script>
     (() => {
@@ -32,20 +33,24 @@
             }
             get properties() {
                 return {
-                    _searchQuery: {
+                    searchValue: {
                         type: String,
-                        observer: '_searchQueryChanged'
+                        observer: 'searchValueChanged'
+                    },
+                    _searching: {
+                        type: Boolean,
+                        value: false
                     }
                 };
             }
-            save() {
+            save(e, city) {
                 this.newTrip.location = {
-                    name: this._selectedLocation.item.name,
-                    placeId: this._selectedLocation.item.place_id,
-                    latitude: this._selectedLocation.item.latitude,
-                    longitude: this._selectedLocation.item.longitude,
+                    name: city.name,
+                    placeId: city.place_id,
+                    latitude: city.latitude,
+                    longitude: city.longitude,
                 };
-                this._prepareImages()
+                this._prepareImages(city)
                     .then(() => {
                         return this.$.fb.save('/trips');
                     })
@@ -58,28 +63,35 @@
             }
             reset() {
                 this.newTrip = null;
-                this._searchQuery = null;
-                this.locations = null;
+                this.searchValue = null;
+                this.cities = null;
             }
-            _searchQueryChanged(value) {
+            searchValueChanged(value) {
                 this.debounce('update-search-query', () => {
-                    this._debouncedSearchQuery = this._searchQuery;
+                    if (!value || value === '') {
+                        this.cities = null;
+                    }
+                    this._searching = value && value !== '';
+                    this._debouncedSearchQuery = value;
                 }, 200);
             }
-            _prepareImages() {
+            _handleGoogleResults() {
+                this._searching = false;
+            }
+            _prepareImages(city) {
                 return new Promise((resolve, reject) => {
-                    if (this._selectedLocation.item.photos.length === 0) resolve();
+                    if (city.photos.length === 0) resolve();
 
-                    this.newTrip.location.photoUrl = this._selectedLocation.item.photos[0].getUrl({
+                    this.newTrip.location.photoUrl = city.photos[0].getUrl({
                         maxWidth: 2000,
                         maxHeight: 2000
                     });
-                    this.newTrip.location.thumbnailUrl = this._selectedLocation.item.photos[0].getUrl({
+                    this.newTrip.location.thumbnailUrl = city.photos[0].getUrl({
                         maxWidth: 400,
                         maxHeight: 400
                     });
-                    var ratio = this._selectedLocation.item.photos[0].width / this._selectedLocation.item.photos[0].height;
-                    var placeholderUrl = this._selectedLocation.item.photos[0].getUrl({
+                    var ratio = city.photos[0].width / city.photos[0].height;
+                    var placeholderUrl = city.photos[0].getUrl({
                         maxWidth: 10,
                         maxHeight: Math.floor(10 / ratio)
                     });

@@ -12,15 +12,6 @@
             padding-right: 1rem;
         }
 
-        trip-goal-search-item {}
-
-        [title] {
-            pointer-events: all !important;
-        }
-
-        app-toolbar {
-            background-color: #FFF
-        }
         </style>
         <firebase-document id="fb" app-name="tripawesome" data="{{_newGoal}}"></firebase-document>
         <google-map-search id="search" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg" map="[[map]]" query="[[_debouncedSearchQuery]]" results="{{places}}" radius="100000" types="point_of_interest amusement_park aquarium art_gallery library bakery bar cafe movie_theater campground museum night_club park casino cemetery church city_hall restaurant shopping_mall spa stadium synagogue zoo neighborhood" on-google-map-search-results="_handleGoogleResults">
@@ -44,18 +35,6 @@
                     searchValue: {
                         type: String,
                         observer: '_searchValueChanged'
-                    },
-                    _canSelect: {
-                        type: Boolean,
-                        value: false
-                    },
-                    _selectedPlace: {
-                        type: Object
-                    },
-                    _selected: {
-                        type: Boolean,
-                        value: false,
-                        computed: '_computeSelected(_selectedPlace)'
                     },
                     _searching: {
                         type: Boolean,
