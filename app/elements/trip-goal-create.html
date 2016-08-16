@@ -11,7 +11,6 @@
             padding-left: 1rem;
             padding-right: 1rem;
         }
-
         </style>
         <firebase-document id="fb" app-name="tripawesome" data="{{_newGoal}}"></firebase-document>
         <google-map-search id="search" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg" map="[[map]]" query="[[_debouncedSearchQuery]]" results="{{places}}" radius="100000" types="point_of_interest amusement_park aquarium art_gallery library bakery bar cafe movie_theater campground museum night_club park casino cemetery church city_hall restaurant shopping_mall spa stadium synagogue zoo neighborhood" on-google-map-search-results="_handleGoogleResults">
@@ -55,7 +54,7 @@
 
                 this._prepareImages(selectedPlace)
                     .then(() => {
-                        return this.$.fb.save(`/goals`);
+                        return this.$.fb.save(`/users/${this.userUid}/goals`);
                     })
                     .then(() => {
                         this.$.fb.reset();

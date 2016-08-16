@@ -24,6 +24,10 @@
             }
             get properties() {
                 return {
+                    user: {
+                        type: Object,
+                        notify: true
+                    },
                     _authenticated: {
                         type: Boolean,
                         observer: '_authenticatedChanged'

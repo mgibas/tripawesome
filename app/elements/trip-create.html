@@ -40,7 +40,12 @@
                     _searching: {
                         type: Boolean,
                         value: false
+                    },
+                    userUid: {
+                        type: String
                     }
+
+
                 };
             }
             save(e, city) {
@@ -52,14 +57,13 @@
                 };
                 this._prepareImages(city)
                     .then(() => {
-                        return this.$.fb.save('/trips');
+                        return this.$.fb.save(`/users/${this.userUid}/trips`);
                     })
                     .then(() => {
                         this.$.fb.reset();
                         this.newTrip = {};
                         this.fire('created');
                     });
-
             }
             reset() {
                 this.newTrip = null;

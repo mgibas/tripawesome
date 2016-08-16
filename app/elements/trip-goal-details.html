@@ -78,13 +78,16 @@
                     key: {
                         type: String
                     },
+                    userUid: {
+                        type: String
+                    },
                     goal: {
                         type: Object,
                         notify: true
                     },
                     _goalPath: {
                         type: String,
-                        computed: '_computeGoalPath(key)'
+                        computed: '_computeGoalPath(userUid,key)'
                     },
                     _lat: {
                         type: Number,
@@ -106,8 +109,8 @@
             delete() {
                 this.$.fb.destroy();
             }
-            _computeGoalPath(key) {
-                return `/goals/${key}`;
+            _computeGoalPath(userUid, key) {
+                return `users/${userUid}/goals/${key}`;
             }
             _handleVisitedChange() {
                 this.$.fb.save(`/goals`, this.key);

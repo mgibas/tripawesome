@@ -11,7 +11,7 @@
             <app-toolbar class="middle"></app-toolbar>
             <app-toolbar class="bottom"></app-toolbar>
             <paper-item more-button-menu-item on-tap="_handleDeleteTap">Delete</paper-item>
-            <trip-goal-details id="details" key="[[routeData.key]]" goal="{{goal}}"></trip-goal-details>
+            <trip-goal-details user-uid="[[userUid]]" id="details" key="[[routeData.key]]" goal="{{goal}}"></trip-goal-details>
         </triptrip-shell-layout>
     </template>
     <script>

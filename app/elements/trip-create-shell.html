@@ -6,8 +6,10 @@
             display: block;
         }
         </style>
+        <firebase-auth id="auth" app-name="tripawesome" user="{{user}}" provider="facebook" signed-in="{{_authenticated}}">
+        </firebase-auth>
         <triptrip-shell-search-layout on-back-tap="_handleCancelTap" search-value="{{_searchValue}}" search-placeholder="Choose City">
-            <trip-create id="createGoal" search-value="[[_searchValue]]" on-created="_handleCreated"></trip-create>
+            <trip-create id="createGoal" user-uid="[[user.uid]]" search-value="[[_searchValue]]" on-created="_handleCreated"></trip-create>
         </triptrip-shell-search-layout>
     </template>
     <script>

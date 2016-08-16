@@ -7,7 +7,7 @@
         }
         </style>
         <triptrip-shell-search-layout on-back-tap="_handleCancelTap" search-value="{{_searchValue}}" search-placeholder="Find Interesting Place">
-            <trip-goal-create id="createGoal" search-value="[[_searchValue]]" key="[[key]]" latitude="[[latitude]]" longitude="[[longitude]]" on-created="_handleCreated"></trip-goal-create>
+            <trip-goal-create user-uid="[[userUid]]" id="createGoal" search-value="[[_searchValue]]" key="[[key]]" latitude="[[latitude]]" longitude="[[longitude]]" on-created="_handleCreated"></trip-goal-create>
         </triptrip-shell-search-layout>
     </template>
     <script>

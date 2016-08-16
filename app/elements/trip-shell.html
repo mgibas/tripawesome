@@ -8,9 +8,9 @@
         </style>
         <app-route route="[[route]]" pattern="/:key/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
         <iron-pages class="flex" selected="[[routeData.page]]" attr-for-selected="name" fallback-selection="details">
-            <trip-details-shell name="details" key="[[routeData.key]]" trip="{{trip}}"></trip-details-shell>
-            <trip-goal-create-shell name="add-goal" key="[[routeData.key]]" latitude="[[trip.location.latitude]]" longitude="[[trip.location.longitude]]"></trip-goal-create-shell>
-            <trip-goal-details-shell name="goal" trip-key="[[routeData.key]]" route="[[subroute]]"></trip-goal-details-shell>
+            <trip-details-shell user-uid="[[userUid]]" name="details" key="[[routeData.key]]" trip="{{trip}}"></trip-details-shell>
+            <trip-goal-create-shell user-uid="[[userUid]]" name="add-goal" key="[[routeData.key]]" latitude="[[trip.location.latitude]]" longitude="[[trip.location.longitude]]"></trip-goal-create-shell>
+            <trip-goal-details-shell user-uid="[[userUid]]" name="goal" trip-key="[[routeData.key]]" route="[[subroute]]"></trip-goal-details-shell>
         </iron-pages>
     </template>
     <script>

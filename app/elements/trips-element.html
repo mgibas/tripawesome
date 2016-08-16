@@ -23,7 +23,7 @@
             margin-top: 0rem;
         }
         </style>
-        <firebase-query app-name="tripawesome" path="/trips" data="{{trips}}"></firebase-query>
+        <firebase-query app-name="tripawesome" path="/users/[[userUid]]/trips" data="{{trips}}"></firebase-query>
         <firebase-document id="fbNewTrip" app-name="tripawesome" data="{{newTrip}}"></firebase-document>
         <div id="cards">
             <template is="dom-repeat" items="{{trips}}" as="item">
