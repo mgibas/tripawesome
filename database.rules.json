@@ -1,9 +1,13 @@
 {
     "rules": {
-        ".read": true,
-        ".write": true,
-        "goals": {
-            ".indexOn": ["tripKey"]
+        "users": {
+            "$user": {
+                ".read": "$user === auth.uid",
+                ".write": "$user === auth.uid",
+                "goals": {
+                    ".indexOn": ["tripKey"]
+                }
+            }
         }
     }
 }
