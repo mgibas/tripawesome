@@ -78,6 +78,9 @@
                     key: {
                         type: String
                     },
+                    tripKey: {
+                        type: String
+                    },
                     userUid: {
                         type: String
                     },
@@ -87,7 +90,7 @@
                     },
                     _goalPath: {
                         type: String,
-                        computed: '_computeGoalPath(userUid,key)'
+                        computed: '_computeGoalPath(userUid,tripKey,key)'
                     },
                     _lat: {
                         type: Number,
@@ -109,11 +112,11 @@
             delete() {
                 this.$.fb.destroy();
             }
-            _computeGoalPath(userUid, key) {
-                return `users/${userUid}/goals/${key}`;
+            _computeGoalPath(userUid, tripKey, key) {
+                return `users/${userUid}/trip-goals/${tripKey}/${key}`;
             }
             _handleVisitedChange() {
-                this.$.fb.save(`/goals`, this.key);
+                this.$.fb.save(`/users/${this.userUid}/trip-goals/${this.tripKey}`, this.key);
             }
             _goalLocationChanged(location) {
                 if (!location) return;

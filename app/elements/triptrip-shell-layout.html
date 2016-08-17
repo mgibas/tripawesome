@@ -30,7 +30,7 @@
             text-overflow: ellipsis;
         }
         </style>
-        <firebase-auth id="auth" app-name="tripawesome" user="{{user}}" on-user-changed="test" provider="facebook" signed-in="{{_authenticated}}">
+        <firebase-auth id="auth" app-name="tripawesome" user="{{user}}" provider="facebook" signed-in="{{_authenticated}}">
         </firebase-auth>
         <app-drawer-layout force-narrow="true" fullbleed class="vertical layout">
             <app-drawer id="drawer">
@@ -112,10 +112,6 @@
                         observer: '_onHeaderBackgroundUrlChanged'
                     }
                 };
-            }
-            test(a, b) {
-                console.log(a);
-                console.log(b);
             }
             _handleExitTap() {
                 this.$.auth.signOut();

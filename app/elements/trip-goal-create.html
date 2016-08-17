@@ -43,7 +43,6 @@
             }
             save(e, selectedPlace) {
                 this._newGoal = {
-                    tripKey: this.key,
                     location: {
                         name: selectedPlace.name,
                         placeId: selectedPlace.place_id,
@@ -54,7 +53,7 @@
 
                 this._prepareImages(selectedPlace)
                     .then(() => {
-                        return this.$.fb.save(`/users/${this.userUid}/goals`);
+                        return this.$.fb.save(`/users/${this.userUid}/trip-goals/${this.key}`);
                     })
                     .then(() => {
                         this.$.fb.reset();

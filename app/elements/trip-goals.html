@@ -11,10 +11,10 @@
             width: 100%;
         }
         </style>
-        <firebase-query app-name="tripawesome" path="users/[[userUid]]/goals" data="{{goals}}" order-by-child="tripKey" equal-to="[[tripKey]]"></firebase-query>
+        <firebase-query app-name="tripawesome" path="users/[[userUid]]/trip-goals/[[tripKey]]" data="{{goals}}"></firebase-query>
         <paper-listbox>
             <template is="dom-repeat" items="{{goals}}" as="goal">
-                <trip-goals-goal-item goal="[[goal]]"></trip-goals-goal-item>
+                <trip-goals-goal-item goal="[[goal]]" trip-key="[[tripKey]]"></trip-goals-goal-item>
                 <trip-goals-distance from="{{goal}}" to="{{_getNextGoal(index, goals)}}" all-goals="{{goals}}"></trip-goals-distance>
             </template>
         </paper-listbox>
