@@ -13,6 +13,12 @@
                         ".write": "$user === auth.uid || root.child('users/' + auth.uid + '/shared-trips/' + $user +'/' + $trip + '/write').exists()"
                     }
                 },
+                "trip-goals": {
+                    "$trip": {
+                        ".read": "$user === auth.uid || root.child('users/' + auth.uid + '/shared-trips/' + $user +'/' + $trip + '/read').exists()",
+                        ".write": "$user === auth.uid || root.child('users/' + auth.uid + '/shared-trips/' + $user +'/' + $trip + '/write').exists()"
+                    }
+                },
                 "shared-trips": {
                     "$owner": {
                         ".read": "$user === auth.uid || $owner === auth.uid",
