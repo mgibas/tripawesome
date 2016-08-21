@@ -1,0 +1,48 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<dom-module id="trip-details-share-dialog">
+    <template>
+        <style include="shared-styles">
+        :host {
+            display: block;
+        }
+        </style>
+        <paper-dialog id="dialog" modal>
+            <h2>Share</h2>
+            <paper-input value="http://localhost:5000/share/-KPFk--iHJGikcsChUJM/231231342342423123"></paper-input>
+            <p>You can share your trip with anyone - just send above link.</p>
+            <div class="buttons">
+                <paper-button dialog-dismiss>Cancel</paper-button>
+                <a href="mailto:?subject=TripAwesome&body=I want to share a trip with you: http://localhost:5000/share/-KPFk--iHJGikcsChUJM/231231342342423123">
+                    <paper-button>E-mail</paper-button>
+                </a>
+                <a href="sms:&body=I want to share a trip with you: http://localhost:5000/share/-KPFk--iHJGikcsChUJM/231231342342423123">
+                    <paper-button>Text</paper-button>
+                </a>
+            </div>
+        </paper-dialog>
+    </template>
+    <script>
+    (() => {
+        'use strict';
+
+        class TripDetailsShareDialog {
+            get is() {
+                return 'trip-details-share-dialog';
+            }
+            get properties() {
+                return {
+                    trip: {
+                        type: Object,
+                        notify: true
+                    }
+                };
+            }
+
+            open() {
+                this.$.dialog.open();
+            }
+        }
+        Polymer(TripDetailsShareDialog);
+    })();
+    </script>
+</dom-module>
