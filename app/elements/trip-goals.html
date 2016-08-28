@@ -11,11 +11,11 @@
             width: 100%;
         }
         </style>
-        <firebase-query app-name="tripawesome" path="users/[[userUid]]/trip-goals/[[tripKey]]" data="{{goals}}"></firebase-query>
+        <firebase-query id="query" app-name="tripawesome" path="users/[[userUid]]/trip-goals/[[tripKey]]" data="{{goals}}"></firebase-query>
         <paper-listbox>
-            <template is="dom-repeat" items="{{goals}}" as="goal">
-                <trip-goals-goal-item goal="[[goal]]" trip-key="[[tripKey]]"></trip-goals-goal-item>
-                <trip-goals-distance from="{{goal}}" to="{{_getNextGoal(index, goals)}}" all-goals="{{goals}}"></trip-goals-distance>
+            <template is="dom-repeat" items="{{goals}}" as="goal" sort="_sortGoals" observe="priority">
+                <trip-goals-goal-item key="[[goal.$key]]" trip-key="[[tripKey]]" user-uid="[[userUid]]" on-move-up="_handleMoveUp" on-move-down="_handleMoveDown"></trip-goals-goal-item>
+                <trip-goals-distance from="{{goal}}" to="{{_getNextGoal(goal)}}" all-goals="{{goals}}"></trip-goals-distance>
             </template>
         </paper-listbox>
     </template>
@@ -33,13 +33,32 @@
                         type: String
                     },
                     goals: {
-                        type: Array,
-                    },
+                        type: Array
+                    }
                 };
             }
+            _sortGoals(a, b) {
+                if (a.priority == b.priority) return 0;
+                return a.priority > b.priority ? 1 : -1;
+            }
+            _getNextGoal(goal) {
+                return this.goals.find((g) => g.priority === goal.priority + 1);
+            }
 
-            _getNextGoal(index, goals) {
-                return this.goals[index + 1];
+            _handleMoveUp(e, currentItem) {
+                var previousItem = Polymer.dom(this.root).querySelectorAll('trip-goals-goal-item')
+                    .find((item) => item !== currentItem && item.goal.priority === currentItem.goal.priority - 1);
+
+                currentItem.decreasPriority();
+                previousItem.increasPriority();
+            }
+
+            _handleMoveDown(e, currentItem) {
+                var nextItem = Polymer.dom(this.root).querySelectorAll('trip-goals-goal-item')
+                    .find((item) => item !== currentItem && item.goal.priority === currentItem.goal.priority + 1);
+
+                currentItem.increasPriority();
+                nextItem.decreasPriority();
             }
         }
         Polymer(TripGoals);

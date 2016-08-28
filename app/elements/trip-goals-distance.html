@@ -75,7 +75,7 @@
             _fromOrToChanged(from, to) {
                 if (!to) return;
                 this._loading = true;
-                var fromLatLng = new google.maps.LatLng(from.location.latitude, from.location.longitude);
+                var fromLatLng = new google.maps.LatLng(this.from.location.latitude, this.from.location.longitude);
                 var toLatLng = new google.maps.LatLng(to.location.latitude, to.location.longitude);
                 var distanceService = new this.$.api.api.DistanceMatrixService();
                 distanceService.getDistanceMatrix({
