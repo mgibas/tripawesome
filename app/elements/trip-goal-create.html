@@ -13,11 +13,11 @@
         }
         </style>
         <firebase-document id="fb" app-name="tripawesome" data="{{_newGoal}}"></firebase-document>
-        <google-map-search id="search" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg" map="[[map]]" query="[[_debouncedSearchQuery]]" results="{{places}}" radius="100000" types="point_of_interest amusement_park aquarium art_gallery library bakery bar cafe movie_theater campground museum night_club park casino cemetery church city_hall restaurant shopping_mall spa stadium synagogue zoo neighborhood" on-google-map-search-results="_handleGoogleResults">
+        <google-map-search id="search" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg" map="[[map]]" query="[[_debouncedSearchQuery]]" results="{{places}}" types="amusement_park aquarium art_gallery library bakery bar cafe campground museum night_club park cemetery church city_hall restaurant spa stadium synagogue zoo neighborhood" on-google-map-search-results="_handleGoogleResults">
         </google-map-search>
         <google-map api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg" map="{{map}}" latitude="[[latitude]]" longitude="[[longitude]]"></google-map>
         <canvas id="canvas" hidden width="10"></canvas>
-        <template is="dom-repeat" items="[[places]]" as="item">
+        <template is="dom-repeat" items="[[places]]" as="item" filter="_filterPlaces" sort="_sortPlaces">
             <trip-goal-search-item item="[[item]]" on-select="save"></trip-goal-search-item>
         </template>
         <loading-overlay active="[[_searching]]"></loading-overlay>
@@ -64,6 +64,13 @@
             reset() {
                 this.searchValue = null;
                 this.places = null;
+            }
+            _sortPlaces(a, b) {
+                if (a.rating === b.rating) return 0;
+                return a.rating > b.rating ? -1 : 1;
+            }
+            _filterPlaces(place) {
+                return place.rating && place.photos.length > 0;
             }
             _computeSelected(selectedPlace) {
                 return !!selectedPlace;
