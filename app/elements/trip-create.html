@@ -1,4 +1,5 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="google-map-place-autocomplete.html">
 <dom-module id="trip-create">
     <template>
         <style include="shared-styles iron-flex iron-flex-alignment">
@@ -12,14 +13,24 @@
             padding-left: 1rem;
             padding-right: 1rem;
         }
+
+        paper-material {
+            margin-left: 1rem;
+            margin-right: 1rem;
+            width: initial;
+        }
         </style>
         <firebase-document id="fb" app-name="tripawesome" data="{{newTrip}}"></firebase-document>
-        <google-map-search global-search="true" map="[[map]]" query="[[_debouncedSearchQuery]]" results="{{cities}}" types="locality" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg" on-google-map-search-results="_handleGoogleResults">
-        </google-map-search>
+        <google-map-place-autocomplete map="[[map]]" input="[[_debouncedSearchQuery]]" results="{{cities}}" types="(cities)" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg" on-google-map-place-autocomplete-results="_handleGoogleResults">
+        </google-map-place-autocomplete>
         <google-map map="{{map}}" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg"></google-map>
         <canvas id="canvas" hidden width="10"></canvas>
         <template is="dom-repeat" items="[[cities]]" as="city">
             <trip-city-search-item item="[[city]]" on-select="save"></trip-city-search-item>
+        </template>
+        <paper-material>Popular Cities</paper-material>
+        <template is="dom-repeat" items="[[popularCities]]" as="popularCity">
+            <trip-city-search-item item="[[popularCity]]" on-select="save"></trip-city-search-item>
         </template>
         <loading-overlay active="[[_searching]]"></loading-overlay>
     </template>
@@ -43,9 +54,25 @@
                     },
                     userUid: {
                         type: String
+                    },
+                    popularCities: {
+                        type: Array,
+                        value: function() {
+                            return [{
+                                place_id: "ChIJdd4hrwug2EcRmSrV3Vo6llI"
+                            }, {
+                                place_id: "ChIJD7fiBh9u5kcRYJSMaMOCCwQ"
+                            }, {
+                                place_id: "ChIJu46S-ZZhLxMROG5lkwZ3D7k"
+                            }, {
+                                place_id: "ChIJOwg_06VPwokRYv534QaPC8g"
+                            }, {
+                                place_id: "ChIJ5TCOcRaYpBIRCmZHTz37sEQ"
+                            }, {
+                                place_id: "ChIJXSModoWLGGARILWiCfeu2M0"
+                            }];
+                        }
                     }
-
-
                 };
             }
             save(e, city) {
@@ -75,11 +102,11 @@
                     if (!value || value === '') {
                         this.cities = null;
                     }
-                    this._searching = value && value !== '';
+                    this._searching = !!value && value !== '';
                     this._debouncedSearchQuery = value;
                 }, 200);
             }
-            _handleGoogleResults() {
+            _handleGoogleResults(e, results) {
                 this._searching = false;
             }
             _prepareImages(city) {

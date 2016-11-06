@@ -30,17 +30,19 @@
             background-color: var(--light-primary-color);
         }
         </style>
-        <paper-card heading="" image="[[_photoUrl]]" preload-image="true" fade-image="true">
+        <google-map-search id="search" map="[[map]]" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg" on-google-map-search-place-details="_handleDetailsResults">
+        </google-map-search>
+        <paper-card image="[[_photoUrl]]" preload-image="true" fade-image="true">
             <div class="card-content">
-                [[item.formatted_address]]
+                [[_details.formatted_address]]
             </div>
             <div class="card-actions">
                 <paper-icon-button icon="check" on-tap="_select"></paper-icon-button>
                 <paper-icon-button class="right" icon="[[_expandIcon]]" on-tap="_togleDetails"></paper-icon-button>
                 <iron-collapse id="details" opened="{{_detailsExpanded}}">
                     <div>
-                        <google-map fit-to-markers zoom="5" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg">
-                            <google-map-marker latitude="[[item.latitude]]" longitude="[[item.longitude]]" title="[[item.name]]"></google-map-marker>
+                        <google-map map="{{map}}" fit-to-markers zoom="5" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg">
+                            <google-map-marker latitude="[[_details.latitude]]" longitude="[[_details.longitude]]" title="[[_details.name]]"></google-map-marker>
                         </google-map>
                     </div>
                 </iron-collapse>
@@ -56,9 +58,18 @@
             }
             get properties() {
                 return {
+                    item: {
+                        type: Object
+                    },
+                    map: {
+                        type: Object
+                    },
+                    _details: {
+                        type: Object
+                    },
                     _photoUrl: {
                         type: String,
-                        computed: '_computePhotoUrl(item)'
+                        computed: '_computePhotoUrl(_details)'
                     },
                     _detailsExpanded: {
                         type: Boolean,
@@ -70,8 +81,23 @@
                     }
                 };
             }
+            get observers() {
+                return ['itemChanged(item,map)'];
+            }
+            itemChanged(item, map) {
+                if (!map) return;
+                if (this._details && item.place_id == this._details.place_id) return;
+
+                this.$.search.map = map;
+                this.$.search.getDetails(item.place_id)
+                    .then((details) => {
+                        details.latitude = details.geometry.location.lat();
+                        details.longitude = details.geometry.location.lng();
+                        this._details = details;
+                    });
+            }
             _select() {
-                this.fire('select', this.item);
+                this.fire('select', this._details);
             }
             _computeExpandIcon(_detailsExpanded) {
                 if (_detailsExpanded)
