@@ -1,0 +1,17 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<script>
+const TaUserDependentBehavior = {
+    properties: {
+        userUid: {
+            type: String
+        },
+        userFirebasePath: {
+            type: String,
+            computed: '_computeUserFirebasePath(userUid)'
+        }
+    },
+    _computeUserFirebasePath(userUid) {
+        return `/users/${userUid}`;
+    }
+};
+</script>

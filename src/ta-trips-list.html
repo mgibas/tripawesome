@@ -1,0 +1,99 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="ta-user-dependent-behavior.html">
+<link rel="import" href="ta-trip-card.html">
+
+<dom-module id="ta-trips-list">
+    <template>
+        <style inlcude="iron-flex">
+        :host {
+            display: flex;
+            --paper-card-header-color: var(--paper-font-headline);
+            flex-flow: row wrap;
+        }
+        
+        #cards {
+            padding-top: 1rem;
+        }
+        
+        ta-trip-card {
+            flex: 1;
+            margin: 0.5rem;
+        }
+        
+        ta-trip-card {
+            flex-basis: 100%;
+        }
+        
+        @media (min-device-width: 768px) {
+            ta-trip-card {
+                flex-basis: 20%;
+            }
+        }
+        /*trip-card + trip-card {
+            margin-top: 1rem;
+        }
+        
+        trip-card {
+            margin-left: 1rem;
+            margin-right: 1rem;
+        }
+        
+        trip-card[deleted] {
+            margin-top: 0rem;
+        }*/
+        
+        paper-fab.action-right {
+            position: fixed;
+            right: 1rem;
+            bottom: 1rem;
+        }
+        </style>
+        <firebase-query app-name="tripawesome" path="[[userFirebasePath]]/trips" data="{{trips}}"></firebase-query>
+        <firebase-document id="fbNewTrip" app-name="tripawesome" data="{{newTrip}}"></firebase-document>
+        <div id="cards">
+            <template is="dom-repeat" items="{{trips}}" as="item">
+                <ta-trip-card route="{{route}}" item="[[item]]" on-details-tap="_handleDetailsTap"></ta-trip-card>
+            </template>
+        </div>
+        <a href="/trips/create">
+            <paper-fab icon="add" class="action-right"></paper-fab>
+        </a>
+    </template>
+    <script>
+    (() => {
+        'use strict';
+        class TaTripsList {
+            get is() {
+                return 'ta-trips-list';
+            }
+            get behaviors() {
+                return [TaUserDependentBehavior];
+            }
+            get properties() {
+                return {
+                    trips: {
+                        type: Array,
+                        notify: true
+                    },
+                    selectedTrip: {
+                        type: String,
+                        notify: true
+                    }
+                };
+            }
+            _handleDetailsTap(e, data) {
+                this.selectedTrip = data.key;
+                this.fire('trip-selected', data);
+            }
+            _createTrip() {
+                this.fire('create-trip-tap');
+            }
+        }
+        Polymer(TaTripsList);
+    })();
+    </script>
+</dom-module>

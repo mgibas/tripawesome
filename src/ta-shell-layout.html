@@ -1,0 +1,173 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
+
+<link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+
+<dom-module id="ta-shell-layout">
+    <template>
+        <style include="iron-flex">
+        :host {
+            display: block;
+        }
+        
+        app-header {
+            background-color: var(--primary-color);
+            color: var(--text-primary-color);
+            --app-header-background-front-layer: {
+                background-position: left center;
+            }
+            ;
+        }
+        
+        app-drawer iron-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50px;
+        }
+        
+        .avatar,
+        .name {
+            @apply(--layout-horizontal);
+            @apply(--layout-center-justified);
+        }
+        
+        [title] {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        </style>
+        <firebase-auth id="auth" app-name="tripawesome" user="{{user}}" provider="facebook" signed-in="{{_authenticated}}">
+        </firebase-auth>
+        <app-drawer-layout force-narrow="true" fullbleed class="vertical layout">
+            <app-drawer id="drawer">
+                <app-toolbar>
+                    <div class="flex">Menu</div>
+                    <paper-icon-button icon="exit-to-app" on-tap="_handleExitTap"></paper-icon-button>
+                </app-toolbar>
+                <app-toolbar class="avatar">
+                    <iron-image src="[[user.photoURL]]"></iron-image>
+                </app-toolbar>
+                <app-toolbar class="name">
+                    <span>[[user.displayName]]</span>
+                </app-toolbar>
+                <hr class="divider" />
+            </app-drawer>
+            <app-header-layout has-scrolling-region>
+                <app-header id="header" condenses reveals effects="waterfall [[headerEffect]]">
+                    <app-toolbar class="layout horizontal">
+                        <template is="dom-if" if="[[burgerButton]]">
+                            <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
+                        </template>
+                        <template is="dom-if" if="[[backButton]]">
+                            <paper-icon-button icon="arrow-back" on-tap="_handleBackTap"></paper-icon-button>
+                        </template>
+                        <template is="dom-if" if="[[cancelButton]]">
+                            <paper-icon-button icon="cancel" on-tap="_handleCancelTap"></paper-icon-button>
+                        </template>
+                        <div class="flex" title>[[title]]</div>
+                        <div class="flex">
+                            <content select="[toolbar-search]">
+                            </content>
+                        </div>
+                        <template is="dom-if" if="[[confirmButton]]">
+                            <paper-icon-button icon="check" on-tap="_handleConfirmTap"></paper-icon-button>
+                        </template>
+                        <template is="dom-if" if="[[moreButton]]">
+                            <paper-menu-button horizontal-align="right">
+                                <paper-icon-button icon="more-vert" class="dropdown-trigger"></paper-icon-button>
+                                <paper-menu class="dropdown-content">
+                                    <content select="paper-item[more-button-menu-item]"></content>
+                                </paper-menu>
+                            </paper-menu-button>
+                        </template>
+
+                    </app-toolbar>
+                    <content select="app-toolbar"></content>
+                </app-header>
+                <content></content>
+            </app-header-layout>
+        </app-drawer-layout>
+    </template>
+    <script>
+    (() => {
+        'use strict';
+        class TaShellLayout {
+            get is() {
+                return 'ta-shell-layout';
+            }
+            get properties() {
+                return {
+                    title: {
+                        type: String
+                    },
+                    burgerButton: {
+                        type: Boolean,
+                        value: false
+                    },
+                    backButton: {
+                        type: Boolean,
+                        value: false
+                    },
+                    cancelButton: {
+                        type: Boolean,
+                        value: false
+                    },
+                    confirmButton: {
+                        type: Boolean,
+                        value: false
+                    },
+                    moreButton: {
+                        type: Boolean,
+                        value: false
+                    },
+                    headerEffects: {
+                        type: String
+                    },
+                    headerBackgroundUrl: {
+                        type: String,
+                        observer: '_onHeaderBackgroundUrlChanged'
+                    }
+                };
+            }
+            _handleExitTap() {
+                this.$.auth.signOut();
+                this.$.drawer.close();
+            }
+            _handleBackTap() {
+                this.fire('back-tap');
+                window.history.go(-1);
+            }
+            _handleCancelTap() {
+                this.fire('cancel-tap');
+                window.history.go(-1);
+            }
+            _handleConfirmTap() {
+                this.fire('confirm-tap');
+            }
+            _onHeaderBackgroundUrlChanged(url) {
+                if (!url) return;
+                this.headerEffect = 'parallax-background';
+                var background = Polymer.dom(this.$.header.root).querySelector('#backgroundFrontLayer');
+                background.style['background-image'] = `url(${this.headerBackgroundUrl})`;
+                background.style['opacity'] = `0.8`;
+                background.style['filter'] = 'grayscale(80%)';
+            }
+        }
+        Polymer(TaShellLayout);
+    })();
+    </script>
+</dom-module>

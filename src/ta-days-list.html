@@ -1,0 +1,83 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-progress/paper-progress.html">
+
+<dom-module id="ta-days-list">
+    <template>
+        <style include="iron-flex">
+        :host {
+            display: flex;
+            --paper-card-header-color: var(--paper-font-headline);
+            flex-flow: row wrap;
+            --paper-card-header-text: {
+                text-align: center;
+            }
+            ;
+        }
+        
+        paper-progress {
+            width: auto;
+        }
+        
+        paper-card {
+            flex: 1;
+            margin: 0.5rem;
+        }
+        
+        paper-card {
+            flex-basis: 20%;
+        }
+        
+        @media (min-device-width: 768px) {
+            paper-card {
+                flex-basis: 15%;
+            }
+        }
+        </style>
+        <firebase-query id="query" app-name="tripawesome" path="users/[[userUid]]/trips/[[tripKey]]/days" data="{{days}}"></firebase-query>
+        <firebase-document id="newDayFb" app-name="tripawesome" path="users/[[userUid]]/trips/[[tripKey]]/days/"></firebase-document>
+        <template is="dom-repeat" items="{{days}}" as="day" sort="_sortDays">
+            <paper-card heading="[[day.no]]">
+                <paper-progress value="40"></paper-progress>
+            </paper-card>
+        </template>
+    </template>
+    <script>
+    (() => {
+        'use strict';
+        class TaDaysList {
+            get is() {
+                return 'ta-days-list';
+            }
+            get properties() {
+                return {
+                    tripKey: {
+                        type: String
+                    },
+                    goals: {
+                        type: Array
+                    }
+                };
+            }
+            _sortDays(a, b) {
+                return a.no - b.no;
+            }
+            addDay() {
+                var lastDay = 0;
+                if (this.days.length > 0) {
+                    lastDay = this.days
+                        .sort((a, b) => b.no - a.no)[0].no;
+                }
+                this.$.newDayFb.data = {
+                    no: ++lastDay
+                };
+                this.$.newDayFb.save(`/users/${this.userUid}/trips/${this.tripKey}/days/`, lastDay)
+                    .then(() => this.$.newDayFb.reset());
+            }
+        }
+        Polymer(TaDaysList);
+    })();
+    </script>
+</dom-module>

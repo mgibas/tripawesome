@@ -1,0 +1,21 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<script>
+const TaTripDependentBehavior = {
+    properties: {
+        userUid: {
+            type: String
+        },
+        tripKey: {
+            type: String
+        },
+        tripFirebasePath: {
+            type: String,
+            computed: '_computePath(userUid,tripKey)'
+        }
+    },
+    _computePath(userUid, tripKey) {
+        return `/users/${userUid}/trips/${tripKey}`;
+    }
+};
+</script>

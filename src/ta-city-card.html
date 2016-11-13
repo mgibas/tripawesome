@@ -1,0 +1,127 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/google-map/google-map-search.html">
+<link rel="import" href="../bower_components/google-map/google-map.html">
+<link rel="import" href="../bower_components/google-map/google-map-marker.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
+
+<dom-module id="ta-city-card">
+    <template>
+        <style include="iron-flex shared-styles">
+        :host {
+            display: inline-block;
+            --paper-card-header-image: {
+                object-fit: cover;
+                max-height: 200px;
+            }
+            ;
+            @apply(--layout-horizontal);
+        }
+        
+        paper-card {
+            @apply(--layout-flex);
+        }
+        
+        paper-icon-button.right {
+            float: right;
+        }
+        
+        google-map {
+            height: 200px;
+        }
+        
+        iron-image {
+            width: 100px;
+            height: 100px;
+            background-color: var(--light-primary-color);
+        }
+        </style>
+        <google-map-search id="search" map="[[map]]" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg" on-google-map-search-place-details="_handleDetailsResults">
+        </google-map-search>
+        <paper-card image="[[_photoUrl]]" preload-image="true" fade-image="true">
+            <div class="card-content">
+                [[_details.formatted_address]]
+            </div>
+            <div class="card-actions">
+                <paper-icon-button icon="check" on-tap="_select"></paper-icon-button>
+                <paper-icon-button class="right" icon="[[_expandIcon]]" on-tap="_togleDetails"></paper-icon-button>
+                <iron-collapse id="details" opened="{{_detailsExpanded}}">
+                    <div>
+                        <google-map map="{{map}}" fit-to-markers zoom="5" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg">
+                            <google-map-marker latitude="[[_details.latitude]]" longitude="[[_details.longitude]]" title="[[_details.name]]"></google-map-marker>
+                        </google-map>
+                    </div>
+                </iron-collapse>
+            </div>
+        </paper-card>
+    </template>
+    <script>
+    (() => {
+        'use strict';
+        class TaCityCard {
+            get is() {
+                return 'ta-city-card';
+            }
+            get properties() {
+                return {
+                    item: {
+                        type: Object
+                    },
+                    map: {
+                        type: Object
+                    },
+                    _details: {
+                        type: Object
+                    },
+                    _photoUrl: {
+                        type: String,
+                        computed: '_computePhotoUrl(_details)'
+                    },
+                    _detailsExpanded: {
+                        type: Boolean,
+                        value: false
+                    },
+                    _expandIcon: {
+                        type: String,
+                        computed: '_computeExpandIcon(_detailsExpanded)'
+                    }
+                };
+            }
+            get observers() {
+                return ['itemChanged(item,map)'];
+            }
+            itemChanged(item, map) {
+                if (!map) return;
+                if (this._details && item.place_id == this._details.place_id) return;
+                this.$.search.map = map;
+                this.$.search.getDetails(item.place_id)
+                    .then((details) => {
+                        details.latitude = details.geometry.location.lat();
+                        details.longitude = details.geometry.location.lng();
+                        this._details = details;
+                    });
+            }
+            _select() {
+                this.fire('select', this._details);
+            }
+            _computeExpandIcon(_detailsExpanded) {
+                if (_detailsExpanded)
+                    return 'expand-more';
+                return 'expand-less';
+            }
+            _togleDetails() {
+                this._detailsExpanded = !this._detailsExpanded;
+            }
+            _computePhotoUrl(item) {
+                if (!item.photos || item.photos.length === 0) return;
+                return item.photos[0].getUrl({
+                    maxHeight: 400,
+                    maxWidth: 400
+                });
+            }
+        }
+        Polymer(TaCityCard);
+    })();
+    </script>
+</dom-module>

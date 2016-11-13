@@ -1,0 +1,44 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="ta-shared-styles.html">
+<link rel="import" href="ta-user-dependent-behavior.html">
+<link rel="import" href="ta-trip-dependent-behavior.html">
+<link rel="import" href="ta-days-list.html">
+
+<dom-module id="ta-trip-details">
+    <style include="ta-shared-styles"></style>
+    <template>
+        <firebase-document id="fb" app-name="tripawesome" path="[[tripFirebasePath]]" data="{{trip}}"></firebase-document>
+        <ta-days-list id="days" user-uid="[[userUid]]" trip-key="[[tripKey]]"></ta-days-list>
+        <paper-fab class="action-right" icon="add" on-tap="_addDay"></paper-fab>
+    </template>
+    <script>
+    (() => {
+        'use strict';
+        class TaTripDetails {
+            get is() {
+                return 'ta-trip-details';
+            }
+            get behaviors() {
+                return [TaTripDependentBehavior];
+            }
+            get properties() {
+                return {
+                    trip: {
+                        type: Object,
+                        notify: true
+                    }
+                };
+            }
+            delete() {
+                this.$.fb.destroy();
+            }
+            _addDay() {
+                this.$.days.addDay();
+            }
+        }
+        Polymer(TaTripDetails);
+    })();
+    </script>
+</dom-module>

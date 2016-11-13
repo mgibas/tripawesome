@@ -1,0 +1,35 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-app.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="ta-app-theme.html">
+<link rel="import" href="ta-login.html">
+<link rel="import" href="ta-trips-shell.html">
+
+<dom-module id="ta-app">
+    <template>
+        <style>
+        :host {
+            display: block;
+        }
+        </style>
+        <app-location route="{{route}}"></app-location>
+
+        <firebase-app name="tripawesome" auth-domain="project-3846386819515834955.firebaseapp.com" database-url="https://project-3846386819515834955.firebaseio.com" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg">
+        </firebase-app>
+
+        <ta-login user="{{user}}"></ta-login>
+
+        <ta-trips-shell route="[[route]]" user-uid="[[user.uid]]"></ta-trips-shell>
+    </template>
+    <script>
+    (() => {
+        'use strict';
+        class TaApp {
+            get is() {
+                return 'ta-app';
+            }
+        }
+        Polymer(TaApp);
+    })();
+    </script>
+</dom-module>
