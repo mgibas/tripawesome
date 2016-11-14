@@ -28,7 +28,7 @@
     "paper-item": "PolymerElements/paper-item#^1.2.1",
     "paper-menu": "PolymerElements/paper-menu#^1.2.2",
     "paper-menu-button": "PolymerElements/paper-menu-button#^1.5.2",
-    "paper-progress": "PolymerElements/paper-progress#^1.0.11"
+    // "paper-progress": "PolymerElements/paper-progress#^1.0.11"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"

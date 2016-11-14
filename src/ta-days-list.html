@@ -1,47 +1,37 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-query.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
-<link rel="import" href="../bower_components/paper-card/paper-card.html">
-<link rel="import" href="../bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="ta-trip-dependent-behavior.html">
+<link rel="import" href="ta-day-card.html">
 
 <dom-module id="ta-days-list">
     <template>
         <style include="iron-flex">
         :host {
             display: flex;
-            --paper-card-header-color: var(--paper-font-headline);
             flex-flow: row wrap;
-            --paper-card-header-text: {
-                text-align: center;
-            }
-            ;
         }
         
-        paper-progress {
-            width: auto;
-        }
-        
-        paper-card {
+        ta-day-card {
             flex: 1;
             margin: 0.5rem;
         }
         
-        paper-card {
+        ta-day-card {
             flex-basis: 20%;
         }
         
         @media (min-device-width: 768px) {
-            paper-card {
+            ta-day-card {
                 flex-basis: 15%;
             }
         }
         </style>
-        <firebase-query id="query" app-name="tripawesome" path="users/[[userUid]]/trips/[[tripKey]]/days" data="{{days}}"></firebase-query>
+        <firebase-query id="query" app-name="tripawesome" path="[[_firebasePath]]" data="{{days}}"></firebase-query>
         <firebase-document id="newDayFb" app-name="tripawesome" path="users/[[userUid]]/trips/[[tripKey]]/days/"></firebase-document>
         <template is="dom-repeat" items="{{days}}" as="day" sort="_sortDays">
-            <paper-card heading="[[day.no]]">
-                <paper-progress value="40"></paper-progress>
-            </paper-card>
+            <ta-day-card user-uid="[[userUid]]" trip-key="[[tripKey]]" day-key="[[day.$key]]"></ta-day-card>
         </template>
     </template>
     <script>
@@ -51,15 +41,20 @@
             get is() {
                 return 'ta-days-list';
             }
+            get behaviors() {
+                return [TaTripDependentBehavior];
+            }
             get properties() {
                 return {
-                    tripKey: {
-                        type: String
-                    },
-                    goals: {
-                        type: Array
+                    _firebasePath: {
+                        type: String,
+                        computed: '_computeFirebasePath(tripFirebasePath)'
                     }
                 };
+            }
+            _computeFirebasePath(tripPath) {
+                this.$.query.path = null;
+                return `${tripPath}/days`;
             }
             _sortDays(a, b) {
                 return a.no - b.no;
