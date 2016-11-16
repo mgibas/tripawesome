@@ -3,41 +3,41 @@
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="ta-shared-styles.html">
 <link rel="import" href="ta-trip-dependent-behavior.html">
-<link rel="import" href="ta-days-list.html">
+<link rel="import" href="ta-days-collection.html">
 
-<dom-module id="ta-trip-details">
+<dom-module id="ta-day-details">
     <style include="ta-shared-styles"></style>
     <template>
-        <firebase-document id="fb" app-name="tripawesome" path="[[tripFirebasePath]]" data="{{trip}}"></firebase-document>
-        <ta-days-list id="days" user-uid="[[userUid]]" trip-key="[[tripKey]]"></ta-days-list>
-        <paper-fab class="action-right" icon="add" on-tap="_addDay"></paper-fab>
+        <firebase-document id="fb" app-name="tripawesome" path="[[dayFirebasePath]]" data="{{day}}"></firebase-document>
+        <ta-days-collection id="collection" user-uid="[[userUid]]" trip-key="[[tripKey]]"></ta-days-collection>
+        <!-- <ta-goals-list user-uid="[[userUid]]" trip-key="[[tripKey]]"></ta-goals-list> -->
+        <a href="/trips/[[tripKey]]/details/days/[[dayKey]]/details/goals/create">
+            <paper-fab class="action-right" icon="add"></paper-fab>
+        </a>
     </template>
     <script>
     (() => {
         'use strict';
-        class TaTripDetails {
+        class TaDayDetails {
             get is() {
-                return 'ta-trip-details';
+                return 'ta-day-details';
             }
             get behaviors() {
-                return [TaTripDependentBehavior];
+                return [TaDayDependentBehavior];
             }
             get properties() {
                 return {
-                    trip: {
+                    day: {
                         type: Object,
                         notify: true
                     }
                 };
             }
             delete() {
-                this.$.fb.destroy();
-            }
-            _addDay() {
-                this.$.days.addDay();
+                this.$.collection.delete(this.dayKey);
             }
         }
-        Polymer(TaTripDetails);
+        Polymer(TaDayDetails);
     })();
     </script>
 </dom-module>

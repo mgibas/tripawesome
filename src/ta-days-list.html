@@ -4,6 +4,7 @@
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="ta-trip-dependent-behavior.html">
 <link rel="import" href="ta-day-card.html">
+<link rel="import" href="ta-days-collection.html">
 
 <dom-module id="ta-days-list">
     <template>
@@ -28,8 +29,7 @@
             }
         }
         </style>
-        <firebase-query id="query" app-name="tripawesome" path="[[_firebasePath]]" data="{{days}}"></firebase-query>
-        <firebase-document id="newDayFb" app-name="tripawesome" path="users/[[userUid]]/trips/[[tripKey]]/days/"></firebase-document>
+        <ta-days-collection id="collection" user-uid="[[userUid]]" trip-key="[[tripKey]]" days="{{days}}"></ta-days-collection>
         <template is="dom-repeat" items="{{days}}" as="day" sort="_sortDays">
             <ta-day-card user-uid="[[userUid]]" trip-key="[[tripKey]]" day-key="[[day.$key]]"></ta-day-card>
         </template>
@@ -45,31 +45,13 @@
                 return [TaTripDependentBehavior];
             }
             get properties() {
-                return {
-                    _firebasePath: {
-                        type: String,
-                        computed: '_computeFirebasePath(tripFirebasePath)'
-                    }
-                };
-            }
-            _computeFirebasePath(tripPath) {
-                this.$.query.path = null;
-                return `${tripPath}/days`;
+                return {};
             }
             _sortDays(a, b) {
-                return a.no - b.no;
+                return a.number - b.number;
             }
             addDay() {
-                var lastDay = 0;
-                if (this.days.length > 0) {
-                    lastDay = this.days
-                        .sort((a, b) => b.no - a.no)[0].no;
-                }
-                this.$.newDayFb.data = {
-                    no: ++lastDay
-                };
-                this.$.newDayFb.save(`/users/${this.userUid}/trips/${this.tripKey}/days/`, lastDay)
-                    .then(() => this.$.newDayFb.reset());
+                this.$.collection.add();
             }
         }
         Polymer(TaDaysList);
