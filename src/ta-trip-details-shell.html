@@ -5,6 +5,7 @@
 <link rel="import" href="ta-shell-behavior.html">
 <link rel="import" href="ta-shell-layout.html">
 <link rel="import" href="ta-trip-details.html">
+<link rel="import" href="ta-day-details-shell.html">
 
 <dom-module id="ta-trip-details-shell">
     <template>
@@ -17,9 +18,7 @@
                 <app-toolbar class="bottom"></app-toolbar>
                 <ta-trip-details user-uid="[[userUid]]" trip-key="[[tripKey]]" id="details" trip="{{trip}}"></ta-trip-details>
             </ta-shell-layout>
-            <ta-shell-layout title="Day" back-button>
-                <a href="[[route.prefix]]">details</a>
-            </ta-shell-layout>
+            <ta-day-details-shell route="[[dayDetailsTail]]" user-uid="[[userUid]]" trip-key="[[tripKey]]" day-key="[[dayDetailsData.id]]"></ta-day-details-shell>
         </iron-pages>
     </template>
     <script>

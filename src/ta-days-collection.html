@@ -1,0 +1,60 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="ta-trip-dependent-behavior.html">
+
+<dom-module id="ta-days-collection">
+    <template>
+        <firebase-query id="query" app-name="tripawesome" path="[[tripFirebasePath]]/days" data="{{days}}"></firebase-query>
+        <firebase-document id="document" app-name="tripawesome"></firebase-document>
+    </template>
+    <script>
+    (() => {
+        'use strict';
+        class TaDaysCollection {
+            get is() {
+                return 'ta-days-collection';
+            }
+            get behaviors() {
+                return [TaTripDependentBehavior];
+            }
+            get properties() {
+                return {
+                    days: {
+                        type: Object,
+                        notify: true
+                    },
+                    _firebasePath: {
+                        type: String,
+                        computed: '_computeFirebasePath(tripFirebasePath)'
+                    }
+                };
+            }
+            _computeFirebasePath(tripPath) {
+                console.log(`${tripPath}/days`)
+                this.$.query.path = null;
+                return `${tripPath}/days`;
+            }
+            add() {
+                var lastDay = 0;
+                if (this.days.length > 0) {
+                    lastDay = this.days
+                        .sort((a, b) => b.number - a.number)[0].number;
+                }
+                this.$.document.data = {
+                    number: ++lastDay
+                };
+                this.$.document.save(`${this.tripFirebasePath}/days/`)
+                    .then(() => this.$.document.reset());
+            }
+            delete(dayKey) {
+                this.$.document.path = `${this.tripFirebasePath}/days/${dayKey}`;
+                this.$.document.destroy()
+                    .then(() => this.$.document.reset())
+                    .then(() => console.log('yeah'));
+            }
+        }
+        Polymer(TaDaysCollection);
+    })();
+    </script>
+</dom-module>

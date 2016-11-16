@@ -1,0 +1,65 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="../bower_components/paper-ripple/paper-ripple.html">
+<link rel="import" href="ta-day-dependent-behavior.html">
+<link rel="import" href="ta-shared-styles.html">
+
+<dom-module id="ta-day-card">
+    <template>
+        <style include="ta-shared-styles">
+        :host {
+            --paper-card-header-color: var(--paper-font-headline);
+            --paper-card-header-text: {
+                text-align: center;
+            }
+            ;
+        }
+        
+        paper-card {
+            width: 100%;
+        }
+        
+        paper-progress {
+            width: auto;
+        }
+        </style>
+        <firebase-document id="fb" app-name="tripawesome" data="{{day}}" path="[[dayFirebasePath]]">
+        </firebase-document>
+        <a href="/trips/[[tripKey]]/details/days/[[dayKey]]/details">
+            <paper-card heading="[[day.number]]">
+                <paper-ripple></paper-ripple>
+                <paper-progress value="[[_progress]]"></paper-progress>
+            </paper-card>
+        </a>
+    </template>
+    <script>
+    (() => {
+        'use strict';
+        class TaDayCard {
+            get is() {
+                return 'ta-day-card';
+            }
+            get behaviors() {
+                return [TaDayDependentBehavior];
+            }
+            get properties() {
+                return {
+                    _progress: {
+                        type: Number,
+                        computed: '_computeProgress(day)'
+                    }
+                };
+            }
+            _computeProgress(day) {
+                if (!day.goals) return 0;
+                return (day.goals
+                    .filter((g) => g.completed)
+                    .length / day.goals.length) * 100;
+            }
+        }
+        Polymer(TaDayCard);
+    })();
+    </script>
+</dom-module>

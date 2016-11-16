@@ -16,7 +16,6 @@
             display: block;
         }
         </style>
-        <app-route route="{{route}}" pattern="/trips/list" data="{{tripsData}}" active="{{tripsActive}}"></app-route>
         <app-route route="{{route}}" pattern="/trips/create" data="{{createData}}" active="{{createActive}}"></app-route>
         <app-route route="{{route}}" pattern="/trips/:id/details" data="{{detailsData}}" active="{{detailsActive}}" tail="{{detailsTail}}"></app-route>
 
@@ -41,11 +40,7 @@
                 return {
                     page: {
                         type: Number,
-                        computed: '_computePage(tripsActive,createActive,detailsActive)'
-                    },
-                    tripsActive: {
-                        type: Boolean,
-                        value: true
+                        computed: '_computePage(createActive,detailsActive)'
                     },
                     createActive: {
                         type: Boolean,
@@ -60,7 +55,7 @@
             get behaviors() {
                 return [TaShellBehavior, TaUserDependentBehavior];
             }
-            _computePage(tripsActive, createActive, detailsActive) {
+            _computePage(createActive, detailsActive) {
                 if (createActive)
                     return 1;
                 else if (detailsActive)

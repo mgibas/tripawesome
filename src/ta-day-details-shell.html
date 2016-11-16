@@ -1,0 +1,81 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="ta-day-dependent-behavior.html">
+<link rel="import" href="ta-shell-behavior.html">
+<link rel="import" href="ta-shell-layout.html">
+<link rel="import" href="ta-shell-search-layout.html">
+<link rel="import" href="ta-day-details.html">
+
+<dom-module id="ta-day-details-shell">
+    <template>
+        <app-route route="{{route}}" pattern="/goals/:id/details" data="{{detailsData}}" active="{{detailsActive}}" tail="{{detailsTail}}"></app-route>
+        <app-route route="{{route}}" pattern="/goals/create" data="{{createData}}" active="{{createActive}}"></app-route>
+
+        <iron-pages class="flex" selected="[[page]]" fallback-selection="0">
+            <ta-shell-layout back-button more-button title="Day: [[day.no]]">
+                <paper-item more-button-menu-item on-tap="_handleDeleteTap">Delete</paper-item>
+                <ta-day-details user-uid="[[userUid]]" trip-key="[[tripKey]]" day-key="[[dayKey]]" id="details" day="{{day}}"></ta-day-details>
+            </ta-shell-layout>
+
+            <ta-shell-layout title="Goal" back-button>
+                <a href="[[route.prefix]]">details</a>
+            </ta-shell-layout>
+            <ta-shell-search-layout on-back-tap="_handleCancelTap" search-value="{{_searchValue}}" search-placeholder="Find Interesting Place">
+                <!-- <trip-goal-create id="createGoal" user-uid="[[userUid]]" trip-key="[[tripKey]]" day-key="[[dayKey]]" search-value="[[_searchValue]]" latitude="[[latitude]]" longitude="[[longitude]]" on-created="_handleCreated"></trip-goal-create> -->
+            </ta-shell-search-layout>
+        </iron-pages>
+    </template>
+    <script>
+    (() => {
+        'use strict';
+        class TaDayDetailsShell {
+            get is() {
+                return 'ta-day-details-shell';
+            }
+            get behaviors() {
+                return [TaShellBehavior, TaDayDependentBehavior];
+            }
+            get properties() {
+                return {
+                    day: {
+                        type: Object,
+                        notify: true
+                    },
+                    page: {
+                        type: Number,
+                        computed: '_computePage(createActive,detailsActive)'
+                    },
+                    createActive: {
+                        type: Boolean,
+                        value: false
+                    },
+                    detailsActive: {
+                        type: Boolean,
+                        value: false
+                    }
+                };
+            }
+            _computePage(createActive, detailsActive) {
+                if (detailsActive)
+                    return 1;
+                if (createActive)
+                    return 2;
+                else
+                    return 0;
+            }
+            _handleDeleteTap() {
+                this.$.details.delete();
+                window.history.go(-1);
+            }
+            _handleCancelTap() {
+                this.$.createGoal.reset();
+            }
+            _handleCreated() {
+                window.history.go(-1);
+            }
+        }
+        Polymer(TaDayDetailsShell);
+    })();
+    </script>
+</dom-module>
