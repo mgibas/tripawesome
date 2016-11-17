@@ -5,7 +5,6 @@
 <link rel="import" href="../bower_components/paper-ripple/paper-ripple.html">
 <link rel="import" href="ta-day-dependent-behavior.html">
 <link rel="import" href="ta-shared-styles.html">
-
 <dom-module id="ta-day-card">
     <template>
         <style include="ta-shared-styles">
@@ -51,6 +50,9 @@
                         computed: '_computeProgress(day)'
                     }
                 };
+            }
+            _computeAdding(day) {
+                return day.justAdded;
             }
             _computeProgress(day) {
                 if (!day.goals) return 0;
