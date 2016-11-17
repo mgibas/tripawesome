@@ -1,8 +1,8 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-ripple/paper-ripple.html">
 <link rel="import" href="ta-shared-styles.html">
-
 <dom-module id="ta-trip-card">
     <template>
         <style include="ta-shared-styles">
@@ -36,6 +36,7 @@
         </firebase-document>
         <a href="/trips/[[item.$key]]/details">
             <paper-card heading="[[item.name]]" image="[[item.location.thumbnailUrl]]" preload-image="true" fade-image="true" placeholder-image="[[item.location.placeholder]]">
+                <paper-ripple></paper-ripple>
                 <div class="trip-header">
                     [[item.location.name]]
                     <div class="trip-status cafe-light">
