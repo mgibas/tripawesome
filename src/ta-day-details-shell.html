@@ -6,18 +6,15 @@
 <link rel="import" href="ta-shell-layout.html">
 <link rel="import" href="ta-shell-search-layout.html">
 <link rel="import" href="ta-day-details.html">
-
 <dom-module id="ta-day-details-shell">
     <template>
         <app-route route="{{route}}" pattern="/goals/:id/details" data="{{detailsData}}" active="{{detailsActive}}" tail="{{detailsTail}}"></app-route>
         <app-route route="{{route}}" pattern="/goals/create" data="{{createData}}" active="{{createActive}}"></app-route>
-
         <iron-pages class="flex" selected="[[page]]" fallback-selection="0">
-            <ta-shell-layout back-button more-button title="Day: [[day.no]]">
+            <ta-shell-layout back-button more-button title="Day: [[day.number]]">
                 <paper-item more-button-menu-item on-tap="_handleDeleteTap">Delete</paper-item>
                 <ta-day-details user-uid="[[userUid]]" trip-key="[[tripKey]]" day-key="[[dayKey]]" id="details" day="{{day}}"></ta-day-details>
             </ta-shell-layout>
-
             <ta-shell-layout title="Goal" back-button>
                 <a href="[[route.prefix]]">details</a>
             </ta-shell-layout>

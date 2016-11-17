@@ -2,11 +2,9 @@
 <link rel="import" href="../bower_components/polymerfire/firebase-query.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="ta-trip-dependent-behavior.html">
-
 <dom-module id="ta-days-collection">
     <template>
         <firebase-query id="query" app-name="tripawesome" path="[[tripFirebasePath]]/days" data="{{days}}"></firebase-query>
-        <firebase-document id="document" app-name="tripawesome"></firebase-document>
     </template>
     <script>
     (() => {
@@ -31,27 +29,52 @@
                 };
             }
             _computeFirebasePath(tripPath) {
-                console.log(`${tripPath}/days`)
                 this.$.query.path = null;
                 return `${tripPath}/days`;
             }
             add() {
-                var lastDay = 0;
-                if (this.days.length > 0) {
-                    lastDay = this.days
-                        .sort((a, b) => b.number - a.number)[0].number;
-                }
-                this.$.document.data = {
-                    number: ++lastDay
-                };
-                this.$.document.save(`${this.tripFirebasePath}/days/`)
-                    .then(() => this.$.document.reset());
+                var lastDay = this.days
+                    .sort((a, b) => b.number - a.number)[0] || {
+                        number: 0
+                    };
+
+                var doc = this.create('firebase-document', {
+                    appName: 'tripawesome',
+                    data: {
+                        number: lastDay.number + 1
+                    }
+                });
+
+                doc.save(`${this.tripFirebasePath}/days/`)
+                    .then(() => {
+                        this.consolidateDays();
+                    });
             }
             delete(dayKey) {
-                this.$.document.path = `${this.tripFirebasePath}/days/${dayKey}`;
-                this.$.document.destroy()
-                    .then(() => this.$.document.reset())
-                    .then(() => console.log('yeah'));
+                var doc = this.create('firebase-document', {
+                    appName: 'tripawesome',
+                    path: `${this.tripFirebasePath}/days/${dayKey}`
+                });
+                doc.destroy()
+                    .then(() => this.consolidateDays());
+            }
+
+            consolidateDays() {
+                this.days
+                    .sort((a, b) => a.number - b.number)
+                    .forEach((day, index) => {
+                        if (day.number != index + 1) {
+                            var doc = this.create('firebase-document', {
+                                appName: 'tripawesome'
+                            });
+                            doc.getStoredValue(`${this.tripFirebasePath}/days/${day.$key}`)
+                                .then((storedDay) => {
+                                    doc.data = storedDay;
+                                    storedDay.number = index + 1;
+                                    doc.save(`${this.tripFirebasePath}/days/`, day.$key);
+                                });
+                        }
+                    });
             }
         }
         Polymer(TaDaysCollection);
