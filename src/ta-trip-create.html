@@ -10,14 +10,23 @@
     <template>
         <style include="shared-styles iron-flex iron-flex-alignment">
         :host {
-            display: block;
-            @apply(--layout-vertical);
+            display: flex;
+            flex-flow: row wrap;
         }
         
-        trip-city-search-item {
-            margin-bottom: 1rem;
-            padding-left: 1rem;
-            padding-right: 1rem;
+        ta-city-card {
+            flex: 1;
+            margin: 0.5rem;
+        }
+        
+        ta-city-card {
+            flex-basis: 100%;
+        }
+        
+        @media (min-device-width: 768px) {
+            ta-city-card {
+                flex-basis: 20%;
+            }
         }
         </style>
         <firebase-document id="fb" app-name="tripawesome" data="{{newTrip}}"></firebase-document>

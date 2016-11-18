@@ -3,59 +3,39 @@
 <link rel="import" href="../bower_components/google-map/google-map.html">
 <link rel="import" href="../bower_components/google-map/google-map-marker.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-ripple/paper-ripple.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="star-rating.html">
 
 <dom-module id="ta-place-card">
     <template>
         <style include="iron-flex shared-styles">
         :host {
-            display: inline-block;
+            display: block;
             --paper-card-header-image: {
                 object-fit: cover;
                 max-height: 200px;
             }
             ;
-            @apply(--layout-horizontal);
-        }
-        
-        paper-card {
-            @apply(--layout-flex);
-        }
-        
-        paper-icon-button.right {
-            float: right;
-        }
-        
-        google-map {
-            height: 200px;
         }
         
         iron-image {
-            width: 100px;
-            height: 100px;
             background-color: var(--light-primary-color);
         }
+        
+        google-map {
+            display: none;
+        }
         </style>
-
         <google-map-search id="search" map="[[map]]" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg" on-google-map-search-place-details="_handleDetailsResults">
         </google-map-search>
+        <google-map map="{{map}}" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg">
+        </google-map>
         <paper-card heading="[[_details.name]]" image="[[_photoUrl]]" preload-image="true" fade-image="true">
+            <paper-ripple></paper-ripple>
             <div class="card-content">
-                <div class="trip-status cafe-light">
-                    [[_details.rating]]/5
-                </div>
-            </div>
-            <div class="card-actions">
-                <paper-icon-button icon="check" on-tap="_select"></paper-icon-button>
-                <paper-icon-button class="right" icon="[[_expandIcon]]" on-tap="_togleDetails"></paper-icon-button>
-                <iron-collapse id="details" opened="{{_detailsExpanded}}">
-                    <div>
-                        <google-map map="{{map}}" fit-to-markers zoom="15" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg">
-                            <google-map-marker latitude="[[_details.latitude]]" longitude="[[_details.longitude]]" title="[[_details.name]]"></google-map-marker>
-                        </google-map>
-                    </div>
-                </iron-collapse>
+                <star-rating max="5" rating="[[_details.rating]]"></star-rating>
             </div>
         </paper-card>
     </template>
@@ -77,14 +57,6 @@
                     _photoUrl: {
                         type: String,
                         computed: '_computePhotoUrl(_details)'
-                    },
-                    _detailsExpanded: {
-                        type: Boolean,
-                        value: false
-                    },
-                    _expandIcon: {
-                        type: String,
-                        computed: '_computeExpandIcon(_detailsExpanded)'
                     }
                 };
             }
@@ -101,17 +73,6 @@
                         details.longitude = details.geometry.location.lng();
                         this._details = details;
                     });
-            }
-            _select() {
-                this.fire('select', this._details);
-            }
-            _computeExpandIcon(_detailsExpanded) {
-                if (_detailsExpanded)
-                    return 'expand-more';
-                return 'expand-less';
-            }
-            _togleDetails() {
-                this._detailsExpanded = !this._detailsExpanded;
             }
             _computePhotoUrl(details) {
                 if (!details.photos || details.photos.length === 0) return;

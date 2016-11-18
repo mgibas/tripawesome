@@ -11,7 +11,23 @@
     <template>
         <style include="shared-styles iron-flex">
         :host {
-            display: block;
+            display: flex;
+            flex-flow: row wrap;
+        }
+        
+        ta-place-card {
+            flex: 1;
+            margin: 0.5rem;
+        }
+        
+        ta-place-card {
+            flex-basis: 100%;
+        }
+        
+        @media (min-device-width: 768px) {
+            ta-place-card {
+                flex-basis: 20%;
+            }
         }
         
         trip-goal-search-item {
@@ -27,7 +43,9 @@
         <google-map api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg" map="{{map}}" latitude="[[trip.location.latitude]]" longitude="[[trip.location.llongitude]]"></google-map>
         <canvas id="canvas" hidden width="10"></canvas>
         <template is="dom-repeat" items="[[places]]">
-            <ta-place-card place-id="[[item.place_id]]" on-select="save"></ta-place-card>
+            <a href="/trips/[[tripKey]]/details/days/[[dayKey]]/details/goals/create/place/[[item.place_id]]">
+                <ta-place-card place-id="[[item.place_id]]" on-select="save"></ta-place-card>
+            </a>
         </template>
         <loading-overlay active="[[_searching]]"></loading-overlay>
     </template>
