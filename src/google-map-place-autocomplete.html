@@ -1,9 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <script>
 Polymer({
-
     is: 'google-map-place-autocomplete',
-
     properties: {
         /**
          * The search input.
@@ -12,23 +10,18 @@ Polymer({
             type: String,
             value: null
         },
-
         /**
          * Latitude of the center of the search area.
          */
         latitude: {
-            type: Number,
-            value: null
+            type: Number
         },
-
         /**
          * Longitude of the center of the search area.
          */
         longitude: {
-            type: Number,
-            value: null
+            type: Number
         },
-
         /**
          * Search radius, in meters.
          */
@@ -36,7 +29,6 @@ Polymer({
             type: Number,
             value: null
         },
-
         /**
          * Space-separated list of result types.
          * The search will only return results of the listed types.
@@ -48,7 +40,6 @@ Polymer({
             type: String,
             value: null
         },
-
         /**
          * The search results.
          */
@@ -59,7 +50,6 @@ Polymer({
             },
             notify: true
         },
-
         /**
          * The lat/lng location.
          */
@@ -69,34 +59,28 @@ Polymer({
             readOnly: true
         }
     },
-
     observers: [
         'search(input,map,types)',
         '_updateLocation(latitude,longitude)'
     ],
-
     /**
      * Fired when the search element returns a result.
      *
      * @event google-map-place-autocomplete-results
      * @param {Array<{latitude: number, longitude: number}>} detail An array of search results
      */
-
     /**
      * Perform a search using for `input` for the search term.
      */
     search: function() {
         if (!this.input) return;
-
         var service = new google.maps.places.AutocompleteService();
-
         if (this.types && typeof this.types == 'string') {
             var types = this.types.split(' ');
         }
         if (this.radius) {
             var radius = this.radius;
         }
-
         service.getPlacePredictions({
             input: this.input,
             types: types,
@@ -104,26 +88,17 @@ Polymer({
             location: this.location
         }, this._gotResults.bind(this));
     },
-
     _gotResults: function(results, status) {
         this.results = results;
         this.fire('google-map-place-autocomplete-results', this.results);
     },
-
-    _updateLocation: function() {
-        if (!this.map) {
-            return;
-        } else if (typeof this.latitude !== 'number' || isNaN(this.latitude)) {
+    _updateLocation: function(latitude, longitude) {
+        if (typeof latitude !== 'number' || isNaN(latitude)) {
             throw new TypeError('latitude must be a number');
-        } else if (typeof this.longitude !== 'number' || isNaN(this.longitude)) {
+        } else if (typeof longitude !== 'number' || isNaN(longitude)) {
             throw new TypeError('longitude must be a number');
         }
-
-        // Update location. This will trigger a new search.
-        this._setLocation({
-            lat: this.latitude,
-            lng: this.longitude
-        });
+        this._setLocation(new google.maps.LatLng(latitude, longitude));
     }
 });
 </script>

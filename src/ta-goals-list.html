@@ -1,0 +1,61 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="ta-day-dependent-behavior.html">
+<link rel="import" href="ta-goals-collection.html">
+<dom-module id="trip-goals">
+    <template>
+        <style>
+        trip-goals-distance,
+        trip-goal-item {
+            width: 100%;
+        }
+        </style>
+        <ta-goals-collection id="collection" user-uid="[[userUid]]" trip-key="[[tripKey]]" day-key="[[dayKey]]" goals="{{goals}}"></ta-goals-collection>
+        <template is="dom-repeat" items="{{goals}}" as="goal" sort="_sortGoals" observe="priority">
+            test
+            <!-- <trip-goals-goal-item key="[[goal.$key]]" trip-key="[[tripKey]]" user-uid="[[userUid]]" on-move-up="_handleMoveUp" on-move-down="_handleMoveDown"></trip-goals-goal-item>
+                <trip-goals-distance from="{{goal}}" to="{{_getNextGoal(goal)}}" all-goals="{{goals}}"></trip-goals-distance> -->
+        </template>
+    </template>
+    <script>
+    (() => {
+        'use strict';
+
+        class TaGoalsList {
+            get is() {
+                return 'ta-goals-list';
+            }
+            get behaviors() {
+                return [TaDayDependentBehavior];
+            }
+            get properties() {
+                return {
+
+                };
+            }
+            _sortGoals(a, b) {
+                    return a.priority - b.priority;
+                }
+                // _getNextGoal(goal) {
+                //     return this.goals.find((g) => g.priority === goal.priority + 1);
+                // }
+
+            // _handleMoveUp(e, currentItem) {
+            //     var previousItem = Polymer.dom(this.root).querySelectorAll('trip-goals-goal-item')
+            //         .find((item) => item !== currentItem && item.goal.priority === currentItem.goal.priority - 1);
+
+            //     currentItem.decreasPriority();
+            //     previousItem.increasPriority();
+            // }
+
+            // _handleMoveDown(e, currentItem) {
+            //     var nextItem = Polymer.dom(this.root).querySelectorAll('trip-goals-goal-item')
+            //         .find((item) => item !== currentItem && item.goal.priority === currentItem.goal.priority + 1);
+
+            //     currentItem.increasPriority();
+            //     nextItem.decreasPriority();
+            // }
+        }
+        Polymer(TaGoalsList);
+    })();
+    </script>
+</dom-module>

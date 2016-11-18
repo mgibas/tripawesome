@@ -1,5 +1,12 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<dom-module id="trip-goal-search-item">
+<link rel="import" href="../bower_components/google-map/google-map-search.html">
+<link rel="import" href="../bower_components/google-map/google-map.html">
+<link rel="import" href="../bower_components/google-map/google-map-marker.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
+
+<dom-module id="ta-place-card">
     <template>
         <style include="iron-flex shared-styles">
         :host {
@@ -11,29 +18,32 @@
             ;
             @apply(--layout-horizontal);
         }
-
+        
         paper-card {
             @apply(--layout-flex);
         }
-
+        
         paper-icon-button.right {
             float: right;
         }
-
+        
         google-map {
             height: 200px;
         }
-
+        
         iron-image {
             width: 100px;
             height: 100px;
             background-color: var(--light-primary-color);
         }
         </style>
-        <paper-card heading="[[item.name]]" image="[[_photoUrl]]" preload-image="true" fade-image="true">
+
+        <google-map-search id="search" map="[[map]]" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg" on-google-map-search-place-details="_handleDetailsResults">
+        </google-map-search>
+        <paper-card heading="[[_details.name]]" image="[[_photoUrl]]" preload-image="true" fade-image="true">
             <div class="card-content">
                 <div class="trip-status cafe-light">
-                    [[item.rating]]/5
+                    [[_details.rating]]/5
                 </div>
             </div>
             <div class="card-actions">
@@ -41,8 +51,8 @@
                 <paper-icon-button class="right" icon="[[_expandIcon]]" on-tap="_togleDetails"></paper-icon-button>
                 <iron-collapse id="details" opened="{{_detailsExpanded}}">
                     <div>
-                        <google-map fit-to-markers zoom="15" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg">
-                            <google-map-marker latitude="[[item.latitude]]" longitude="[[item.longitude]]" title="[[item.name]]"></google-map-marker>
+                        <google-map map="{{map}}" fit-to-markers zoom="15" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg">
+                            <google-map-marker latitude="[[_details.latitude]]" longitude="[[_details.longitude]]" title="[[_details.name]]"></google-map-marker>
                         </google-map>
                     </div>
                 </iron-collapse>
@@ -52,15 +62,21 @@
     <script>
     (() => {
         'use strict';
-        class TripGoalSearchItem {
+        class TaPlaceCard {
             get is() {
-                return 'trip-goal-search-item';
+                return 'ta-place-card';
             }
             get properties() {
                 return {
+                    placeId: {
+                        type: String
+                    },
+                    _details: {
+                        type: Object
+                    },
                     _photoUrl: {
                         type: String,
-                        computed: '_computePhotoUrl(item)'
+                        computed: '_computePhotoUrl(_details)'
                     },
                     _detailsExpanded: {
                         type: Boolean,
@@ -72,8 +88,22 @@
                     }
                 };
             }
+            get observers() {
+                return ['getDetails(placeId,map)'];
+            }
+            getDetails(placeId, map) {
+                if (!map) return;
+                if (this._details && placeId == this._details.place_id) return;
+                this.$.search.map = map;
+                this.$.search.getDetails(placeId)
+                    .then((details) => {
+                        details.latitude = details.geometry.location.lat();
+                        details.longitude = details.geometry.location.lng();
+                        this._details = details;
+                    });
+            }
             _select() {
-                this.fire('select', this.item);
+                this.fire('select', this._details);
             }
             _computeExpandIcon(_detailsExpanded) {
                 if (_detailsExpanded)
@@ -83,15 +113,15 @@
             _togleDetails() {
                 this._detailsExpanded = !this._detailsExpanded;
             }
-            _computePhotoUrl(item) {
-                if (!item.photos || item.photos.length === 0) return;
-                return item.photos[0].getUrl({
+            _computePhotoUrl(details) {
+                if (!details.photos || details.photos.length === 0) return;
+                return details.photos[0].getUrl({
                     maxHeight: 400,
                     maxWidth: 400
                 });
             }
         }
-        Polymer(TripGoalSearchItem);
+        Polymer(TaPlaceCard);
     })();
     </script>
 </dom-module>

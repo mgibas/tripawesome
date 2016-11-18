@@ -1,33 +1,45 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<dom-module id="trip-goal-create">
+<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="../bower_components/loading-overlay/loading-overlay.html">
+<link rel="import" href="google-map-place-autocomplete.html">
+<link rel="import" href="ta-day-dependent-behavior.html">
+<link rel="import" href="ta-trip-dependent-behavior.html">
+<link rel="import" href="ta-goals-collection.html">
+<link rel="import" href="ta-place-card.html">
+
+<dom-module id="ta-goal-create">
     <template>
         <style include="shared-styles iron-flex">
         :host {
             display: block;
         }
-
+        
         trip-goal-search-item {
             margin-bottom: 1rem;
             padding-left: 1rem;
             padding-right: 1rem;
         }
         </style>
-        <firebase-document id="fb" app-name="tripawesome" data="{{_newGoal}}"></firebase-document>
-        <google-map-search id="search" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg" map="[[map]]" query="[[_debouncedSearchQuery]]" results="{{places}}" types="amusement_park aquarium art_gallery library bakery bar cafe campground museum night_club park cemetery church city_hall restaurant spa stadium synagogue zoo neighborhood" on-google-map-search-results="_handleGoogleResults">
-        </google-map-search>
-        <google-map api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg" map="{{map}}" latitude="[[latitude]]" longitude="[[longitude]]"></google-map>
+        <firebase-document app-name="tripawesome" path="[[tripFirebasePath]]" data="{{trip}}"></firebase-document>
+        <ta-goals-collection id="collection" user-uid="[[userUid]]" trip-key="[[tripKey]]" day-key="[[dayKey]]"></ta-goals-collection>
+        <google-map-place-autocomplete map="[[map]]" input="[[_debouncedSearchQuery]]" results="{{places}}" types="establishment" latitude="[[trip.location.latitude]]" longitude="[[trip.location.longitude]]" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg" on-google-map-place-autocomplete-results="_handleGoogleResults">
+        </google-map-place-autocomplete>
+        <google-map api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg" map="{{map}}" latitude="[[trip.location.latitude]]" longitude="[[trip.location.llongitude]]"></google-map>
         <canvas id="canvas" hidden width="10"></canvas>
-        <template is="dom-repeat" items="[[places]]" as="item" filter="_filterPlaces" sort="_sortPlaces">
-            <trip-goal-search-item item="[[item]]" on-select="save"></trip-goal-search-item>
+        <template is="dom-repeat" items="[[places]]">
+            <ta-place-card place-id="[[item.place_id]]" on-select="save"></ta-place-card>
         </template>
         <loading-overlay active="[[_searching]]"></loading-overlay>
     </template>
     <script>
     (() => {
         'use strict';
-        class TripGoalCreate {
+        class TaGoalCreate {
             get is() {
-                return 'trip-goal-create';
+                return 'ta-goal-create';
+            }
+            get behaviors() {
+                return [TaDayDependentBehavior, TaTripDependentBehavior];
             }
             get properties() {
                 return {
@@ -50,7 +62,6 @@
                         longitude: selectedPlace.longitude
                     }
                 };
-
                 this._prepareImages(selectedPlace)
                     .then(() => {
                         return this.$.fb.save(`/users/${this.userUid}/trip-goals/${this.key}`);
@@ -90,7 +101,6 @@
             _prepareImages(selectedPlace) {
                 return new Promise((resolve, reject) => {
                     if (selectedPlace.photos.length === 0) resolve();
-
                     this._newGoal.location.photoUrl = selectedPlace.photos[0].getUrl({
                         maxWidth: 2000,
                         maxHeight: 2000
@@ -126,7 +136,7 @@
                 });
             }
         }
-        Polymer(TripGoalCreate);
+        Polymer(TaGoalCreate);
     })();
     </script>
 </dom-module>
