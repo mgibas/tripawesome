@@ -1,0 +1,60 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="ta-day-dependent-behavior.html">
+<link rel="import" href="ta-shell-behavior.html">
+<link rel="import" href="ta-shell-layout.html">
+<link rel="import" href="ta-shell-search-layout.html">
+<link rel="import" href="ta-place-search.html">
+<link rel="import" href="ta-goal-create-place-details.html">
+
+<dom-module id="ta-goal-create-shell">
+    <template>
+        <app-route route="{{route}}" pattern="/places/:id/details" data="{{detailsData}}" active="{{detailsActive}}" tail="{{detailsTail}}"></app-route>
+        <iron-pages class="flex" selected="[[page]]" fallback-selection="0">
+            <ta-shell-search-layout on-back-tap="_handleCancelTap" search-value="{{_searchValue}}" search-placeholder="Find Interesting Place">
+                <ta-place-search id="createGoal" user-uid="[[userUid]]" trip-key="[[tripKey]]" day-key="[[dayKey]]" search-value="[[_searchValue]]"></ta-place-search>
+            </ta-shell-search-layout>
+            <ta-shell-layout back-button title="[[details.name]]" header-background-url="[[details.photoUrl]]">
+                <app-toolbar class="middle"></app-toolbar>
+                <app-toolbar class="bottom"></app-toolbar>
+                <ta-goal-create-place-details user-uid="[[userUid]]" trip-key="[[tripKey]]" day-key="[[dayKey]]" place-key="[[detailsData.id]]" details="{{details}}"></ta-goal-create-place-details>
+            </ta-shell-layout>
+        </iron-pages>
+    </template>
+    <script>
+    (() => {
+        'use strict';
+        class TaGoalCreateShell {
+            get is() {
+                return 'ta-goal-create-shell';
+            }
+            get behaviors() {
+                return [TaShellBehavior, TaDayDependentBehavior];
+            }
+            get properties() {
+                return {
+                    page: {
+                        type: Number,
+                        computed: '_computePage(detailsActive)'
+                    },
+                    detailsActive: {
+                        type: Boolean,
+                        value: false
+                    }
+                };
+            }
+            _computePage(detailsActive) {
+                if (detailsActive)
+                    return 1;
+                else
+                    return 0;
+            }
+            _handleCancelTap() {
+                this.$.createGoal.reset();
+            }
+        }
+        Polymer(TaGoalCreateShell);
+    })();
+    </script>
+</dom-module>

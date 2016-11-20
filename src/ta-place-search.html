@@ -4,10 +4,9 @@
 <link rel="import" href="google-map-place-autocomplete.html">
 <link rel="import" href="ta-day-dependent-behavior.html">
 <link rel="import" href="ta-trip-dependent-behavior.html">
-<link rel="import" href="ta-goals-collection.html">
 <link rel="import" href="ta-place-card.html">
 
-<dom-module id="ta-goal-create">
+<dom-module id="ta-place-search">
     <template>
         <style include="shared-styles iron-flex">
         :host {
@@ -29,21 +28,14 @@
                 flex-basis: 20%;
             }
         }
-        
-        trip-goal-search-item {
-            margin-bottom: 1rem;
-            padding-left: 1rem;
-            padding-right: 1rem;
-        }
         </style>
         <firebase-document app-name="tripawesome" path="[[tripFirebasePath]]" data="{{trip}}"></firebase-document>
-        <ta-goals-collection id="collection" user-uid="[[userUid]]" trip-key="[[tripKey]]" day-key="[[dayKey]]"></ta-goals-collection>
         <google-map-place-autocomplete map="[[map]]" input="[[_debouncedSearchQuery]]" results="{{places}}" types="establishment" latitude="[[trip.location.latitude]]" longitude="[[trip.location.longitude]]" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg" on-google-map-place-autocomplete-results="_handleGoogleResults">
         </google-map-place-autocomplete>
         <google-map api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg" map="{{map}}" latitude="[[trip.location.latitude]]" longitude="[[trip.location.llongitude]]"></google-map>
         <canvas id="canvas" hidden width="10"></canvas>
         <template is="dom-repeat" items="[[places]]">
-            <a href="/trips/[[tripKey]]/details/days/[[dayKey]]/details/goals/create/place/[[item.place_id]]">
+            <a href="/trips/[[tripKey]]/details/days/[[dayKey]]/details/goals/create/places/[[item.place_id]]/details">
                 <ta-place-card place-id="[[item.place_id]]" on-select="save"></ta-place-card>
             </a>
         </template>
@@ -54,7 +46,7 @@
         'use strict';
         class TaGoalCreate {
             get is() {
-                return 'ta-goal-create';
+                return 'ta-place-search';
             }
             get behaviors() {
                 return [TaDayDependentBehavior, TaTripDependentBehavior];
@@ -71,25 +63,25 @@
                     }
                 };
             }
-            save(e, selectedPlace) {
-                this._newGoal = {
-                    location: {
-                        name: selectedPlace.name,
-                        placeId: selectedPlace.place_id,
-                        latitude: selectedPlace.latitude,
-                        longitude: selectedPlace.longitude
-                    }
-                };
-                this._prepareImages(selectedPlace)
-                    .then(() => {
-                        return this.$.fb.save(`/users/${this.userUid}/trip-goals/${this.key}`);
-                    })
-                    .then(() => {
-                        this.$.fb.reset();
-                        this._newGoal = {};
-                        this.fire('created');
-                    });
-            }
+            // save(e, selectedPlace) {
+            //     this._newGoal = {
+            //         location: {
+            //             name: selectedPlace.name,
+            //             placeId: selectedPlace.place_id,
+            //             latitude: selectedPlace.latitude,
+            //             longitude: selectedPlace.longitude
+            //         }
+            //     };
+            //     this._prepareImages(selectedPlace)
+            //         .then(() => {
+            //             return this.$.fb.save(`/users/${this.userUid}/trip-goals/${this.key}`);
+            //         })
+            //         .then(() => {
+            //             this.$.fb.reset();
+            //             this._newGoal = {};
+            //             this.fire('created');
+            //         });
+            // }
             reset() {
                 this.searchValue = null;
                 this.places = null;

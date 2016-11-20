@@ -1,0 +1,44 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/iron-icons/maps-icons.html">
+<link rel="import" href="../bower_components/google-map/google-map.html">
+<link rel="import" href="../bower_components/google-map/google-map-marker.html">
+<link rel="import" href="ta-shared-styles.html">
+
+<dom-module id="ta-place-details-address">
+    <template>
+        <style include="ta-shared-styles">
+        google-map {
+            height: 200px;
+        }
+        </style>
+        <div>
+            <label>Address</label>
+            <a href="http://maps.apple.com/?q=[[details.latitude]],[[details.longitude]]" tabindex="-1">
+                <paper-icon-button icon="maps:navigation"></paper-icon-button>
+            </a>
+        </div>
+        <p>[[details.formatted_address]]</p>
+        <google-map map="{{_map}}" latitude="[[details.latitude]]" longitude="[[details.longitude]]" zoom="15" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg">
+            <google-map-marker latitude="[[details.latitude]]" longitude="[[details.longitude]]" title="[[details.name]]"></google-map-marker>
+        </google-map>
+    </template>
+    <script>
+    (() => {
+        'use strict';
+        class TaPlaceDetailsAddress {
+            get is() {
+                return 'ta-place-details-address';
+            }
+            get properties() {
+                return {
+                    details: {
+                        type: Object
+                    }
+                };
+            }
+        }
+        Polymer(TaPlaceDetailsAddress);
+    })();
+    </script>
+</dom-module>

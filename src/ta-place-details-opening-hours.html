@@ -1,0 +1,59 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="ta-shared-styles.html">
+
+<dom-module id="ta-place-details-opening-hours">
+    <template>
+        <style include="ta-shared-styles">
+        .opening-hours {
+            @apply(--layout-horizontal);
+        }
+        
+        .opening-hours-status {
+            @apply(--layout-flex);
+        }
+        </style>
+        <label>Opening Hours</label>
+        <div class="opening-hours">
+            <p class="opening-hours-status">Currently:
+                <span hidden$="[[details.opening_hours.open_now]]">Open</span>
+                <span hidden$="[[!details.opening_hours.open_now]]">Closed</span>
+            </p>
+            <div>
+                <paper-icon-button hidden$="[[_hoursOpen]]" icon="expand-less" on-tap="_toggleHours"></paper-icon-button>
+                <paper-icon-button hidden$="[[!_hoursOpen]]" icon="expand-more" on-tap="_toggleHours"></paper-icon-button>
+            </div>
+        </div>
+        <iron-collapse opened="[[_hoursOpen]]">
+            <template is="dom-repeat" items="[[details.opening_hours.weekday_text]]" as="weekdayHour">
+                <p>[[weekdayHour]]</p>
+            </template>
+        </iron-collapse>
+    </template>
+    <script>
+    (() => {
+        'use strict';
+        class TaPlaceDetailsOpeningHours {
+            get is() {
+                return 'ta-place-details-opening-hours';
+            }
+            get properties() {
+                return {
+                    details: {
+                        type: Object
+                    },
+                    _hoursOpen: {
+                        type: Boolean,
+                        value: false
+                    },
+                };
+            }
+            _toggleHours() {
+                this._hoursOpen = !this._hoursOpen;
+            }
+        }
+        Polymer(TaPlaceDetailsOpeningHours);
+    })();
+    </script>
+</dom-module>

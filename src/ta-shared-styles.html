@@ -3,6 +3,10 @@
 <dom-module id="ta-shared-styles">
     <template>
         <style>
+        [hidden] {
+            display: none !important;
+        }
+        
         .card {
             margin: 24px;
             padding: 16px;
@@ -22,6 +26,10 @@
             text-decoration: none;
             color: inherit;
             background-color: inherit;
+        }
+        
+        paper-material {
+            background-color: var(--primary-background-color)
         }
         
         paper-fab.action-right {

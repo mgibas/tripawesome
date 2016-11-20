@@ -1,0 +1,30 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="ta-place-details-review.html">
+
+<dom-module id="ta-place-details-reviews">
+    <template>
+        <label>Reviews</label>
+        <template is="dom-repeat" items="[[details.reviews]]" as="review">
+            <ta-place-details-review author="[[review.author_name]]" author-image-url="[[review.profile_photo_url]]" text="[[review.text]]" rating="[[review.rating]]">
+            </ta-place-details-review>
+        </template>
+    </template>
+    <script>
+    (() => {
+        'use strict';
+        class TaPlaceDetailsReviews {
+            get is() {
+                return 'ta-place-details-reviews';
+            }
+            get properties() {
+                return {
+                    details: {
+                        type: Object
+                    }
+                };
+            }
+        }
+        Polymer(TaPlaceDetailsReviews);
+    })();
+    </script>
+</dom-module>

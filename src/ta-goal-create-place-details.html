@@ -1,0 +1,91 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../bower_components/google-map/google-map.html">
+<link rel="import" href="../bower_components/google-map/google-map-search.html">
+<link rel="import" href="ta-shared-styles.html">
+<link rel="import" href="ta-day-dependent-behavior.html">
+<link rel="import" href="ta-goals-collection.html">
+<link rel="import" href="ta-place-details-address.html">
+<link rel="import" href="ta-place-details-opening-hours.html">
+<link rel="import" href="ta-place-details-reviews.html">
+
+<dom-module id="ta-goal-create-place-details">
+    <template>
+        <style include="ta-shared-styles">
+        google-map {
+            display: none;
+        }
+        
+        paper-material {
+            margin: 1rem;
+            padding: 1rem;
+        }
+        </style>
+        <google-map-search id="search" map="[[_map]]" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg" on-google-map-search-place-details="_handleDetailsResults">
+        </google-map-search>
+        <google-map map="{{_map}}" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg">
+        </google-map>
+
+        <ta-goals-collection id="collection" user-uid="[[userUid]]" trip-key="[[tripKey]]" day-key="[[dayKey]]" goals="{{goals}}"></ta-goals-collection>
+
+        <paper-material elevation="1">
+            <ta-place-details-address details="[[details]]"></ta-place-details-address>
+        </paper-material>
+        <paper-material elevation="1">
+            <ta-place-details-opening-hours details="[[details]]"></ta-place-details-opening-hours>
+        </paper-material>
+        <paper-material elevation="1">
+            <ta-place-details-reviews details="[[details]]"></ta-place-details-reviews>
+        </paper-material>
+
+        <paper-fab class="action-right" icon="check"></paper-fab>
+    </template>
+    <script>
+    (() => {
+        'use strict';
+        class TaGoalCreatePlaceDetails {
+            get is() {
+                return 'ta-goal-create-place-details';
+            }
+            get behaviors() {
+                return [TaDayDependentBehavior];
+            }
+            get properties() {
+                return {
+                    placeKey: {
+                        type: String
+                    },
+                    details: {
+                        type: Object,
+                        notify: true,
+                        computed: '_computeDetails(placeKey, _map)'
+                    },
+                    _map: {
+                        type: Object
+                    }
+                };
+            }
+            _toggleHours() {
+                this._hoursOpen = !this._hoursOpen;
+            }
+            _computeDetails(placeKey, map) {
+                if (!map) return;
+                this.$.search.map = map;
+                this.$.search.getDetails(placeKey)
+                    .then((details) => {
+                        details.latitude = details.geometry.location.lat();
+                        details.longitude = details.geometry.location.lng();
+                        if (!details.photos || details.photos.length === 0) return;
+                        details.photoUrl = details.photos[0].getUrl({
+                            maxHeight: 400,
+                            maxWidth: 400
+                        });
+                        this.details = details;
+                    });
+            }
+        }
+        Polymer(TaGoalCreatePlaceDetails);
+    })();
+    </script>
+</dom-module>
