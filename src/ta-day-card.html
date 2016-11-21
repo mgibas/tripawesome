@@ -1,5 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-query.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/paper-progress/paper-progress.html">
 <link rel="import" href="../bower_components/paper-ripple/paper-ripple.html">
@@ -26,6 +27,8 @@
         </style>
         <firebase-document id="fb" app-name="tripawesome" data="{{day}}" path="[[dayFirebasePath]]">
         </firebase-document>
+        <firebase-query id="query" app-name="tripawesome" data="{{goals}}" path="[[dayFirebasePath]]/goals">
+        </firebase-query>
         <a href="/trips/[[tripKey]]/details/days/[[dayKey]]/details">
             <paper-card heading="[[day.number]]">
                 <paper-ripple></paper-ripple>
@@ -47,18 +50,18 @@
                 return {
                     _progress: {
                         type: Number,
-                        computed: '_computeProgress(day)'
+                        computed: '_computeProgress(goals)'
                     }
                 };
             }
             _computeAdding(day) {
                 return day.justAdded;
             }
-            _computeProgress(day) {
-                if (!day.goals) return 0;
-                return (day.goals
+            _computeProgress(goals) {
+                if (!goals) return 0;
+                return (goals
                     .filter((g) => g.completed)
-                    .length / day.goals.length) * 100;
+                    .length / goals.length) * 100;
             }
         }
         Polymer(TaDayCard);

@@ -26,6 +26,7 @@
         </google-map-search>
         <google-map map="{{_map}}" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg">
         </google-map>
+        <canvas id="canvas" hidden width="10"></canvas>
 
         <ta-goals-collection id="collection" user-uid="[[userUid]]" trip-key="[[tripKey]]" day-key="[[dayKey]]" goals="{{goals}}"></ta-goals-collection>
 
@@ -39,7 +40,7 @@
             <ta-place-details-reviews details="[[details]]"></ta-place-details-reviews>
         </paper-material>
 
-        <paper-fab class="action-right" icon="check"></paper-fab>
+        <paper-fab class="action-right" icon="check" on-tap="_add"></paper-fab>
     </template>
     <script>
     (() => {
@@ -83,6 +84,60 @@
                         });
                         this.details = details;
                     });
+            }
+            _add() {
+                var newGoal = {
+                    location: {
+                        name: this.details.name,
+                        placeId: this.details.place_id,
+                        latitude: this.details.latitude,
+                        longitude: this.details.longitude
+                    }
+                };
+                this._prepareImages(newGoal, this.details)
+                    .then(() => {
+                        return this.$.collection.add(newGoal);
+                    })
+                    .then(() => {
+                        this.fire('goal-created');
+                    });
+            }
+            _prepareImages(newGoal, details) {
+                return new Promise((resolve, reject) => {
+                    if (details.photos.length === 0) resolve();
+                    newGoal.location.photoUrl = details.photos[0].getUrl({
+                        maxWidth: 2000,
+                        maxHeight: 2000
+                    });
+                    newGoal.location.thumbnailUrl = details.photos[0].getUrl({
+                        maxWidth: 100,
+                        maxHeight: 100
+                    });
+                    var ratio = details.photos[0].width / details.photos[0].height;
+                    var placeholderUrl = details.photos[0].getUrl({
+                        maxWidth: 10,
+                        maxHeight: Math.floor(10 / ratio)
+                    });
+                    this._imageToBase64(placeholderUrl)
+                        .then((placeholder) => {
+                            newGoal.location.placeholder = placeholder;
+                            resolve();
+                        });
+                });
+            }
+            _imageToBase64(url) {
+                return new Promise((resolve, reject) => {
+                    var img = new Image();
+                    img.onload = () => {
+                        this.$.canvas.height = img.height;
+                        this.$.canvas.width = img.width;
+                        var context = this.$.canvas.getContext('2d');
+                        context.drawImage(img, 0, 0, this.$.canvas.width, this.$.canvas.height);
+                        resolve(this.$.canvas.toDataURL('image/jpeg'));
+                    };
+                    img.crossOrigin = 'Anonymous';
+                    img.src = url;
+                });
             }
         }
         Polymer(TaGoalCreatePlaceDetails);

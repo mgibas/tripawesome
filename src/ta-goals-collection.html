@@ -32,45 +32,20 @@
                 this.$.query.path = null;
                 return `${dayPath}/goals`;
             }
-            add() {
+            add(goal) {
                 var doc = this.create('firebase-document', {
                     appName: 'tripawesome',
-                    data: {
-
-                    }
+                    data: goal
                 });
-
-                doc.save(`${this._firebasePath}`)
-                    .then(() => {
-
-                    });
+                return doc.save(`${this._firebasePath}`);
             }
             delete(goalKey) {
                 var doc = this.create('firebase-document', {
                     appName: 'tripawesome',
                     path: `${this._firebasePath}/${goalKey}`
                 });
-                doc.destroy()
-                    .then();
+                return doc.destroy();
             }
-
-            // consolidateDays() {
-            //     this.days
-            //         .sort((a, b) => a.number - b.number)
-            //         .forEach((day, index) => {
-            //             if (day.number != index + 1) {
-            //                 var doc = this.create('firebase-document', {
-            //                     appName: 'tripawesome'
-            //                 });
-            //                 doc.getStoredValue(`${this.tripFirebasePath}/days/${day.$key}`)
-            //                     .then((storedDay) => {
-            //                         doc.data = storedDay;
-            //                         storedDay.number = index + 1;
-            //                         doc.save(`${this.tripFirebasePath}/days/`, day.$key);
-            //                     });
-            //             }
-            //         });
-            // }
         }
         Polymer(TaGoalsCollection);
     })();
