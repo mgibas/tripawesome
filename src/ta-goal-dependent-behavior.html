@@ -1,0 +1,27 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<script>
+const TaGoalDependentBehavior = {
+    properties: {
+        userUid: {
+            type: String
+        },
+        tripKey: {
+            type: String
+        },
+        dayKey: {
+            type: String
+        },
+        goalKey: {
+            type: String
+        },
+        goalFirebasePath: {
+            type: String,
+            computed: '_computeGoalFirebasePath(userUid,tripKey,dayKey,goalKey)'
+        }
+    },
+    _computeGoalFirebasePath(userUid, tripKey, dayKey, goalKey) {
+        return `/users/${userUid}/trips/${tripKey}/days/${dayKey}/goals/${goalKey}`;
+    }
+};
+</script>

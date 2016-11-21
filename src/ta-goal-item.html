@@ -1,0 +1,60 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+
+<dom-module id="ta-goal-item">
+    <template>
+        <style include="iron-flex shared-styles">
+        iron-image {
+            width: 50px;
+            height: 50px;
+        }
+        
+        .title {
+            margin-left: 1rem;
+        }
+        
+        .order-actions {
+            @apply(--layout-vertical);
+        }
+        </style>
+
+        <paper-item>
+            <iron-image src="[[goal.location.photoUrl]]" sizing="cover" preload fade placeholder="[[goal.location.placeholder]]"></iron-image>
+            <div class="title flex">
+                <strong>[[goal.location.name]]</strong>
+            </div>
+            <div class="order-actions">
+                <paper-icon-button icon="arrow-upward" on-tap="_handleArrowUpTap"></paper-icon-button>
+                <paper-icon-button icon="arrow-downward" on-tap="_handleArrowDownTap"></paper-icon-button>
+            </div>
+        </paper-item>
+    </template>
+    <script>
+    (() => {
+        'use strict';
+        class TaGoalItem {
+            get is() {
+                return 'ta-goal-item';
+            }
+            get properties() {
+                return {
+                    goal: {
+                        type: Object
+                    }
+                };
+            }
+            _handleArrowDownTap(e) {
+                e.preventDefault();
+                this.fire('move-down', this.goal);
+            }
+            _handleArrowUpTap(e) {
+                e.preventDefault();
+                this.fire('move-up', this.goal);
+            }
+        }
+        Polymer(TaGoalItem);
+    })();
+    </script>
+</dom-module>

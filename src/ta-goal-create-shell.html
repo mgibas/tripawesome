@@ -18,7 +18,7 @@
             <ta-shell-layout back-button title="[[details.name]]" header-background-url="[[details.photoUrl]]">
                 <app-toolbar class="middle"></app-toolbar>
                 <app-toolbar class="bottom"></app-toolbar>
-                <ta-goal-create-place-details user-uid="[[userUid]]" trip-key="[[tripKey]]" day-key="[[dayKey]]" place-key="[[detailsData.id]]" details="{{details}}"></ta-goal-create-place-details>
+                <ta-goal-create-place-details user-uid="[[userUid]]" trip-key="[[tripKey]]" day-key="[[dayKey]]" place-key="[[detailsData.id]]" details="{{details}}" on-goal-created="_handleGoalCreated"></ta-goal-create-place-details>
             </ta-shell-layout>
         </iron-pages>
     </template>
@@ -52,6 +52,9 @@
             }
             _handleCancelTap() {
                 this.$.createGoal.reset();
+            }
+            _handleGoalCreated() {
+                window.history.go(-2);
             }
         }
         Polymer(TaGoalCreateShell);

@@ -33,18 +33,65 @@
                 return `${dayPath}/goals`;
             }
             add(goal) {
+                goal.priority = 99999999;
                 var doc = this.create('firebase-document', {
                     appName: 'tripawesome',
                     data: goal
                 });
-                return doc.save(`${this._firebasePath}`);
+                return doc.save(`${this._firebasePath}`)
+                    .then(() => this.fixPriorities());
             }
             delete(goalKey) {
                 var doc = this.create('firebase-document', {
                     appName: 'tripawesome',
                     path: `${this._firebasePath}/${goalKey}`
                 });
-                return doc.destroy();
+                return doc.destroy()
+                    .then(() => this.fixPriorities());
+            }
+            increasePriority(goalKey) {
+                return new Promise(() => {
+                    this.goals
+                        .sort((a, b) => a.priority - b.priority)
+                        .forEach((goal, index, goals) => {
+                            if (goal.$key !== goalKey) return;
+                            this._updateGoal(goal.$key, (g) => g.priority++);
+                            if (goals.length > index + 1)
+                                this._updateGoal(goals[index + 1].$key, (g) => g.priority--);
+                        });
+                });
+            }
+            decreasePriority(goalKey) {
+                this.goals
+                    .sort((a, b) => b.priority - a.priority)
+                    .forEach((goal, index, goals) => {
+                        if (goal.$key !== goalKey) return;
+                        this._updateGoal(goal.$key, (g) => g.priority--);
+                        if (goals.length > index + 1)
+                            this._updateGoal(goals[index + 1].$key, (g) => g.priority++);
+                    });
+            }
+            fixPriorities() {
+                var toResolve = [];
+                this.goals
+                    .sort((a, b) => a.priority - b.priority)
+                    .forEach((goal, index) => {
+                        if (goal.priority != index + 1) {
+                            toResolve.push(this._updateGoal(goal.$key, (g) => g.priority = index + 1));
+                        }
+                    });
+                return Promise.all(toResolve);
+            }
+            _updateGoal(goalKey, modFunction) {
+                var doc = this.create('firebase-document', {
+                    appName: 'tripawesome'
+                });
+                return doc.getStoredValue(`${this.dayFirebasePath}/goals/${goalKey}`)
+                    .then((storedGoal) => {
+                        doc.data = storedGoal;
+                        modFunction(storedGoal);
+                        return doc.save(`${this.dayFirebasePath}/goals/`, goalKey);
+                    });
             }
         }
         Polymer(TaGoalsCollection);

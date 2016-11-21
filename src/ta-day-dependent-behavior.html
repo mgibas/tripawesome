@@ -14,10 +14,10 @@ const TaDayDependentBehavior = {
         },
         dayFirebasePath: {
             type: String,
-            computed: '_computePath(userUid,tripKey,dayKey)'
+            computed: '_computeDayFirebasePath(userUid,tripKey,dayKey)'
         }
     },
-    _computePath(userUid, tripKey, dayKey) {
+    _computeDayFirebasePath(userUid, tripKey, dayKey) {
         return `/users/${userUid}/trips/${tripKey}/days/${dayKey}`;
     }
 };

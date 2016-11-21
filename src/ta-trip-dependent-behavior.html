@@ -11,10 +11,10 @@ const TaTripDependentBehavior = {
         },
         tripFirebasePath: {
             type: String,
-            computed: '_computePath(userUid,tripKey)'
+            computed: '_computeTripFirebasePath(userUid,tripKey)'
         }
     },
-    _computePath(userUid, tripKey) {
+    _computeTripFirebasePath(userUid, tripKey) {
         return `/users/${userUid}/trips/${tripKey}`;
     }
 };

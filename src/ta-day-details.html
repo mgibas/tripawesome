@@ -4,11 +4,16 @@
 <link rel="import" href="ta-shared-styles.html">
 <link rel="import" href="ta-trip-dependent-behavior.html">
 <link rel="import" href="ta-days-collection.html">
+<link rel="import" href="ta-goals-list.html">
+
 <dom-module id="ta-day-details">
     <style include="ta-shared-styles"></style>
     <template>
         <firebase-document id="fb" app-name="tripawesome" path="[[dayFirebasePath]]" data="{{day}}"></firebase-document>
         <ta-days-collection id="collection" user-uid="[[userUid]]" trip-key="[[tripKey]]"></ta-days-collection>
+
+        <ta-goals-list user-uid="[[userUid]]" trip-key="[[tripKey]]" day-key="[[dayKey]]"></ta-goals-list>
+    
         <a href="/trips/[[tripKey]]/details/days/[[dayKey]]/details/goals/create">
             <paper-fab class="action-right" icon="add"></paper-fab>
         </a>
