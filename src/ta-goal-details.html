@@ -71,7 +71,7 @@
                 return this.$.fb.destroy();
             }
             _handleVisitedChange() {
-                return this.$.fb.save(`${this.dayFirebasePath}/goals`, this.key);
+                return this.$.fb.save(`${this.dayFirebasePath}/goals`, this.goalKey);
             }
             _locationChanged(location) {
                 if (!location) return;
