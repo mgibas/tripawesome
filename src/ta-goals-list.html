@@ -13,13 +13,11 @@
         }
         </style>
         <ta-goals-collection id="collection" user-uid="[[userUid]]" trip-key="[[tripKey]]" day-key="[[dayKey]]" goals="{{goals}}"></ta-goals-collection>
-        <template is="dom-repeat" items="{{goals}}" as="goal" sort="_sortGoals" observe="priority">
+        <template is="dom-repeat" items="{{_goalPairs}}" as="goalPair">
             <a href="/trips/[[tripKey]]/details/days/[[dayKey]]/details/goals/[[goal.$key]]/details">
-                <ta-goal-item goal="[[goal]]" on-move-up="_handleMoveUp" on-move-down="_handleMoveDown"></ta-goal-item>
+                <ta-goal-item goal="[[goalPair.from]]" move-up="[[!_isFirstItem(index)]]" move-down="[[!_isLastItem(index)]]" on-move-up="_handleMoveUp" on-move-down="_handleMoveDown"></ta-goal-item>
             </a>
-            <template is="dom-if" if="[[goal.distanceToNext]]">
-                <ta-goal-item-distance distance="[[goal.distanceToNext]]"></ta-goal-item-distance>
-            </template>
+            <ta-goal-item-distance from="[[goalPair.from]]" to="[[goalPair.to]]"></ta-goal-item-distance>
         </template>
     </template>
     <script>
@@ -33,16 +31,41 @@
                 return [TaDayDependentBehavior];
             }
             get properties() {
-                return {};
+                return {
+                    _goalPairs: {
+                        type: Array
+                    }
+                };
+            }
+            get observers() {
+                return ['_goalsChanged(goals.*)'];
             }
             _sortGoals(a, b) {
                 return a.priority - b.priority;
+            }
+            _goalsChanged(splices) {
+                this.async(() => {
+                    this._goalPairs = splices.base
+                        .sort((a, b) => a.priority - b.priority)
+                        .map((goal, index, array) => {
+                            return {
+                                from: goal,
+                                to: array[index + 1]
+                            };
+                        });
+                }, 100);
             }
             _handleMoveUp(e, goal) {
                 this.$.collection.decreasePriority(goal.$key);
             }
             _handleMoveDown(e, goal) {
                 this.$.collection.increasePriority(goal.$key);
+            }
+            _isFirstItem(index) {
+                return index === 0;
+            }
+            _isLastItem(index) {
+                return index === this.goals.length - 1;
             }
         }
         Polymer(TaGoalsList);

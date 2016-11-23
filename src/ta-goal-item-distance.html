@@ -1,7 +1,8 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/iron-icons/maps-icons.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/loading-overlay/loading-overlay.html">
 <dom-module id="ta-goal-item-distance">
     <template>
         <style include="iron-flex shared-styles">
@@ -24,19 +25,23 @@
             @apply(--layout-flex);
         }
         </style>
-        <paper-item disabled="true">
-            <div>
-                <iron-icon icon="maps:directions-car"></iron-icon>
-                [[distance.drivingDuration.text]]
-            </div>
-            <div id="distance">
-                [[distance.drivingDistance.text]]
-            </div>
-            <div>
-                [[distance.walkingDuration.text]]
-                <iron-icon icon="maps:directions-walk"></iron-icon>
-            </div>
-        </paper-item>
+        <google-maps-api id="api" name="distancematrix" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg"></google-maps-api>
+        <template is="dom-if" if="[[to]]">
+            <paper-item disabled="true">
+                <div>
+                    <iron-icon icon="maps:directions-car"></iron-icon>
+                    [[_drivingDuration.text]]
+                </div>
+                <div id="distance">
+                    [[_drivingDistance.text]]
+                </div>
+                <div>
+                    [[_walkingDuration.text]]
+                    <iron-icon icon="maps:directions-walk"></iron-icon>
+                </div>
+                <loading-overlay active="[[_loading]]"></loading-overlay>
+            </paper-item>
+        </template>
     </template>
     <script>
     (() => {
@@ -46,10 +51,50 @@
             }
             get properties() {
                 return {
-                    distance: {
+                    from: {
                         type: Object
+                    },
+                    to: {
+                        type: Object
+                    },
+                    _distance: {
+                        type: Object,
+                        value: {}
+                    },
+                    _loading: {
+                        type: Boolean,
+                        value: false
                     }
                 };
+            }
+            get observers() {
+                return ['_fromToChanged(from,to)'];
+            }
+            _fromToChanged(from, to) {
+                if (!to) return;
+                this._loading = true;
+                var fromLatLng = new google.maps.LatLng(this.from.location.latitude, this.from.location.longitude);
+                var toLatLng = new google.maps.LatLng(to.location.latitude, to.location.longitude);
+                var distanceService = new this.$.api.api.DistanceMatrixService();
+                distanceService.getDistanceMatrix({
+                    origins: [fromLatLng],
+                    destinations: [toLatLng],
+                    travelMode: google.maps.TravelMode.DRIVING,
+                    unitSystem: google.maps.UnitSystem.IMPERIAL
+                }, (resp) => {
+                    this._drivingDistance = resp.rows[0].elements[0].distance;
+                    this._drivingDuration = resp.rows[0].elements[0].duration;
+                    distanceService.getDistanceMatrix({
+                        origins: [fromLatLng],
+                        destinations: [toLatLng],
+                        travelMode: google.maps.TravelMode.WALKING,
+                        unitSystem: google.maps.UnitSystem.IMPERIAL
+                    }, (resp) => {
+                        this._walkingDistance = resp.rows[0].elements[0].distance;
+                        this._walkingDuration = resp.rows[0].elements[0].duration;
+                        this._loading = false;
+                    });
+                });
             }
         }
         Polymer(TaGoalItemDistance);

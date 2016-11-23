@@ -2,10 +2,11 @@
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="ta-shared-styles.html">
 
 <dom-module id="ta-goal-item">
     <template>
-        <style include="iron-flex shared-styles">
+        <style include="iron-flex ta-shared-styles">
         iron-image {
             width: 50px;
             height: 50px;
@@ -26,8 +27,8 @@
                 <strong>[[goal.location.name]]</strong>
             </div>
             <div class="order-actions">
-                <paper-icon-button icon="arrow-upward" on-tap="_handleArrowUpTap"></paper-icon-button>
-                <paper-icon-button icon="arrow-downward" on-tap="_handleArrowDownTap"></paper-icon-button>
+                <paper-icon-button hidden$="[[!moveUp]]" icon="arrow-upward" on-tap="_handleArrowUpTap"></paper-icon-button>
+                <paper-icon-button hidden$="[[!moveDown]]" icon="arrow-downward" on-tap="_handleArrowDownTap"></paper-icon-button>
             </div>
         </paper-item>
     </template>
@@ -42,6 +43,12 @@
                 return {
                     goal: {
                         type: Object
+                    },
+                    moveUp: {
+                        type: Boolean
+                    },
+                    moveDown: {
+                        type: Boolean
                     }
                 };
             }

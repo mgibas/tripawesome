@@ -41,8 +41,7 @@
                     data: goal
                 });
                 return doc.save(`${this._firebasePath}`)
-                    .then(() => this.fixPriorities())
-                    .then(() => this._calculateDistances());
+                    .then(() => this.fixPriorities());
             }
             delete(goalKey) {
                 var doc = this.create('firebase-document', {
@@ -50,8 +49,7 @@
                     path: `${this._firebasePath}/${goalKey}`
                 });
                 return doc.destroy()
-                    .then(() => this.fixPriorities())
-                    .then(() => this._calculateDistances());
+                    .then(() => this.fixPriorities());
             }
             increasePriority(goalKey) {
                 var toResolve = [];
@@ -59,15 +57,12 @@
                     .sort((a, b) => a.priority - b.priority)
                     .forEach((goal, index, goals) => {
                         if (goal.$key !== goalKey) return;
-                        goal.priority++;
                         toResolve.push(this._updateGoal(goal.$key, (g) => g.priority++));
                         if (goals.length > index + 1) {
-                            goals[index + 1].priority--;
                             toResolve.push(this._updateGoal(goals[index + 1].$key, (g) => g.priority--));
                         }
                     });
-                return Promise.all(toResolve)
-                    .then(() => this._calculateDistances());
+                return Promise.all(toResolve);
             }
             decreasePriority(goalKey) {
                 var toResolve = [];
@@ -75,15 +70,12 @@
                     .sort((a, b) => b.priority - a.priority)
                     .forEach((goal, index, goals) => {
                         if (goal.$key !== goalKey) return;
-                        goal.priority--;
                         toResolve.push(this._updateGoal(goal.$key, (g) => g.priority--));
                         if (goals.length > index + 1) {
-                            goals[index + 1].priority++;
                             toResolve.push(this._updateGoal(goals[index + 1].$key, (g) => g.priority++));
                         }
                     });
-                return Promise.all(toResolve)
-                    .then(() => this._calculateDistances());
+                return Promise.all(toResolve);
             }
             fixPriorities() {
                 var toResolve = [];
@@ -94,47 +86,7 @@
                             toResolve.push(this._updateGoal(goal.$key, (g) => g.priority = index + 1));
                         }
                     });
-                return Promise.all(toResolve)
-                    .then(this._calculateDistances());
-            }
-            _calculateDistances() {
-                this.goals
-                    .sort((a, b) => a.priority - b.priority)
-                    .forEach((goal, index, goals) => {
-                        if (index == goals.length - 1 && goal.distanceToNext) {
-                            this._updateGoal(goal.$key, (g) => g.distanceToNext = null);
-                            return;
-                        }
-                        if (index == goals.length - 1)
-                            return;
-                        var nextGoal = goals[index + 1];
-                        goal.distanceToNext = goal.distanceToNext || {};
-                        if (goal.distanceToNext.next == nextGoal.$key)
-                            return;
-                        goal.distanceToNext.next = nextGoal.$key;
-                        var fromLatLng = new google.maps.LatLng(goal.location.latitude, goal.location.longitude);
-                        var toLatLng = new google.maps.LatLng(nextGoal.location.latitude, nextGoal.location.longitude);
-                        var distanceService = new this.$.api.api.DistanceMatrixService();
-                        distanceService.getDistanceMatrix({
-                            origins: [fromLatLng],
-                            destinations: [toLatLng],
-                            travelMode: google.maps.TravelMode.DRIVING,
-                            unitSystem: google.maps.UnitSystem.IMPERIAL
-                        }, (resp) => {
-                            goal.distanceToNext.drivingDistance = resp.rows[0].elements[0].distance;
-                            goal.distanceToNext.drivingDuration = resp.rows[0].elements[0].duration;
-                            distanceService.getDistanceMatrix({
-                                origins: [fromLatLng],
-                                destinations: [toLatLng],
-                                travelMode: google.maps.TravelMode.WALKING,
-                                unitSystem: google.maps.UnitSystem.IMPERIAL
-                            }, (resp) => {
-                                goal.distanceToNext.walkingDistance = resp.rows[0].elements[0].distance;
-                                goal.distanceToNext.walkingDuration = resp.rows[0].elements[0].duration;
-                                this._updateGoal(goal.$key, (g) => g.distanceToNext = goal.distanceToNext);
-                            });
-                        });
-                    });
+                return Promise.all(toResolve);
             }
             _updateGoal(goalKey, modFunction) {
                 var doc = this.create('firebase-document', {
