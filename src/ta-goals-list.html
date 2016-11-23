@@ -2,6 +2,7 @@
 <link rel="import" href="ta-day-dependent-behavior.html">
 <link rel="import" href="ta-goals-collection.html">
 <link rel="import" href="ta-goal-item.html">
+<link rel="import" href="ta-goal-item-distance.html">
 
 <dom-module id="ta-goals-list">
     <template>
@@ -16,7 +17,9 @@
             <a href="/trips/[[tripKey]]/details/days/[[dayKey]]/details/goals/[[goal.$key]]/details">
                 <ta-goal-item goal="[[goal]]" on-move-up="_handleMoveUp" on-move-down="_handleMoveDown"></ta-goal-item>
             </a>
-            <ta-goal-item-distance distance="{{goal.distance}}"></ta-goal-item-distance>
+            <template is="dom-if" if="[[goal.distanceToNext]]">
+                <ta-goal-item-distance distance="[[goal.distanceToNext]]"></ta-goal-item-distance>
+            </template>
         </template>
     </template>
     <script>
