@@ -2,31 +2,41 @@
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-item/paper-item-shared-styles.html">
+<link rel="import" href="../bower_components/paper-ripple/paper-ripple.html">
 <link rel="import" href="ta-shared-styles.html">
 
 <dom-module id="ta-goal-item">
     <template>
-        <style include="iron-flex ta-shared-styles">
+        <style include="iron-flex ta-shared-styles paper-item-shared-styles">
         iron-image {
             width: 50px;
             height: 50px;
+            border-radius: 50%;
         }
         
         .title {
             margin-left: 1rem;
         }
         
-        .order-actions {
+        .move-actions {
             @apply(--layout-vertical);
+        }
+        
+        paper-item {
+            min-height: 80px;
+            background-color: #FFF
         }
         </style>
 
         <paper-item>
+            <paper-ripple></paper-ripple>
             <iron-image src="[[goal.location.photoUrl]]" sizing="cover" preload fade placeholder="[[goal.location.placeholder]]"></iron-image>
             <div class="title flex">
                 <strong>[[goal.location.name]]</strong>
             </div>
-            <div class="order-actions">
+            <div class="move-actions">
                 <paper-icon-button hidden$="[[!moveUp]]" icon="arrow-upward" on-tap="_handleArrowUpTap"></paper-icon-button>
                 <paper-icon-button hidden$="[[!moveDown]]" icon="arrow-downward" on-tap="_handleArrowDownTap"></paper-icon-button>
             </div>

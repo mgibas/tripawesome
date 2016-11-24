@@ -2,12 +2,12 @@
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/iron-icons/maps-icons.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-item/paper-item-shared-styles.html">
 <link rel="import" href="../bower_components/loading-overlay/loading-overlay.html">
 <dom-module id="ta-goal-item-distance">
     <template>
-        <style include="iron-flex shared-styles">
+        <style include="iron-flex shared-styles paper-item-shared-styles">
         :host {
-            display: block;
             @apply(--layout-horizontal);
         }
         
@@ -23,6 +23,7 @@
         
         paper-item {
             @apply(--layout-flex);
+            background-color: #FFF;
         }
         </style>
         <google-maps-api id="api" name="distancematrix" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg"></google-maps-api>

@@ -1,4 +1,5 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="ta-shared-styles.html">
 <link rel="import" href="ta-day-dependent-behavior.html">
 <link rel="import" href="ta-goals-collection.html">
 <link rel="import" href="ta-goal-item.html">
@@ -6,10 +7,9 @@
 
 <dom-module id="ta-goals-list">
     <template>
-        <style>
-        trip-goals-distance,
-        trip-goal-item {
-            width: 100%;
+        <style include="ta-shared-styles">
+        a ta-goal-item {
+            text-decoration: none;
         }
         </style>
         <ta-goals-collection id="collection" user-uid="[[userUid]]" trip-key="[[tripKey]]" day-key="[[dayKey]]" goals="{{goals}}"></ta-goals-collection>
