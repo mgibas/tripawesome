@@ -1,6 +1,8 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../bower_components/loading-overlay/loading-overlay.html">
+<link rel="import" href="ta-shared-styles.html">
 <link rel="import" href="google-map-place-autocomplete.html">
 <link rel="import" href="ta-day-dependent-behavior.html">
 <link rel="import" href="ta-trip-dependent-behavior.html">
@@ -8,7 +10,7 @@
 
 <dom-module id="ta-place-search">
     <template>
-        <style include="shared-styles iron-flex">
+        <style include="ta-shared-styles iron-flex">
         :host {
             display: flex;
             flex-flow: row wrap;
@@ -16,14 +18,20 @@
         
         ta-place-card {
             flex: 1;
-            margin: 0.5rem;
+            margin: 1rem;
         }
         
         ta-place-card {
             flex-basis: 100%;
         }
         
-        @media (min-device-width: 768px) {
+        @media (min-width: 767px) {
+            ta-place-card {
+                flex-basis: 45%;
+            }
+        }
+        
+        @media (min-width: 1023px) {
             ta-place-card {
                 flex-basis: 20%;
             }

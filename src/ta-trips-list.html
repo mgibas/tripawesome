@@ -5,30 +5,33 @@
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="ta-user-dependent-behavior.html">
 <link rel="import" href="ta-trip-card.html">
+<link rel="import" href="ta-shared-styles.html">
 
 <dom-module id="ta-trips-list">
     <template>
-        <style inlcude="iron-flex">
+        <style inlcude="ta-shared-styles iron-flex">
         :host {
             display: flex;
-            --paper-card-header-color: var(--paper-font-headline);
             flex-flow: row wrap;
-        }
-        
-        #cards {
-            padding-top: 1rem;
+            --paper-card-header-color: var(--paper-font-headline);
         }
         
         ta-trip-card {
             flex: 1;
-            margin: 0.5rem;
+            margin: 1rem;
         }
         
         ta-trip-card {
             flex-basis: 100%;
         }
         
-        @media (min-device-width: 768px) {
+        @media (min-width: 767px) {
+            ta-trip-card {
+                flex-basis: 45%;
+            }
+        }
+        
+        @media (min-width: 1023px) {
             ta-trip-card {
                 flex-basis: 20%;
             }

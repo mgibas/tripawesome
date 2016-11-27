@@ -1,29 +1,46 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../bower_components/google-map/google-map.html">
 <link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../bower_components/paper-material/paper-material-shared-styles.html">
+<link rel="import" href="../bower_components/paper-styles/typography.html">
 <link rel="import" href="../bower_components/loading-overlay/loading-overlay.html">
 <link rel="import" href="google-map-place-autocomplete.html">
 <link rel="import" href="ta-city-card.html">
+<link rel="import" href="ta-shared-styles.html">
 
 <dom-module id="ta-trip-create">
     <template>
-        <style include="shared-styles iron-flex iron-flex-alignment">
+        <style include="ta-shared-styles paper-material-shared-styles iron-flex">
         :host {
-            display: flex;
+            @apply(--layout);
             flex-flow: row wrap;
         }
         
         ta-city-card {
-            flex: 1;
-            margin: 0.5rem;
+            @apply(--layout-flex);
+            margin: 1rem;
         }
         
         ta-city-card {
             flex-basis: 100%;
         }
         
-        @media (min-width: 768px) {
+        paper-material {
+            @apply(--layout-flex);
+            @apply(--paper-font-headline);
+            margin-bottom: 0;
+            flex-basis: 100%;
+        }
+        
+        @media (min-width: 767px) {
+            ta-city-card {
+                flex-basis: 45%;
+            }
+        }
+        
+        @media (min-width: 1023px) {
             ta-city-card {
                 flex-basis: 20%;
             }
