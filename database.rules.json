@@ -3,7 +3,13 @@
         "users": {
             "$user": {
                 ".read": "$user === auth.uid",
-                ".write": "$user === auth.uid"
+                ".write": "$user === auth.uid",
+                "trips": {
+                    "$trip": {
+                        ".read": "$user === auth.uid || data.child('share-info').child(root.child('users/' + auth.uid).child('shared-trips/' + $trip).val() +'').exists()",
+                        ".write": "$user === auth.uid || data.child('share-info').child(root.child('users/' + auth.uid).child('shared-trips/' + $trip).val() +'').val() == 'RW'"
+                    }
+                }
             }
         }
     }
