@@ -6,6 +6,7 @@
 <link rel="import" href="ta-shell-layout.html">
 <link rel="import" href="ta-trip-details.html">
 <link rel="import" href="ta-day-details-shell.html">
+<link rel="import" href="ta-trip-share-dialog.html">
 
 <dom-module id="ta-trip-details-shell">
     <template>
@@ -13,6 +14,7 @@
 
         <iron-pages class="flex" selected="[[page]]" fallback-selection="0">
             <ta-shell-layout back-button more-button title="[[trip.location.name]]" header-background-url="[[trip.location.photoUrl]]">
+                <paper-item more-button-menu-item on-tap="_handleShareTap">Share</paper-item>
                 <paper-item more-button-menu-item on-tap="_handleDeleteTap">Delete</paper-item>
                 <app-toolbar class="middle"></app-toolbar>
                 <app-toolbar class="bottom"></app-toolbar>
@@ -20,6 +22,9 @@
             </ta-shell-layout>
             <ta-day-details-shell route="[[dayDetailsTail]]" user-uid="[[userUid]]" trip-key="[[tripKey]]" day-key="[[dayDetailsData.id]]"></ta-day-details-shell>
         </iron-pages>
+
+        <ta-trip-share-dialog id="share" user-uid="[[userUid]]" trip-key="[[tripKey]]" secret="1231231"></ta-trip-share-dialog>
+
     </template>
     <script>
     (() => {
@@ -56,6 +61,9 @@
             _handleDeleteTap() {
                 this.$.details.delete();
                 window.history.go(-1);
+            }
+            _handleShareTap() {
+                this.$.share.open();
             }
         }
         Polymer(TaTripDetailsShell);
