@@ -1,6 +1,5 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-query.html">
-<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../bower_components/paper-material/paper-material.html">
@@ -56,15 +55,14 @@
         <firebase-document id="fbNewTrip" app-name="tripawesome" data="{{newTrip}}"></firebase-document>
 
         <template is="dom-repeat" items="{{trips}}">
-            <ta-trip-card route="{{route}}" user-uid="[[userUid]]" trip-key="[[item.$key]]" item="[[item]]" on-details-tap="_handleDetailsTap"></ta-trip-card>
+            <ta-trip-card route="{{route}}" user-uid="[[userUid]]" trip-key="[[item.$key]]"></ta-trip-card>
         </template>
 
         <paper-material elevation="1">
             Shared Trips
         </paper-material>
         <template is="dom-repeat" items="[[sharedTrips]]">
-            <firebase-document app-name="tripawesome" path="/users/[[item.ownerUid]]/trips/[[item.$key]]" data="{{item.trip}}"></firebase-document>
-            <ta-trip-card route="{{route}}" user-uid="[[item.ownerUid]]" trip-key="[[item.$key]]" item="[[item.trip]]"></ta-trip-card>
+            <ta-trip-card route="{{route}}" user-uid="[[item.ownerUid]]" trip-key="[[item.$key]]"></ta-trip-card>
         </template>
 
         <a href="/users/[[userUid]]/trips/create">
@@ -87,18 +85,11 @@
                         type: Array,
                         notify: true
                     },
-                    selectedTrip: {
-                        type: String,
+                    sharedTrips: {
+                        type: Array,
                         notify: true
                     }
                 };
-            }
-            _handleDetailsTap(e, data) {
-                this.selectedTrip = data.key;
-                this.fire('trip-selected', data);
-            }
-            _createTrip() {
-                this.fire('create-trip-tap');
             }
         }
         Polymer(TaTripsList);

@@ -36,11 +36,13 @@
             vertical-align: middle;
         }
         </style>
+        <firebase-document app-name="tripawesome" path="[[tripFirebasePath]]" data="{{trip}}"></firebase-document>
+
         <a href="/users/[[userUid]]/trips/[[tripKey]]/details">
-            <paper-card heading="[[item.name]]" image="[[item.location.thumbnailUrl]]" preload-image="true" fade-image="true" placeholder-image="[[item.location.placeholder]]">
+            <paper-card heading="[[trip.name]]" image="[[trip.location.thumbnailUrl]]" preload-image="true" fade-image="true" placeholder-image="[[trip.location.placeholder]]">
                 <paper-ripple></paper-ripple>
                 <div class="trip-header">
-                    [[item.location.name]]
+                    [[trip.location.name]]
                     <div class="trip-status cafe-light">
                         5/7 visited
                     </div>
@@ -55,9 +57,12 @@
             get is() {
                 return 'ta-trip-card';
             }
+            get behaviors() {
+                return [TaTripDependentBehavior];
+            }
             get properties() {
                 return {
-                    item: {
+                    trip: {
                         type: Object
                     }
                 };
