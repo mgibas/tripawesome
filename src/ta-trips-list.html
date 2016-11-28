@@ -56,20 +56,18 @@
         <firebase-document id="fbNewTrip" app-name="tripawesome" data="{{newTrip}}"></firebase-document>
 
         <template is="dom-repeat" items="{{trips}}">
-            <ta-trip-card route="{{route}}" item="[[item]]" on-details-tap="_handleDetailsTap"></ta-trip-card>
+            <ta-trip-card route="{{route}}" user-uid="[[userUid]]" trip-key="[[item.$key]]" item="[[item]]" on-details-tap="_handleDetailsTap"></ta-trip-card>
         </template>
 
         <paper-material elevation="1">
             Shared Trips
         </paper-material>
         <template is="dom-repeat" items="[[sharedTrips]]">
-
             <firebase-document app-name="tripawesome" path="/users/[[item.ownerUid]]/trips/[[item.$key]]" data="{{item.trip}}"></firebase-document>
-            <ta-trip-card route="{{route}}" item="[[item.trip]]"></ta-trip-card>
-        
+            <ta-trip-card route="{{route}}" user-uid="[[item.ownerUid]]" trip-key="[[item.$key]]" item="[[item.trip]]"></ta-trip-card>
         </template>
 
-        <a href="/trips/create">
+        <a href="/users/[[userUid]]/trips/create">
             <paper-fab icon="add" class="action-right"></paper-fab>
         </a>
     </template>

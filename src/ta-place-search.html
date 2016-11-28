@@ -43,7 +43,7 @@
         <google-map api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg" map="{{map}}" latitude="[[trip.location.latitude]]" longitude="[[trip.location.llongitude]]"></google-map>
         <canvas id="canvas" hidden width="10"></canvas>
         <template is="dom-repeat" items="[[places]]">
-            <a href="/trips/[[tripKey]]/details/days/[[dayKey]]/details/goals/create/places/[[item.place_id]]/details">
+            <a href="/users/[[userUid]]/trips/[[tripKey]]/details/days/[[dayKey]]/details/goals/create/places/[[item.place_id]]/details">
                 <ta-place-card place-id="[[item.place_id]]" on-select="save"></ta-place-card>
             </a>
         </template>

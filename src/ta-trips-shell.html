@@ -18,9 +18,9 @@
             display: block;
         }
         </style>
-        <app-route route="{{route}}" pattern="/trips/create" data="{{createData}}" active="{{createActive}}"></app-route>
-        <app-route route="{{route}}" pattern="/trips/:id/details" data="{{detailsData}}" active="{{detailsActive}}" tail="{{detailsTail}}"></app-route>
-        <app-route route="{{route}}" pattern="/trips/claim/:ownerUid/:tripKey/:shareKey" data="{{claimData}}" active="{{claimActive}}"></app-route>
+        <app-route route="{{route}}" pattern="/users/:userUid/trips/create" data="{{createData}}" active="{{createActive}}"></app-route>
+        <app-route route="{{route}}" pattern="/users/:userUid/trips/:id/details" data="{{detailsData}}" active="{{detailsActive}}" tail="{{detailsTail}}"></app-route>
+        <app-route route="{{route}}" pattern="/users/:userUid/trips/claim/:ownerUid/:tripKey/:shareKey" data="{{claimData}}" active="{{claimActive}}"></app-route>
 
         <iron-pages class="flex" selected="[[page]]" fallback-selection="0">
             <ta-shell-layout title="TripAwesome" burger-button>
@@ -30,7 +30,7 @@
             <ta-shell-search-layout on-back-tap="_handleSearchCancelTap" search-value="{{_searchValue}}" search-placeholder="Choose City">
                 <ta-trip-create id="create" user-uid="[[userUid]]" search-value="[[_searchValue]]" on-created="_handleCreated"></ta-trip-create>
             </ta-shell-search-layout>
-            <ta-trip-details-shell route="[[detailsTail]]" user-uid="[[userUid]]" trip-key="[[detailsData.id]]"></ta-trip-details-shell>
+            <ta-trip-details-shell route="[[detailsTail]]" user-uid="[[detailsData.userUid]]" trip-key="[[detailsData.id]]"></ta-trip-details-shell>
         </iron-pages>
     </template>
     <script>
@@ -64,6 +64,7 @@
                 return [TaShellBehavior, TaUserDependentBehavior];
             }
             _computePage(createActive, detailsActive, claimActive) {
+                console.log(`${createActive} ${detailsActive} ${claimActive}`)
                 if (createActive)
                     return 1;
                 else if (detailsActive)
