@@ -6,8 +6,8 @@
                 ".write": "$user === auth.uid",
                 "trips": {
                     "$trip": {
-                        ".read": "$user === auth.uid || data.child('share-info').child(root.child('users/' + auth.uid).child('shared-trips/' + $trip).val() +'').exists()",
-                        ".write": "$user === auth.uid || data.child('share-info').child(root.child('users/' + auth.uid).child('shared-trips/' + $trip).val() +'').val() == 'RW'"
+                        ".read": "$user === auth.uid || data.child('shares').child(root.child('users/' + auth.uid).child('shared-trips').child($trip).child('shareKey').val()).exists()",
+                        ".write": "$user === auth.uid || data.child('shares').child(root.child('users/' + auth.uid).child('shared-trips').child($trip).child('shareKey').val()).val() == 'RW'"
                     }
                 }
             }

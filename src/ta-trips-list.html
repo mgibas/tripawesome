@@ -3,6 +3,7 @@
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
 <link rel="import" href="ta-user-dependent-behavior.html">
 <link rel="import" href="ta-trip-card.html">
 <link rel="import" href="ta-shared-styles.html">
@@ -42,14 +43,32 @@
             right: 1rem;
             bottom: 1rem;
         }
+        
+        paper-material {
+            @apply(--layout-flex);
+            @apply(--paper-font-headline);
+            margin-bottom: 0;
+            flex-basis: 100%;
+        }
         </style>
         <firebase-query app-name="tripawesome" path="[[userFirebasePath]]/trips" data="{{trips}}"></firebase-query>
+        <firebase-query app-name="tripawesome" path="[[userFirebasePath]]/shared-trips" data="{{sharedTrips}}"></firebase-query>
         <firebase-document id="fbNewTrip" app-name="tripawesome" data="{{newTrip}}"></firebase-document>
-        <div id="cards">
-            <template is="dom-repeat" items="{{trips}}" as="item">
-                <ta-trip-card route="{{route}}" item="[[item]]" on-details-tap="_handleDetailsTap"></ta-trip-card>
-            </template>
-        </div>
+
+        <template is="dom-repeat" items="{{trips}}">
+            <ta-trip-card route="{{route}}" item="[[item]]" on-details-tap="_handleDetailsTap"></ta-trip-card>
+        </template>
+
+        <paper-material elevation="1">
+            Shared Trips
+        </paper-material>
+        <template is="dom-repeat" items="[[sharedTrips]]">
+
+            <firebase-document app-name="tripawesome" path="/users/[[item.ownerUid]]/trips/[[item.$key]]" data="{{item.trip}}"></firebase-document>
+            <ta-trip-card route="{{route}}" item="[[item.trip]]"></ta-trip-card>
+        
+        </template>
+
         <a href="/trips/create">
             <paper-fab icon="add" class="action-right"></paper-fab>
         </a>

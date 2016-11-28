@@ -1,0 +1,73 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="../bower_components/loading-overlay/loading-overlay.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="ta-user-dependent-behavior.html">
+<link rel="import" href="ta-shared-styles.html">
+
+<dom-module id="ta-trip-claim-dialog">
+    <style include="ta-shared-styles">
+    .title {
+        @apply(--paper-font-title);
+    }
+    </style>
+    <template>
+        <paper-dialog id="dialog">
+            <p class="title">Shared Trip Has Been Added!</p>
+            <p>You can now view and modify shared trip.</p>
+            <div class="buttons">
+                <a href="/trips">
+                    <paper-button dialog-confirm autofocus>Go To Trips List</paper-button>
+                </a>
+                <loading-overlay active="[[_loading]]"></loading-overlay>
+            </div>
+        </paper-dialog>
+    </template>
+    <script>
+    (() => {
+        'use strict';
+        class TaTripClaimDialog {
+            get is() {
+                return 'ta-trip-claim-dialog';
+            }
+            get behaviors() {
+                return [TaUserDependentBehavior];
+            }
+            get properties() {
+                return {
+                    ownerUid: {
+                        type: String
+                    },
+                    tripKey: {
+                        type: String
+                    },
+                    shareKey: {
+                        type: String
+                    },
+                    _loading: {
+                        type: Boolean,
+                        value: true
+                    }
+                };
+            }
+            get observers() {
+                return ['_claimTrip(userUid, ownerUid, tripKey, shareKey)'];
+            }
+            _claimTrip(userUid, ownerUid, tripKey, shareKey) {
+                this.$.dialog.open();
+                this._loading = true;
+                var doc = this.create('firebase-document', {
+                    appName: 'tripawesome',
+                    data: {
+                        ownerUid: ownerUid,
+                        shareKey: shareKey
+                    }
+                });
+                doc.save(`${this.userFirebasePath}/shared-trips`, tripKey)
+                    .then(() => this._loading = false);
+            }
+        }
+        Polymer(TaTripClaimDialog);
+    })();
+    </script>
+</dom-module>

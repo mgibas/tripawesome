@@ -1,0 +1,95 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/loading-overlay/loading-overlay.html">
+<link rel="import" href="ta-shared-styles.html">
+<link rel="import" href="ta-trip-dependent-behavior.html">
+
+<dom-module id="ta-trip-share-dialog">
+    <template>
+        <style include="shared-styles">
+
+        </style>
+        <paper-dialog id="dialog" modal>
+            <h2>Share</h2>
+            <paper-input value="[[_shareUrl]]"></paper-input>
+            <p>You can share your trip with anyone - just send above link.</p>
+            <div class="buttons">
+                <paper-button dialog-dismiss>Cancel</paper-button>
+                <a href="mailto:?subject=TripAwesome&body=I want to share a trip with you: [[_shareUrl]]">
+                    <paper-button>E-mail</paper-button>
+                </a>
+                <a href="sms:&body=I want to share a trip with you: [[_shareUrl]]">
+                    <paper-button>Text</paper-button>
+                </a>
+            </div>
+            <loading-overlay active="[[_loading]]"></loading-overlay>
+        </paper-dialog>
+    </template>
+    <script>
+    (() => {
+        'use strict';
+        class TaTripShareDialog {
+            get is() {
+                return 'ta-trip-share-dialog';
+            }
+            get behaviors() {
+                return [TaTripDependentBehavior];
+            }
+            get properties() {
+                return {
+                    userUid: {
+                        type: String
+                    },
+                    tripKey: {
+                        type: String
+                    },
+                    _shareKey: {
+                        type: String
+                    },
+                    _shareUrl: {
+                        type: String,
+                        computed: '_computeShareUrl(userUid, tripKey, _shareKey)'
+                    },
+                    _loading: {
+                        type: Boolean,
+                        value: false
+                    }
+                };
+            }
+            open() {
+                this._generate();
+                this.$.dialog.open();
+            }
+            _generate() {
+                this._loading = true;
+                var uuid = this._uuid4();
+                var doc = this.create('firebase-document', {
+                    appName: 'tripawesome',
+                    data: 'RW'
+                });
+                return doc.save(`${this.tripFirebasePath}/shares`, uuid)
+                    .then(() => {
+                        this._shareKey = uuid;
+                        this._loading = false;
+                    });
+            }
+            _computeShareUrl(userUid, tripKey, shareKey) {
+                return window.location.origin + `/trips/claim/${userUid}/${tripKey}/${shareKey}`;
+            }
+            _uuid4() {
+                var s4 = () => {
+                    return Math.floor((1 + Math.random()) * 0x10000)
+                        .toString(16)
+                        .substring(1);
+                };
+                return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+                    s4() + '-' + s4() + s4() + s4();
+            }
+        }
+        Polymer(TaTripShareDialog);
+    })();
+    </script>
+</dom-module>

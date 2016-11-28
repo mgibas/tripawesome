@@ -34,8 +34,6 @@
             vertical-align: middle;
         }
         </style>
-        <firebase-document id="fb" app-name="tripawesome" data="[[item]]" path="/trips/[[item.$key]]">
-        </firebase-document>
         <a href="/trips/[[item.$key]]/details">
             <paper-card heading="[[item.name]]" image="[[item.location.thumbnailUrl]]" preload-image="true" fade-image="true" placeholder-image="[[item.location.placeholder]]">
                 <paper-ripple></paper-ripple>

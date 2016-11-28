@@ -9,6 +9,7 @@
 <link rel="import" href="ta-trip-create.html">
 <link rel="import" href="ta-trip-details-shell.html">
 <link rel="import" href="ta-shared-styles.html">
+<link rel="import" href="ta-trip-claim-dialog.html">
 
 <dom-module id="ta-trips-shell">
     <template>
@@ -19,10 +20,12 @@
         </style>
         <app-route route="{{route}}" pattern="/trips/create" data="{{createData}}" active="{{createActive}}"></app-route>
         <app-route route="{{route}}" pattern="/trips/:id/details" data="{{detailsData}}" active="{{detailsActive}}" tail="{{detailsTail}}"></app-route>
+        <app-route route="{{route}}" pattern="/trips/claim/:ownerUid/:tripKey/:shareKey" data="{{claimData}}" active="{{claimActive}}"></app-route>
 
         <iron-pages class="flex" selected="[[page]]" fallback-selection="0">
             <ta-shell-layout title="TripAwesome" burger-button>
                 <ta-trips-list user-uid="[[userUid]]"></ta-trips-list>
+                <ta-trip-claim-dialog user-uid="[[userUid]]" owner-uid="[[claimData.ownerUid]]" trip-key="[[claimData.tripKey]]" share-key="[[claimData.shareKey]]"></ta-trip-claim-dialog>
             </ta-shell-layout>
             <ta-shell-search-layout on-back-tap="_handleSearchCancelTap" search-value="{{_searchValue}}" search-placeholder="Choose City">
                 <ta-trip-create id="create" user-uid="[[userUid]]" search-value="[[_searchValue]]" on-created="_handleCreated"></ta-trip-create>
@@ -41,7 +44,7 @@
                 return {
                     page: {
                         type: Number,
-                        computed: '_computePage(createActive,detailsActive)'
+                        computed: '_computePage(createActive,detailsActive,claimActive)'
                     },
                     createActive: {
                         type: Boolean,
@@ -50,13 +53,17 @@
                     detailsActive: {
                         type: Boolean,
                         value: false
+                    },
+                    claimActive: {
+                        type: Boolean,
+                        value: false
                     }
                 };
             }
             get behaviors() {
                 return [TaShellBehavior, TaUserDependentBehavior];
             }
-            _computePage(createActive, detailsActive) {
+            _computePage(createActive, detailsActive, claimActive) {
                 if (createActive)
                     return 1;
                 else if (detailsActive)
