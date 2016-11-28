@@ -14,7 +14,7 @@
         </style>
         <ta-goals-collection id="collection" user-uid="[[userUid]]" trip-key="[[tripKey]]" day-key="[[dayKey]]" goals="{{goals}}"></ta-goals-collection>
         <template is="dom-repeat" items="{{_goalPairs}}" as="goalPair">
-            <a href="/trips/[[tripKey]]/details/days/[[dayKey]]/details/goals/[[goalPair.from.$key]]/details">
+            <a href="/users/[[userUid]]/trips/[[tripKey]]/details/days/[[dayKey]]/details/goals/[[goalPair.from.$key]]/details">
                 <ta-goal-item goal="[[goalPair.from]]" move-up="[[!_isFirstItem(index)]]" move-down="[[!_isLastItem(index)]]" on-move-up="_handleMoveUp" on-move-down="_handleMoveDown"></ta-goal-item>
             </a>
             <ta-goal-item-distance from="[[goalPair.from]]" to="[[goalPair.to]]"></ta-goal-item-distance>
