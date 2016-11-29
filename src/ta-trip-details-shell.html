@@ -13,7 +13,7 @@
         <app-route route="{{route}}" pattern="/days/:id/details" data="{{dayDetailsData}}" active="{{dayDetailsActive}}" tail="{{dayDetailsTail}}"></app-route>
 
         <iron-pages class="flex" selected="[[page]]" fallback-selection="0">
-            <ta-shell-layout back-button more-button title="[[trip.location.name]]" header-background-url="[[trip.location.photoUrl]]">
+            <ta-shell-layout burger-button back-button more-button title="[[trip.location.name]]" header-background-url="[[trip.location.photoUrl]]">
                 <paper-item more-button-menu-item on-tap="_handleShareTap">Share</paper-item>
                 <paper-item more-button-menu-item on-tap="_handleDeleteTap">Delete</paper-item>
                 <app-toolbar class="middle"></app-toolbar>

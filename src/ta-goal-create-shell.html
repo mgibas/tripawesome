@@ -15,7 +15,7 @@
             <ta-shell-search-layout on-back-tap="_handleCancelTap" search-value="{{_searchValue}}" search-placeholder="Find Interesting Place">
                 <ta-place-search id="createGoal" user-uid="[[userUid]]" trip-key="[[tripKey]]" day-key="[[dayKey]]" search-value="[[_searchValue]]"></ta-place-search>
             </ta-shell-search-layout>
-            <ta-shell-layout back-button title="[[details.name]]" header-background-url="[[details.photoUrl]]">
+            <ta-shell-layout burger-button back-button title="[[details.name]]" header-background-url="[[details.photoUrl]]">
                 <app-toolbar class="middle"></app-toolbar>
                 <app-toolbar class="bottom"></app-toolbar>
                 <ta-goal-create-place-details user-uid="[[userUid]]" trip-key="[[tripKey]]" day-key="[[dayKey]]" place-key="[[detailsData.id]]" details="{{details}}" on-goal-created="_handleGoalCreated"></ta-goal-create-place-details>

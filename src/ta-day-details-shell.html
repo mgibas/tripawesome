@@ -14,11 +14,11 @@
         <app-route route="{{route}}" pattern="/goals/:id/details" data="{{detailsData}}" active="{{detailsActive}}" tail="{{detailsTail}}"></app-route>
         <app-route route="{{route}}" pattern="/goals/create" data="{{createData}}" active="{{createActive}}" tail="{{createTail}}"></app-route>
         <iron-pages class="flex" selected="[[page]]" fallback-selection="0">
-            <ta-shell-layout back-button more-button title="Day: [[day.number]]">
+            <ta-shell-layout burger-button back-button more-button title="Day: [[day.number]]">
                 <paper-item more-button-menu-item on-tap="_handleDayDeleteTap">Delete</paper-item>
                 <ta-day-details user-uid="[[userUid]]" trip-key="[[tripKey]]" day-key="[[dayKey]]" id="dayDetails" day="{{day}}"></ta-day-details>
             </ta-shell-layout>
-            <ta-shell-layout title="[[goal.location.name]]" header-background-url="[[goal.location.photoUrl]]" back-button more-button>
+            <ta-shell-layout burger-button title="[[goal.location.name]]" header-background-url="[[goal.location.photoUrl]]" back-button more-button>
                 <app-toolbar class="middle"></app-toolbar>
                 <app-toolbar class="bottom"></app-toolbar>
                 <paper-item more-button-menu-item on-tap="_handleGoalDeleteTap">Delete</paper-item>
