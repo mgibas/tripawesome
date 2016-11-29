@@ -77,7 +77,7 @@
                     });
             }
             _computeShareUrl(userUid, tripKey, shareKey) {
-                return window.location.origin + `/trips/claim/${userUid}/${tripKey}/${shareKey}`;
+                return window.location.origin + `/users/${userUid}/trips/${tripKey}/claim/${shareKey}`;
             }
             _uuid4() {
                 var s4 = () => {

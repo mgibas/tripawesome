@@ -51,11 +51,13 @@
             <ta-trip-card route="{{route}}" user-uid="[[userUid]]" trip-key="[[item.$key]]"></ta-trip-card>
         </template>
 
-        <paper-material elevation="1">
-            Shared Trips
-        </paper-material>
-        <template is="dom-repeat" items="[[sharedTrips]]">
-            <ta-trip-card route="{{route}}" user-uid="[[item.ownerUid]]" trip-key="[[item.$key]]"></ta-trip-card>
+        <template is="dom-if" if="[[_hasSharedTrips]]">
+            <paper-material elevation="1">
+                Shared Trips
+            </paper-material>
+            <template is="dom-repeat" items="[[sharedTrips]]">
+                <ta-trip-card route="{{route}}" user-uid="[[item.ownerUid]]" trip-key="[[item.$key]]"></ta-trip-card>
+            </template>
         </template>
 
         <a href="/users/[[userUid]]/trips/create">
@@ -81,8 +83,15 @@
                     sharedTrips: {
                         type: Array,
                         notify: true
+                    },
+                    _hasSharedTrips: {
+                        type: Boolean,
+                        computed: '_computeHasSharedTrips(sharedTrips.*)'
                     }
                 };
+            }
+            _computeHasSharedTrips(sharedTrips) {
+                return sharedTrips.base && sharedTrips.base.length > 0;
             }
         }
         Polymer(TaTripsList);

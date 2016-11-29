@@ -20,7 +20,7 @@
         </style>
         <app-route route="{{route}}" pattern="/users/:userUid/trips/create" data="{{createData}}" active="{{createActive}}"></app-route>
         <app-route route="{{route}}" pattern="/users/:userUid/trips/:id/details" data="{{detailsData}}" active="{{detailsActive}}" tail="{{detailsTail}}"></app-route>
-        <app-route route="{{route}}" pattern="/users/:userUid/trips/claim/:ownerUid/:tripKey/:shareKey" data="{{claimData}}" active="{{claimActive}}"></app-route>
+        <app-route route="{{route}}" pattern="/users/:ownerUid/trips/:tripKey/claim/:shareKey" data="{{claimData}}" active="{{claimActive}}"></app-route>
 
         <iron-pages class="flex" selected="[[page]]" fallback-selection="0">
             <ta-shell-layout title="TripAwesome" burger-button>
