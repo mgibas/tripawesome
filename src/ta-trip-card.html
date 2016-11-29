@@ -44,7 +44,7 @@
                 <div class="trip-header">
                     [[trip.location.name]]
                     <div class="trip-status cafe-light">
-                        5/7 visited
+                        [[visitedGoals]]/[[totalGoals]] visited
                     </div>
                 </div>
             </paper-card>
@@ -64,8 +64,32 @@
                 return {
                     trip: {
                         type: Object
+                    },
+                    visitedGoals: {
+                        type: Number,
+                        computed: '_computeVisitedGoals(trip)'
+                    },
+                    totalGoals: {
+                        type: Number,
+                        computed: '_computeTotalGoals(trip)'
                     }
                 };
+            }
+            _computeVisitedGoals(trip) {
+                return this._getAllGoals(trip)
+                    .filter((g) => g.visited)
+                    .length;
+            }
+            _computeTotalGoals(trip) {
+                return this._getAllGoals(trip).length;
+            }
+            _getAllGoals(trip) {
+                if (!trip.days) return [];
+                return Object.keys(trip.days)
+                    .map((key) => trip.days[key])
+                    .filter((d) => d.goals)
+                    .map((d) => Object.keys(d.goals).map((key) => d.goals[key]))
+                    .reduce((a, b) => a.concat(b));
             }
         }
         Polymer(TaTripCard);
