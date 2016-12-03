@@ -2,6 +2,7 @@
 <link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="ta-day-dependent-behavior.html">
+<link rel="import" href="ta-trip-dependent-behavior.html">
 <link rel="import" href="ta-shell-behavior.html">
 <link rel="import" href="ta-shell-layout.html">
 <link rel="import" href="ta-shell-search-layout.html">
@@ -14,8 +15,11 @@
         <app-route route="{{route}}" pattern="/goals/:id/details" data="{{detailsData}}" active="{{detailsActive}}" tail="{{detailsTail}}"></app-route>
         <app-route route="{{route}}" pattern="/goals/create" data="{{createData}}" active="{{createActive}}" tail="{{createTail}}"></app-route>
         <iron-pages class="flex" selected="[[page]]" fallback-selection="0">
-            <ta-shell-layout burger-button back-button more-button title="Day: [[day.number]]">
+            <ta-shell-layout burger-button back-button more-button title="[[trip.location.name]]" header-background-url="[[trip.location.photoUrl]]">
                 <paper-item more-button-menu-item on-tap="_handleDayDeleteTap">Delete</paper-item>
+                <app-toolbar class="middle"></app-toolbar>
+                <app-toolbar class="bottom">Day: [[day.number]]</app-toolbar>
+                <firebase-document id="fb" app-name="tripawesome" path="[[tripFirebasePath]]" data="{{trip}}"></firebase-document>
                 <ta-day-details user-uid="[[userUid]]" trip-key="[[tripKey]]" day-key="[[dayKey]]" id="dayDetails" day="{{day}}"></ta-day-details>
             </ta-shell-layout>
             <ta-shell-layout burger-button title="[[goal.location.name]]" header-background-url="[[goal.location.photoUrl]]" back-button more-button>
@@ -35,7 +39,7 @@
                 return 'ta-day-details-shell';
             }
             get behaviors() {
-                return [TaShellBehavior, TaDayDependentBehavior];
+                return [TaShellBehavior, TaDayDependentBehavior, TaTripDependentBehavior];
             }
             get properties() {
                 return {
