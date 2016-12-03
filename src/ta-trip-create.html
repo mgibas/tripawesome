@@ -46,7 +46,6 @@
             }
         }
         </style>
-        <firebase-document id="fb" app-name="tripawesome" data="{{newTrip}}"></firebase-document>
         <google-map-place-autocomplete map="[[map]]" input="[[_debouncedSearchQuery]]" results="{{cities}}" types="(cities)" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg" on-google-map-place-autocomplete-results="_handleGoogleResults">
         </google-map-place-autocomplete>
         <google-map map="{{map}}" api-key="AIzaSyDIaWkbQnlyk4iRyNNAGtNudHsjQTdC2qg"></google-map>
@@ -98,24 +97,27 @@
                 };
             }
             save(e, city) {
-                this.newTrip.location = {
-                    name: city.name,
-                    placeId: city.place_id,
-                    latitude: city.latitude,
-                    longitude: city.longitude,
+                var newTrip = {
+                    location: {
+                        name: city.name,
+                        placeId: city.place_id,
+                        latitude: city.latitude,
+                        longitude: city.longitude,
+                    }
                 };
-                this._prepareImages(city)
+                this._prepareImages(newTrip, city)
                     .then(() => {
-                        return this.$.fb.save(`/users/${this.userUid}/trips`);
+                        var doc = this.create('firebase-document', {
+                            appName: 'tripawesome',
+                            data: newTrip
+                        });
+                        return doc.save(`/users/${this.userUid}/trips`);
                     })
                     .then(() => {
-                        this.$.fb.reset();
-                        this.newTrip = {};
                         this.fire('created');
                     });
             }
             reset() {
-                this.newTrip = null;
                 this.cities = null;
             }
             searchValueChanged(value) {
@@ -130,14 +132,14 @@
             _handleGoogleResults(e, results) {
                 this._searching = false;
             }
-            _prepareImages(city) {
+            _prepareImages(newTrip, city) {
                 return new Promise((resolve, reject) => {
                     if (city.photos.length === 0) resolve();
-                    this.newTrip.location.photoUrl = city.photos[0].getUrl({
+                    newTrip.location.photoUrl = city.photos[0].getUrl({
                         maxWidth: 2000,
                         maxHeight: 2000
                     });
-                    this.newTrip.location.thumbnailUrl = city.photos[0].getUrl({
+                    newTrip.location.thumbnailUrl = city.photos[0].getUrl({
                         maxWidth: 400,
                         maxHeight: 400
                     });
@@ -148,7 +150,7 @@
                     });
                     this._imageToBase64(placeholderUrl)
                         .then((placeholder) => {
-                            this.newTrip.location.placeholder = placeholder;
+                            newTrip.location.placeholder = placeholder;
                             resolve();
                         });
                 });
