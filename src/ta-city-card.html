@@ -3,6 +3,7 @@
 <link rel="import" href="../bower_components/google-map/google-map.html">
 <link rel="import" href="../bower_components/google-map/google-map-marker.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
 
@@ -44,7 +45,7 @@
                 [[_details.formatted_address]]
             </div>
             <div class="card-actions">
-                <paper-icon-button icon="check" on-tap="_select"></paper-icon-button>
+                <paper-button on-tap="_select">Select</paper-button>
                 <paper-icon-button class="right" icon="[[_expandIcon]]" on-tap="_togleDetails"></paper-icon-button>
                 <iron-collapse id="details" opened="{{_detailsExpanded}}">
                     <div>
