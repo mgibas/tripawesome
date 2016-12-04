@@ -6,6 +6,7 @@
 <link rel="import" href="../bower_components/paper-ripple/paper-ripple.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../bower_components/paper-rating/paper-rating.html">
 <link rel="import" href="ta-shared-styles.html">
 <link rel="import" href="star-rating.html">
 
@@ -36,7 +37,7 @@
         <paper-card heading="[[_details.name]]" image="[[_photoUrl]]" preload-image="true" fade-image="true">
             <paper-ripple></paper-ripple>
             <div class="card-content">
-                <star-rating max="5" rating="[[_details.rating]]"></star-rating>
+                <paper-rating max="5" rating="[[_details.rating]]"></paper-rating>
             </div>
         </paper-card>
     </template>
