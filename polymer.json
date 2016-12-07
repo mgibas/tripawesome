@@ -1,9 +1,7 @@
 {
     "entrypoint": "index.html",
     "shell": "src/ta-app.html",
-    "fragments": ["src/ta-trips-shell.html",
-        "src/ta-trip-details-shell.html"
-    ],
+    "fragments": ["src/ta-trips-shell.html"],
     "sourceGlobs": [
         "src/**/*",
         "images/**/*",

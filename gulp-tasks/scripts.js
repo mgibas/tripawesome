@@ -1,12 +1,16 @@
 'use strict';
-
 const babel = require('gulp-babel');
+const uglify = require('gulp-uglify');
 
-// Returns a function that returns a Promise to delete directories
+
 function babelize() {
     return babel({ presets: ['es2015'] });
 }
 
+function minify() {
+    return uglify();
+}
 module.exports = {
-    babelize: babelize
+    babelize: babelize,
+    minify: minify
 };
