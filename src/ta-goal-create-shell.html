@@ -6,14 +6,13 @@
 <link rel="import" href="ta-shell-layout.html">
 <link rel="import" href="ta-shell-search-layout.html">
 <link rel="import" href="ta-place-search.html">
-<link rel="import" href="ta-goal-create-place-details.html">
 
 <dom-module id="ta-goal-create-shell">
     <template>
         <app-route route="{{route}}" pattern="/places/:id/details" data="{{detailsData}}" active="{{detailsActive}}" tail="{{detailsTail}}"></app-route>
         <iron-pages class="flex" selected="[[page]]" fallback-selection="0">
             <ta-shell-search-layout on-back-tap="_handleCancelTap" search-value="{{_searchValue}}" search-placeholder="Find Interesting Place">
-                <ta-place-search id="createGoal" user-uid="[[userUid]]" trip-key="[[tripKey]]" day-key="[[dayKey]]" search-value="[[_searchValue]]"></ta-place-search>
+                <ta-place-search id="search" user-uid="[[userUid]]" trip-key="[[tripKey]]" day-key="[[dayKey]]" search-value="[[_searchValue]]"></ta-place-search>
             </ta-shell-search-layout>
             <ta-shell-layout burger-button back-button title="[[details.name]]" header-background-url="[[details.photoUrl]]">
                 <app-toolbar class="middle"></app-toolbar>
@@ -44,6 +43,11 @@
                     }
                 };
             }
+            ready() {
+                Polymer.RenderStatus.afterNextRender(this, () => {
+                    this.importHref(this.resolveUrl('/src/ta-goal-create-place-details.html'), null, null, true);
+                });
+            }
             _computePage(detailsActive) {
                 if (detailsActive)
                     return 1;
@@ -51,7 +55,7 @@
                     return 0;
             }
             _handleCancelTap() {
-                this.$.createGoal.reset();
+                this.$.search.reset();
             }
             _handleGoalCreated() {
                 window.history.go(-2);

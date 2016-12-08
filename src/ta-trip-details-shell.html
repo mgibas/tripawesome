@@ -5,7 +5,6 @@
 <link rel="import" href="ta-shell-behavior.html">
 <link rel="import" href="ta-shell-layout.html">
 <link rel="import" href="ta-trip-details.html">
-<link rel="import" href="ta-day-details-shell.html">
 <link rel="import" href="ta-trip-share-dialog.html">
 
 <dom-module id="ta-trip-details-shell">
@@ -22,9 +21,7 @@
             </ta-shell-layout>
             <ta-day-details-shell route="[[dayDetailsTail]]" user-uid="[[userUid]]" trip-key="[[tripKey]]" day-key="[[dayDetailsData.id]]"></ta-day-details-shell>
         </iron-pages>
-
         <ta-trip-share-dialog id="share" user-uid="[[userUid]]" trip-key="[[tripKey]]" secret="1231231"></ta-trip-share-dialog>
-
     </template>
     <script>
     (() => {
@@ -51,6 +48,11 @@
                         value: false
                     }
                 };
+            }
+            ready() {
+                Polymer.RenderStatus.afterNextRender(this.$.details, () => {
+                    this.importHref(this.resolveUrl('/src/ta-day-details-shell.html'), null, null, true);
+                });
             }
             _computePage(dayDetailsActive) {
                 if (dayDetailsActive)

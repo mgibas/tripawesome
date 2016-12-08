@@ -3,13 +3,11 @@
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="ta-user-dependent-behavior.html">
 <link rel="import" href="ta-shell-behavior.html">
-<link rel="import" href="ta-shell-layout.html">
-<link rel="import" href="ta-shell-search-layout.html">
-<link rel="import" href="ta-trips-list.html">
-<link rel="import" href="ta-trip-create.html">
-<link rel="import" href="ta-trip-details-shell.html">
 <link rel="import" href="ta-shared-styles.html">
+<link rel="import" href="ta-shell-layout.html">
+<link rel="import" href="ta-trips-list.html">
 <link rel="import" href="ta-trip-claim-dialog.html">
+<link rel="import" href="ta-shell-search-layout.html">
 
 <dom-module id="ta-trips-shell">
     <template>
@@ -63,8 +61,13 @@
             get behaviors() {
                 return [TaShellBehavior, TaUserDependentBehavior];
             }
+            ready() {
+                Polymer.RenderStatus.afterNextRender(this, () => {
+                    this.importHref(this.resolveUrl('/src/ta-trip-create.html'), null, null, true);
+                    this.importHref(this.resolveUrl('/src/ta-trip-details-shell.html'), null, null, true);
+                });
+            }
             _computePage(createActive, detailsActive, claimActive) {
-                console.log(`${createActive} ${detailsActive} ${claimActive}`)
                 if (createActive)
                     return 1;
                 else if (detailsActive)

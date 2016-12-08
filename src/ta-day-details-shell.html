@@ -7,8 +7,6 @@
 <link rel="import" href="ta-shell-layout.html">
 <link rel="import" href="ta-shell-search-layout.html">
 <link rel="import" href="ta-day-details.html">
-<link rel="import" href="ta-goal-create-shell.html">
-<link rel="import" href="ta-goal-details.html">
 
 <dom-module id="ta-day-details-shell">
     <template>
@@ -60,6 +58,12 @@
                         value: false
                     }
                 };
+            }
+            ready() {
+                Polymer.RenderStatus.afterNextRender(this, () => {
+                    this.importHref(this.resolveUrl('/src/ta-goal-details.html'), null, null, true);
+                    this.importHref(this.resolveUrl('/src/ta-goal-create-shell.html'), null, null, true);
+                });
             }
             _computePage(createActive, detailsActive) {
                 if (detailsActive)
