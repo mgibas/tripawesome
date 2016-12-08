@@ -7,7 +7,6 @@
 <link rel="import" href="ta-shell-layout.html">
 <link rel="import" href="ta-trips-list.html">
 <link rel="import" href="ta-trip-claim-dialog.html">
-<link rel="import" href="ta-shell-search-layout.html">
 
 <dom-module id="ta-trips-shell">
     <template>
@@ -25,9 +24,7 @@
                 <ta-trips-list user-uid="[[userUid]]"></ta-trips-list>
                 <ta-trip-claim-dialog user-uid="[[userUid]]" owner-uid="[[claimData.ownerUid]]" trip-key="[[claimData.tripKey]]" share-key="[[claimData.shareKey]]"></ta-trip-claim-dialog>
             </ta-shell-layout>
-            <ta-shell-search-layout on-back-tap="_handleSearchCancelTap" search-value="{{_searchValue}}" search-placeholder="Choose City">
-                <ta-trip-create id="create" user-uid="[[userUid]]" search-value="[[_searchValue]]" on-created="_handleCreated"></ta-trip-create>
-            </ta-shell-search-layout>
+            <ta-trip-create-shell user-uid="[[userUid]]"></ta-trip-create-shell>
             <ta-trip-details-shell route="[[detailsTail]]" user-uid="[[detailsData.userUid]]" trip-key="[[detailsData.id]]"></ta-trip-details-shell>
         </iron-pages>
     </template>
@@ -63,7 +60,7 @@
             }
             ready() {
                 Polymer.RenderStatus.afterNextRender(this, () => {
-                    this.importHref(this.resolveUrl('/src/ta-trip-create.html'), null, null, true);
+                    this.importHref(this.resolveUrl('/src/ta-trip-create-shell.html'), null, null, true);
                     this.importHref(this.resolveUrl('/src/ta-trip-details-shell.html'), null, null, true);
                 });
             }
@@ -74,12 +71,6 @@
                     return 2;
                 else
                     return 0;
-            }
-            _handleSearchCancelTap() {
-                this.$.create.reset();
-            }
-            _handleCreated() {
-                window.history.go(-1);
             }
         }
         Polymer(TaTripsShell);
