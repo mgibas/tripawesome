@@ -4,7 +4,23 @@ const TaShellBehavior = {
     properties: {
         route: {
             type: Object
+        },
+        nextShellsPrepared: {
+            type: Boolean,
+            value: false
+        },
+        active: {
+            type: Boolean
         }
+    },
+    observers: ['_prepareNextShells(nextShells,active)'],
+    _prepareNextShells: function(nextShells, active) {
+        if (this.nextShellsPrepared || !this.active) return;
+        Polymer.RenderStatus.afterNextRender(this, () => {
+            this.nextShellsPrepared = true;
+            this.nextShells.forEach((el) =>
+                this.importHref(this.resolveUrl(el), null, null, true));
+        });
     }
 };
 </script>

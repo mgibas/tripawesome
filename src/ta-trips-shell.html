@@ -24,8 +24,8 @@
                 <ta-trips-list user-uid="[[userUid]]"></ta-trips-list>
                 <ta-trip-claim-dialog user-uid="[[userUid]]" owner-uid="[[claimData.ownerUid]]" trip-key="[[claimData.tripKey]]" share-key="[[claimData.shareKey]]"></ta-trip-claim-dialog>
             </ta-shell-layout>
-            <ta-trip-create-shell user-uid="[[userUid]]"></ta-trip-create-shell>
-            <ta-trip-details-shell route="[[detailsTail]]" user-uid="[[detailsData.userUid]]" trip-key="[[detailsData.id]]"></ta-trip-details-shell>
+            <ta-trip-create-shell user-uid="[[userUid]]" active="[[createActive]]"></ta-trip-create-shell>
+            <ta-trip-details-shell route="[[detailsTail]]" user-uid="[[detailsData.userUid]]" trip-key="[[detailsData.id]]" active="[[detailsActive]]"></ta-trip-details-shell>
         </iron-pages>
     </template>
     <script>
@@ -52,24 +52,25 @@
                     claimActive: {
                         type: Boolean,
                         value: false
+                    },
+                    nextShells: {
+                        type: Array,
+                        value: [
+                            '/src/ta-trip-create-shell.html',
+                            '/src/ta-trip-details-shell.html'
+                        ]
                     }
                 };
             }
             get behaviors() {
                 return [TaShellBehavior, TaUserDependentBehavior];
             }
-            ready() {
-                Polymer.RenderStatus.afterNextRender(this, () => {
-                    this.importHref(this.resolveUrl('/src/ta-trip-create-shell.html'), null, null, true);
-                    this.importHref(this.resolveUrl('/src/ta-trip-details-shell.html'), null, null, true);
-                });
-            }
             _computePage(createActive, detailsActive, claimActive) {
-                if (createActive)
+                if (createActive) {
                     return 1;
-                else if (detailsActive)
+                } else if (detailsActive) {
                     return 2;
-                else
+                } else
                     return 0;
             }
         }

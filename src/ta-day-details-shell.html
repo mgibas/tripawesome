@@ -26,7 +26,7 @@
                 <paper-item more-button-menu-item on-tap="_handleGoalDeleteTap">Delete</paper-item>
                 <ta-goal-details user-uid="[[userUid]]" trip-key="[[tripKey]]" day-key="[[dayKey]]" goal-key="[[detailsData.id]]" id="goalDetails" goal="{{goal}}"></ta-goal-details>
             </ta-shell-layout>
-            <ta-goal-create-shell route="[[createTail]]" user-uid="[[userUid]]" trip-key="[[tripKey]]" day-key="[[dayKey]]"></ta-goal-create-shell>
+            <ta-goal-create-shell id="create" route="[[createTail]]" user-uid="[[userUid]]" trip-key="[[tripKey]]" day-key="[[dayKey]]" active="[[createActive]]"></ta-goal-create-shell>
         </iron-pages>
     </template>
     <script>
@@ -56,21 +56,22 @@
                     detailsActive: {
                         type: Boolean,
                         value: false
+                    },
+                    nextShells: {
+                        type: Array,
+                        value: [
+                            '/src/ta-goal-details.html',
+                            '/src/ta-goal-create-shell.html'
+                        ]
                     }
                 };
-            }
-            ready() {
-                Polymer.RenderStatus.afterNextRender(this, () => {
-                    this.importHref(this.resolveUrl('/src/ta-goal-details.html'), null, null, true);
-                    this.importHref(this.resolveUrl('/src/ta-goal-create-shell.html'), null, null, true);
-                });
             }
             _computePage(createActive, detailsActive) {
                 if (detailsActive)
                     return 1;
-                if (createActive)
+                if (createActive) {
                     return 2;
-                else
+                } else
                     return 0;
             }
             _handleDayDeleteTap() {

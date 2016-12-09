@@ -19,7 +19,7 @@
                 <app-toolbar class="bottom"></app-toolbar>
                 <ta-trip-details user-uid="[[userUid]]" trip-key="[[tripKey]]" id="details" trip="{{trip}}"></ta-trip-details>
             </ta-shell-layout>
-            <ta-day-details-shell route="[[dayDetailsTail]]" user-uid="[[userUid]]" trip-key="[[tripKey]]" day-key="[[dayDetailsData.id]]"></ta-day-details-shell>
+            <ta-day-details-shell id="dayDetails" route="[[dayDetailsTail]]" user-uid="[[userUid]]" trip-key="[[tripKey]]" day-key="[[dayDetailsData.id]]" active="[[dayDetailsActive]]"></ta-day-details-shell>
         </iron-pages>
         <ta-trip-share-dialog id="share" user-uid="[[userUid]]" trip-key="[[tripKey]]" secret="1231231"></ta-trip-share-dialog>
     </template>
@@ -46,18 +46,19 @@
                     detailsActive: {
                         type: Boolean,
                         value: false
+                    },
+                    nextShells: {
+                        type: Array,
+                        value: [
+                            '/src/ta-day-details-shell.html'
+                        ]
                     }
                 };
             }
-            ready() {
-                Polymer.RenderStatus.afterNextRender(this.$.details, () => {
-                    this.importHref(this.resolveUrl('/src/ta-day-details-shell.html'), null, null, true);
-                });
-            }
             _computePage(dayDetailsActive) {
-                if (dayDetailsActive)
+                if (dayDetailsActive) {
                     return 1;
-                else
+                } else
                     return 0;
             }
             _handleDeleteTap() {

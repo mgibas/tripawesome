@@ -40,13 +40,14 @@
                     detailsActive: {
                         type: Boolean,
                         value: false
+                    },
+                    nextShells: {
+                        type: Array,
+                        value: [
+                            '/src/ta-goal-create-place-details.html'
+                        ]
                     }
                 };
-            }
-            ready() {
-                Polymer.RenderStatus.afterNextRender(this, () => {
-                    this.importHref(this.resolveUrl('/src/ta-goal-create-place-details.html'), null, null, true);
-                });
             }
             _computePage(detailsActive) {
                 if (detailsActive)
