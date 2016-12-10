@@ -81,11 +81,12 @@
             }
             _getAllGoals(trip) {
                 if (!trip.days) return [];
-                return Object.keys(trip.days)
+                var allGoals = Object.keys(trip.days)
                     .map((key) => trip.days[key])
                     .filter((d) => d.goals)
-                    .map((d) => Object.keys(d.goals).map((key) => d.goals[key]))
-                    .reduce((a, b) => a.concat(b));
+                    .map((d) => Object.keys(d.goals).map((key) => d.goals[key]));
+                if (allGoals.length === 0) return [];
+                return allGoals.reduce((a, b) => a.concat(b));
             }
         }
         Polymer(TaTripCard);
