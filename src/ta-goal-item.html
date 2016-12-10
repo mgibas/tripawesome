@@ -19,6 +19,10 @@
         .title {
             margin-left: 1rem;
         }
+
+        iron-icon{
+            color:var(--paper-green-500);
+        }
         
         .move-actions {
             @apply(--layout-vertical);
@@ -32,14 +36,15 @@
 
         <paper-item>
             <paper-ripple></paper-ripple>
-            <iron-image src="[[goal.location.photoUrl]]" sizing="cover" preload fade placeholder="[[goal.location.placeholder]]"></iron-image>
-            <div class="title flex">
-                <strong>[[goal.location.name]]</strong>
-            </div>
             <div class="move-actions">
                 <paper-icon-button hidden$="[[!moveUp]]" icon="arrow-upward" on-tap="_handleArrowUpTap"></paper-icon-button>
                 <paper-icon-button hidden$="[[!moveDown]]" icon="arrow-downward" on-tap="_handleArrowDownTap"></paper-icon-button>
             </div>
+            <iron-image src="[[goal.location.photoUrl]]" sizing="cover" preload fade placeholder="[[goal.location.placeholder]]"></iron-image>
+            <div class="title flex">
+                <strong>[[goal.location.name]]</strong>
+            </div>
+            <iron-icon icon="check-circle" hidden$="[[!goal.visited]]"></iron-icon>
         </paper-item>
     </template>
     <script>
