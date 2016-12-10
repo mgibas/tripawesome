@@ -16,7 +16,7 @@
                 <paper-item more-button-menu-item on-tap="_handleShareTap">Share</paper-item>
                 <paper-item more-button-menu-item on-tap="_handleDeleteTap">Delete</paper-item>
                 <app-toolbar class="middle"></app-toolbar>
-                <app-toolbar class="bottom"></app-toolbar>
+                <app-toolbar class="bottom">Days</app-toolbar>
                 <ta-trip-details user-uid="[[userUid]]" trip-key="[[tripKey]]" id="details" trip="{{trip}}"></ta-trip-details>
             </ta-shell-layout>
             <ta-day-details-shell id="dayDetails" route="[[dayDetailsTail]]" user-uid="[[userUid]]" trip-key="[[tripKey]]" day-key="[[dayDetailsData.id]]" active="[[dayDetailsActive]]"></ta-day-details-shell>
